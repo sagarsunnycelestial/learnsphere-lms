@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import {UserRoles,type AuthInitialState} from '../../types/types'
 import { loginThunk } from "../thunks/loginThunk";
+import { toast } from "react-toastify";
 
 const initialState:AuthInitialState = {
   status:'idle',
@@ -41,6 +42,8 @@ const authSlice = createSlice({
     })
     .addCase(loginThunk.rejected,(state,action)=>{
       state.error= action.payload as {message:string} ?? null
+      console.log(state.error)
+      toast.error(state.error.message)
     })
   }
 })
