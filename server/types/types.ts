@@ -1,18 +1,18 @@
 export enum UserRoles {
-  ADMIN = 'admin',
-  INSTRUCTOR = 'instructor',
-  STUDENT = 'student'
+  ADMIN = 'Admin',
+  INSTRUCTOR = 'Instructor',
+  STUDENT = 'Student'
 }
 
-export type RegisterArgs ={
+export type RegisterCredentials ={
   username:string,
   email:string,
-  role:UserRoles
+  role:string
   collegeName:string
 }
 export interface AuthPayload {
   user_id: string;
-  role: UserRoles;
+  role: string;
 }
 export interface Context {
   req: Request;
@@ -43,4 +43,9 @@ declare global {
 
 export interface LoginArgs {
   input:LoginUserBody,
+}
+
+
+export interface RegisterArgs {
+  input:RegisterCredentials
 }

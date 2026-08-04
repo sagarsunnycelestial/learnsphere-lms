@@ -1,10 +1,11 @@
-import { LoginArgs,LoginUserBody } from "../../types/types.js";
+import { AuthPayload, Context, LoginArgs,LoginUserBody,RegisterArgs, UserRoles } from "../../types/types.js";
 import { Response } from "express";
 import { AppDataSource } from "../config/dbConfig.js";
-import { Users } from "../entities/index.js";
+import { Roles, Users } from "../entities/index.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { envSchema } from "../config/env.js";
+import { GraphQLError } from "graphql";
 const loginUser = async(args:LoginArgs,res:Response) =>{
   try{
 
@@ -13,6 +14,9 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
     const user = await userRepo.findOne({
       where:{
         email:email,
+      },
+      relations:{
+        role:true
       }
     })
     if(!user || !user.isActive){
@@ -26,7 +30,7 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
       else {
         const payload = {
           user_id: user.userId,
-          role:user.role,
+          role:user.role.roleName,
         };
         const accessToken = jwt.sign(payload,envSchema.ACCESS_TOKEN_SECRET, {
           expiresIn:"1d",
@@ -45,7 +49,7 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
 
         return {
           accessToken:accessToken,
-          role:user.role,
+          role:user.role.roleName,
           profile_image_path:user.profile_image_path,
         }
       }
@@ -55,5 +59,63 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
     return err;
   }
 }
+const registerUserInDB = async (args: RegisterArgs
+  ,user:AuthPayload
+) => {
+  
+  const userRepo = AppDataSource.getRepository(Users)
+  const rolesRepo = AppDataSource.getRepository(Roles)
+  try {
+    
+    const {
+      username,
+      email,
+      role,
+      collegeName
+    } = args.input
+  
+  
+const admin = await userRepo.findOne({
+  where:{
+    userId:user.user_id,
+    role:{
+      roleName:UserRoles.ADMIN
+    }
+  },
+  relations:{
+    role:true
+  }
+})
+  if(!admin) throw new GraphQLError("Admin not found")
 
-export {loginUser}
+  const userRole = await rolesRepo.findOne({where:{
+    roleId:role
+  }})
+  if(!userRole) throw new GraphQLError("Role not found")
+
+   const temp_password =
+      username.slice(0, 4) +
+      email.slice(0, 4) +
+      Math.floor(1000 + Math.random() * 9000);
+    const password_hash = await bcrypt.hash(temp_password,10);
+    const newUser = userRepo.create({
+      username:username,
+      email:email,
+      role:userRole,
+      collegeName:collegeName,
+      passwordHash:password_hash,
+      isActive:true,
+
+    });
+    await userRepo.save(newUser)
+
+    return {
+      message:`${newUser.role.roleName} created successfully`,
+      email: newUser.email,
+      temp_password: temp_password
+    }
+  } catch (error) {
+    throw new Error(`Failed to create user: ${(error as Error).message}`);
+  }
+}
+export {loginUser,registerUserInDB}

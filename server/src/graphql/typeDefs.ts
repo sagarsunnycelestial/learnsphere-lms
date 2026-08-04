@@ -1,21 +1,18 @@
 export const typeDefs =`
 
-enum UserRole {
-ADMIN
-INSTRUCTOR
-STUDENT
 
-}
 
 input UserDetails {
 username:String!
 email:String!
-role:UserRole
-collegeName:String
+role:String!
+collegeName:String!
 }
 
 type RegisterResponse {
 message:String!
+email:String!
+temp_password:String!
 }
 input LoginCredentials {
   email: String!
@@ -35,6 +32,6 @@ type Query {
 
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
-  registerUser(input:UserDetails!): [RegisterResponse]!
+  registerUser(input:UserDetails!): RegisterResponse!
 }
 `
