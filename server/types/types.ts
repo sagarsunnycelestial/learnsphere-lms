@@ -49,3 +49,14 @@ export interface LoginArgs {
 export interface RegisterArgs {
   input:RegisterCredentials
 }
+
+type UpdateDetails ={
+  username:string,
+  password:string,
+  email:string,
+  collegeName:string
+  profile_image_path:string
+}
+export interface UpdateArgs {
+  input: UpdateDetails
+}

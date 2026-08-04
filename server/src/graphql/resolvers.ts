@@ -1,7 +1,8 @@
 import { GraphQLError } from "graphql/error"
 import { Context, UserRoles,LoginArgs } from "../../types/types.js"
 import { loginUser,registerUserInDB,fetchUserByRefreshToken } from "../controllers/auth.controller.js"
-import { RegisterArgs } from "../../types/types.js"
+import { updateUserDetails } from "../controllers/users.controller.js"
+import { RegisterArgs,UpdateArgs } from "../../types/types.js"
 import { Response ,Request} from "express"
 
 export const resolvers = {
@@ -41,6 +42,16 @@ export const resolvers = {
       );
       return registerResponse;
       
-    }
+    },
+     updateProfile: async(
+      _parents:unknown,
+      args:UpdateArgs,
+      context:Context
+     )=>{
+      if(!context.user) throw new GraphQLError("Login required")
+
+      return await updateUserDetails(args,context.user)
+     }
+    
   }
 }
