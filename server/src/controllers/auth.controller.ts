@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { envSchema } from "../config/env.js";
 import { GraphQLError } from "graphql";
+import {ERROR_MESSAGES} from '../constants/messages.js'
 const loginUser = async(args:LoginArgs,res:Response) =>{
   try{
 
@@ -20,12 +21,12 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
       }
     })
     if(!user || !user.isActive){
-      throw new Error("User not found or deactivated")
+      throw new Error(ERROR_MESSAGES.USER_NOT_FOUND)
     }
     else {
       const match = await bcrypt.compare(password,user.passwordHash);
       if(!match){
-        throw new Error('Unauthorized')
+        throw new Error(ERROR_MESSAGES.UNAUTHORIZED)
       }
       else {
         const payload = {
@@ -86,12 +87,12 @@ const admin = await userRepo.findOne({
     role:true
   }
 })
-  if(!admin) throw new GraphQLError("Admin not found")
+  if(!admin) throw new GraphQLError(ERROR_MESSAGES.ADMIN_NOT_FOUND)
 
   const userRole = await rolesRepo.findOne({where:{
     roleId:role
   }})
-  if(!userRole) throw new GraphQLError("Role not found")
+  if(!userRole) throw new GraphQLError(ERROR_MESSAGES.ROLE_NOT_FOUND)
 
    const temp_password =
       username.slice(0, 4) +
@@ -115,7 +116,7 @@ const admin = await userRepo.findOne({
       temp_password: temp_password
     }
   } catch (error) {
-    throw new Error(`Failed to create user: ${(error as Error).message}`);
+    throw new Error(`${ERROR_MESSAGES.FAILED_TO_CREATE_USER} ${(error as Error).message}`);
   }
 }
 
@@ -134,7 +135,7 @@ async function fetchUserByRefreshToken(refreshToken: string,res:Response) {
     throw new Error("Invalid refresh token")
   }
   const userfound = await userRepo.findOneBy({ refreshToken: refreshToken });
-  if (!userfound) throw new Error("User has no refresh token");
+  if (!userfound) throw new Error(ERROR_MESSAGES.INVALID_REFRESH_TOKEN);
 
   const user = await userRepo.findOne({
     where:{
@@ -145,7 +146,7 @@ async function fetchUserByRefreshToken(refreshToken: string,res:Response) {
     }
   })
   if(!user){
-throw new GraphQLError('User not found')
+throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
   } 
   
     else{
