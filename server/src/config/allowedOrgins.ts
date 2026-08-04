@@ -1,4 +1,6 @@
+import { envSchema } from "./env.js";
+
 export const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:3000'
+ envSchema.ALLOWED_ORIGIN1,
+ envSchema.ALLOWED_ORIGIN2
 ]

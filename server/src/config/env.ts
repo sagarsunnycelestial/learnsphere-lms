@@ -10,5 +10,7 @@ DB_NAME: z.string(),
 DB_PASSWORD:z.string(),
 ACCESS_TOKEN_SECRET: z.string(),
 REFRESH_TOKEN_SECRET:z.string(),
-PORT:z.coerce.number()
+PORT:z.coerce.number(),
+ALLOWED_ORIGIN1:z.string(),
+ALLOWED_ORIGIN2:z.string(),
 }).parse(process.env)
