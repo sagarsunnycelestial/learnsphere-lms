@@ -37,7 +37,9 @@ const authSlice = createSlice({
       state.error=null
     })
     .addCase(loginThunk.fulfilled,(state,action)=>{
-      state.user =action.payload
+      const {role} = action.payload
+      state.user ={...action.payload,isAuthenticated:true, role:role as UserRoles}
+
       state.status = 'succeeded'
     })
     .addCase(loginThunk.rejected,(state,action)=>{

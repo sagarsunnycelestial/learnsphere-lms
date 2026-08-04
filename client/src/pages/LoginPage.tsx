@@ -1,24 +1,37 @@
 import { Card, Box, Typography, TextField, Button } from "@mui/material";
-import auth from "../assets/auth.webp";
-import MyLogo from "../assets/HR-logo.webp";
+// import auth from "../assets/auth.webp";
+// import MyLogo from "../assets/HR-logo.webp";
 import { useState } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { loginThunk } from "../store/thunks/loginThunk";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 export default function LoginPage() {
-  console.log(auth);
+  const [loading, setLoading] = useState(false);
+  // console.log(auth);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const handleLogin = async () => {
-   dispatch(loginThunk({email,password}))
+if (!email || !password) {
+    toast.error("Please enter both email and password");
+    return;
+  }
+  try {
+    setLoading(true);
+    await dispatch(loginThunk({ email, password })).unwrap();
+    navigate("/courses");
+  } catch(err) {
+    toast.error(err as string)
+  } finally {
+    setLoading(false);
+  }
   };
   return (
     <Box
       sx={{
-        backgroundImage: `url(${auth})`,
+        // backgroundImage: `url(${auth})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -51,7 +64,7 @@ export default function LoginPage() {
         >
           <Box
             component="img"
-            src={MyLogo}
+            // src={MyLogo}
             alt="Company Logo"
             sx={{
               width: 120,
@@ -109,19 +122,9 @@ export default function LoginPage() {
               
             }}
           >
+            {loading? 'Signing In...' : 'Login'}
           </Button>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            sx={{
-              py: 1.2,
-              borderRadius: 2,
-              borderColor: "divider",
-            }}
-          >
-            Register
-          </Button>
         </Box>
         <Typography
           sx={{

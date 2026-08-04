@@ -13,7 +13,7 @@ export const UserRoles  ={
   INSTRUCTOR : 'Instructor',
   STUDENT : 'Student'
 }  as const
-
+export type UserRoles = (typeof UserRoles)[keyof typeof UserRoles];
 export type LoginInputs =  {
   email:string;
   password: string;
@@ -25,4 +25,15 @@ export interface LoginResponse {
   accessToken:string,
   role:UserRoles,
   profile_image_path: string | null,
+}
+
+export interface LoginResponse {
+  login: {
+    accessToken: string;
+    profile_image_path: string | null;
+    role: string;
+  };
+}
+export interface LoginMutationVariables {
+  input: LoginInputs;
 }

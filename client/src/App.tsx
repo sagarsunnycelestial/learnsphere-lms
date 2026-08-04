@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { ThemeProvider } from "@mui/material/styles";
 import {ToastContainer} from 'react-toastify'
 import { useAppSelector } from "./store/hooks";
-
-
+import { RouterProvider } from "react-router"
+import router from "./router"
 export default function App() {
   const mode = useAppSelector(state=>state.theme.theme)
   const theme = mode === 'light'?lightTheme : darkTheme;
@@ -14,7 +14,9 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <ToastContainer />
+      <RouterProvider router={router} />
     </ThemeProvider>
    
   )
 }
+
