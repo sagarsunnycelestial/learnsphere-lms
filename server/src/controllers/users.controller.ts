@@ -1,5 +1,6 @@
 import { AuthPayload, UpdateArgs } from "../../types/types.js";
 import { AppDataSource } from "../config/dbConfig.js";
+import { ERROR_MESSAGES } from "../constants/messages.js";
 import { Users } from "../entities/Users.js";
 import bcrypt from 'bcrypt'
 async function updateUserDetails(args:UpdateArgs,user:AuthPayload) {
@@ -18,7 +19,7 @@ async function updateUserDetails(args:UpdateArgs,user:AuthPayload) {
         userId:user.user_id
       }
     })
-    if(!updateUser) throw new Error('User not found')
+    if(!updateUser) throw new Error(ERROR_MESSAGES.USER_NOT_FOUND)
     
       const password_hash = await bcrypt.hash(password,10)
     updateUser.username = username

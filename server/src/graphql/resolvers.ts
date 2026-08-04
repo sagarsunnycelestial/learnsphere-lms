@@ -4,6 +4,7 @@ import { loginUser,registerUserInDB,fetchUserByRefreshToken } from "../controlle
 import { updateUserDetails } from "../controllers/users.controller.js"
 import { RegisterArgs,UpdateArgs } from "../../types/types.js"
 import { Response ,Request} from "express"
+import { ERROR_MESSAGES } from "../constants/messages.js"
 
 export const resolvers = {
   Query:{
@@ -13,7 +14,7 @@ export const resolvers = {
       { req,res }: { req:Request,res: Response }
     ) =>{
       const cookies = req.cookies
-      if(!cookies?.jwt) throw new GraphQLError("Unauthorized", {
+      if(!cookies?.jwt) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED, {
           extensions: { code: "FORBIDDEN" },
         });
       
@@ -48,7 +49,7 @@ export const resolvers = {
       args:UpdateArgs,
       context:Context
      )=>{
-      if(!context.user) throw new GraphQLError("Login required")
+      if(!context.user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
 
       return await updateUserDetails(args,context.user)
      }
