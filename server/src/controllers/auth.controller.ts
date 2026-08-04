@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { envSchema } from "../config/env.js";
 import { GraphQLError } from "graphql";
-import {ERROR_MESSAGES} from '../constants/messages.js'
+import { ERROR_MESSAGES } from "../constants/messages.js";
 const loginUser = async(args:LoginArgs,res:Response) =>{
   try{
 
