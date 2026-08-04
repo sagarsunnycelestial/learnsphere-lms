@@ -26,7 +26,7 @@ type LoginResponse {
 }
 
 type Query {
-  _empty: String
+refreshEndpoint:LoginResponse
 }
 
 

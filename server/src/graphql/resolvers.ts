@@ -1,12 +1,25 @@
 import { GraphQLError } from "graphql/error"
 import { Context, UserRoles,LoginArgs } from "../../types/types.js"
-import { loginUser,registerUserInDB } from "../controllers/auth.controller.js"
+import { loginUser,registerUserInDB,fetchUserByRefreshToken } from "../controllers/auth.controller.js"
 import { RegisterArgs } from "../../types/types.js"
-import { Response } from "express"
+import { Response ,Request} from "express"
 
 export const resolvers = {
   Query:{
-
+     refreshEndpoint:async(
+      _parents: unknown,
+      _args:unknown,
+      { req,res }: { req:Request,res: Response }
+    ) =>{
+      const cookies = req.cookies
+      if(!cookies?.jwt) throw new GraphQLError("Unauthorized", {
+          extensions: { code: "FORBIDDEN" },
+        });
+      
+        const refreshToken = cookies.jwt
+         const foundUser = await fetchUserByRefreshToken(refreshToken,res);
+        return foundUser;
+        },
   },
   Mutation:{
         login: async (

@@ -118,4 +118,63 @@ const admin = await userRepo.findOne({
     throw new Error(`Failed to create user: ${(error as Error).message}`);
   }
 }
-export {loginUser,registerUserInDB}
+
+
+async function fetchUserByRefreshToken(refreshToken: string,res:Response) {
+  const userRepo = AppDataSource.getRepository(Users)
+
+   let decoded: AuthPayload;
+
+  try {
+    decoded = jwt.verify(
+      refreshToken,
+      envSchema.REFRESH_TOKEN_SECRET,
+    ) as AuthPayload;
+  } catch {
+    throw new Error("Invalid refresh token")
+  }
+  const userfound = await userRepo.findOneBy({ refreshToken: refreshToken });
+  if (!userfound) throw new Error("User has no refresh token");
+
+  const user = await userRepo.findOne({
+    where:{
+      userId: decoded.user_id
+    },
+    relations:{
+      role:true
+    }
+  })
+  if(!user){
+throw new GraphQLError('User not found')
+  } 
+  
+    else{
+ const payload = {
+          user_id: user.userId,
+          role:user.role.roleName,
+        };
+        const accessToken = jwt.sign(payload,envSchema.ACCESS_TOKEN_SECRET, {
+          expiresIn:"1d",
+        });
+        const refreshToken = jwt.sign(payload,envSchema.REFRESH_TOKEN_SECRET, {
+          expiresIn:"7d",
+        });
+        user.refreshToken= refreshToken;
+        await userRepo.save(user);
+        res.cookie('jwt',refreshToken,{
+          httpOnly:true,
+          sameSite:'lax',
+          secure:true,
+          maxAge:604800000,
+        })
+
+        return {
+          accessToken:accessToken,
+          role:user.role.roleName,
+          profile_image_path:user.profile_image_path,
+        }
+
+    }
+  
+}
+export {loginUser,registerUserInDB,fetchUserByRefreshToken}
