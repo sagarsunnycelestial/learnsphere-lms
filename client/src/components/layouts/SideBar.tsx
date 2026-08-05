@@ -17,39 +17,12 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Switch from '@mui/material/Switch';
 import { useAppDispatch } from '../../store/hooks';
 import { toggleTheme } from '../../store/slices/themeSlice';
-import { Avatar, ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import {  ListItem, ListItemButton, ListItemIcon } from '@mui/material';
 import { useAppSelector } from '../../store/hooks';
-import Badge from '@mui/material/Badge';
+import ProfileMenu from '../profile/ProfileMenu';
 import { useNavigate } from 'react-router';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-const StyledBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    backgroundColor: '#44b700',
-    color: '#44b700',
-    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-    '&::after': {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      borderRadius: '50%',
-      animation: 'ripple 1.2s infinite ease-in-out',
-      border: '1px solid currentColor',
-      content: '""',
-    },
-  },
-  '@keyframes ripple': {
-    '0%': {
-      transform: 'scale(.8)',
-      opacity: 1,
-    },
-    '100%': {
-      transform: 'scale(2.4)',
-      opacity: 0,
-    },
-  },
-}));
+
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
   height: 34,
@@ -238,13 +211,8 @@ export default function SideBar({children}:DrawerProps) {
              <Box sx={{display:'flex',alignItems:'center'}}>
           <MaterialUISwitch sx={{ m: 1 }}  onChange={handleThemeChange} />
           <Divider orientation='vertical' sx={{color:theme.palette.divider}}/>
-          <StyledBadge
-        overlap="circular"
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        variant="dot"
-      >
-<Avatar src={`${profile_image}`} alt='A' />
-      </StyledBadge>
+          <ProfileMenu profile_image={`${profile_image}`} />
+     
           
         </Box>
         </Toolbar>

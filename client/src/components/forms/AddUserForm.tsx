@@ -65,9 +65,20 @@ export default function AddUserForm() {
       }
     } else {
       try{
+         if (password) {
+    const isValidPassword =
+      password.length >= 4 &&
+      !password.includes(" ");
+
+    if (!isValidPassword) {
+      toast.error("Password must be at least 4 characters and cannot contain spaces");
+      return;
+    }
+  }
  if (profileImg) {
         publicUrl.current = await uploadImage(profileImg);
       }
+  
       input = {
         collegeName: collegeName,
         email: email,

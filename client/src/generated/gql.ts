@@ -16,6 +16,7 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 type Documents = {
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": typeof types.RegisterUserDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": typeof types.LoginDocument,
+    "mutation Logout {\n  logout {\n    message\n  }\n}": typeof types.LogoutDocument,
     "mutation UpdateProfile($input: UpdateDetails!) {\n  updateProfile(input: $input) {\n    message\n  }\n}": typeof types.UpdateProfileDocument,
     "\nquery FetchProfile {\n  fetchProfile {\n    collegeName\n    courses {\n      courseId\n      courseName\n      isActive\n    }\n    email\n    profile_image_path\n    results {\n      quiz {\n        quizName\n        quizId\n      }\n      resultId\n      score\n    }\n    role {\n      roleId\n      roleName\n    }\n    username\n  }\n}": typeof types.FetchProfileDocument,
     "query FetchRoles {\n  fetchRoles {\n    roleId\n    roleName\n  }\n}": typeof types.FetchRolesDocument,
@@ -24,6 +25,7 @@ type Documents = {
 const documents: Documents = {
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": types.RegisterUserDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": types.LoginDocument,
+    "mutation Logout {\n  logout {\n    message\n  }\n}": types.LogoutDocument,
     "mutation UpdateProfile($input: UpdateDetails!) {\n  updateProfile(input: $input) {\n    message\n  }\n}": types.UpdateProfileDocument,
     "\nquery FetchProfile {\n  fetchProfile {\n    collegeName\n    courses {\n      courseId\n      courseName\n      isActive\n    }\n    email\n    profile_image_path\n    results {\n      quiz {\n        quizName\n        quizId\n      }\n      resultId\n      score\n    }\n    role {\n      roleId\n      roleName\n    }\n    username\n  }\n}": types.FetchProfileDocument,
     "query FetchRoles {\n  fetchRoles {\n    roleId\n    roleName\n  }\n}": types.FetchRolesDocument,
@@ -52,6 +54,10 @@ export function graphql(source: "mutation RegisterUser($input: UserDetails!) {\n
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}"): (typeof documents)["mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation Logout {\n  logout {\n    message\n  }\n}"): (typeof documents)["mutation Logout {\n  logout {\n    message\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
