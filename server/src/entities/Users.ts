@@ -11,6 +11,7 @@ import {
 import { Roles } from "./Roles.js";
 import { Courses } from "./Courses.js";
 import { Results } from "./Results.js";
+import { Enrollments } from "./Enrollments.js";
 
 @Entity("user_details")
 export class Users {
@@ -92,4 +93,7 @@ export class Users {
 
   @OneToMany(() => Results, (result) => result.user)
   results!: Results[];
+  
+  @OneToMany(() => Enrollments,(enrollment) => enrollment.user)
+  enrollments!:Enrollments
 }

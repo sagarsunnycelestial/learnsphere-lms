@@ -7,11 +7,14 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  Unique
 } from "typeorm";
 import { Users } from "./Users.js";
 import { Lessons } from "./Lessons.js";
 import { Quizzes } from "./Quizzes.js";
+import { Enrollments } from "./Enrollments.js";
 
+@Unique(["user", "course"])
 @Entity("courses")
 export class Courses {
   @PrimaryGeneratedColumn("uuid",{name:'course_id'})
@@ -61,6 +64,9 @@ export class Courses {
 
   @OneToMany(() => Lessons, (lesson) => lesson.course)
   lessons!: Lessons[];
+
+  @OneToMany(()=>Enrollments,(enrollment) => enrollment.course)
+  enrollments!:Enrollments
 
   @OneToMany(() => Quizzes, (quiz) => quiz.course)
   quizzes!: Quizzes[];

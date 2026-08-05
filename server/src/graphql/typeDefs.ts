@@ -32,7 +32,7 @@ quizName:String
 type ResultResponse {
 resultId:String
 quiz:QuizResponse
-score:Int
+score:Float
 }
 
 
