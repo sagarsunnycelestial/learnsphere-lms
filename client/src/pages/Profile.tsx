@@ -2,7 +2,7 @@ import { Box ,Card, Typography} from '@mui/material'
 import React from 'react'
 
 export default function Profile() {
-  
+
   return (
      <Card
         elevation={0}
@@ -15,7 +15,7 @@ export default function Profile() {
           borderColor: "divider",
         }}
       >
-        <Typography variant='h2' ></Typography>
+        <Typography variant='h3' >Profile</Typography>
       </Card>
   )
 }

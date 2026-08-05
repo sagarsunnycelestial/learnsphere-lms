@@ -1,3 +1,4 @@
+import { GraphQLError } from "graphql";
 import { AuthPayload, UpdateArgs } from "../../types/types.js";
 import { AppDataSource } from "../config/dbConfig.js";
 import { ERROR_MESSAGES } from "../constants/messages.js";
@@ -39,4 +40,22 @@ return {message:err}
   }
   
 }
-export {updateUserDetails}
+
+async function fetchUserProfile(userId:string){
+  const userRepo = AppDataSource.getRepository(Users)
+  const userProfile = userRepo.findOne({where:{
+    userId:userId,
+  },
+relations:{
+  role:true,
+  courses:true,
+  results:{quiz:true},
+  
+}})
+
+if(!userProfile) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
+  
+  return userProfile;
+}
+
+export {updateUserDetails,fetchUserProfile}

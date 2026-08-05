@@ -1,13 +1,20 @@
 import { GraphQLError } from "graphql/error"
 import { Context, UserRoles,LoginArgs } from "../../types/types.js"
 import { loginUser,registerUserInDB,fetchUserByRefreshToken } from "../controllers/auth.controller.js"
-import { updateUserDetails } from "../controllers/users.controller.js"
+import { updateUserDetails,fetchUserProfile } from "../controllers/users.controller.js"
 import { RegisterArgs,UpdateArgs } from "../../types/types.js"
 import { Response ,Request} from "express"
 import { ERROR_MESSAGES } from "../constants/messages.js"
 import { fetchRolesfromDB } from "../controllers/roles.controller.js"
 export const resolvers = {
   Query:{
+    fetchProfile:async(
+       _parents: unknown,
+      _args:unknown,
+      context:Context
+    )=>{
+      return await fetchUserProfile(context.user?.user_id as string)
+    },
     fetchRoles:async(
        _parents: unknown,
       _args:unknown,
