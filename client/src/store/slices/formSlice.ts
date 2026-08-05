@@ -7,7 +7,12 @@ const initialState:FormInitialState = {
   users:{
     mode:'add',
 isUserAddFormOpen: false,
-selectedUser: null
+selectedUser: null,
+createdUser:{
+  didValueReceive:false,
+  email:'',
+  temp_password:''
+}
   },
   courses:{
     mode:'add',
@@ -30,8 +35,14 @@ const formSlice = createSlice({
       },
       addCourseFormControl(state,action){
         state.courses.isAddCourseFormOpen = action.payload
-      }
+      },
+       storeInfo(state, action) {
+      const { email, pswrd,open } = action.payload;
+      state.users.createdUser.email = email;
+      state.users.createdUser.temp_password = pswrd;
+      state.users.createdUser.didValueReceive = open
+    },
     } });
 
-    export const {userAddFormControl,addCourseFormControl} = formSlice.actions;
+    export const {userAddFormControl,addCourseFormControl,storeInfo} = formSlice.actions;
     export default formSlice.reducer;

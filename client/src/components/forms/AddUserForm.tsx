@@ -8,7 +8,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { userAddFormControl } from "../../store/slices/formSlice";
+import useUserCRUD from "../../hooks/useUserCRUD";
+import { userAddFormControl,storeInfo} from "../../store/slices/formSlice";
 import { useRef, useState } from "react";
 import { useAppSelector,useAppDispatch } from "../../store/hooks";
 import { uploadImage } from "../../supabase/uploadImage";
@@ -23,8 +24,9 @@ export default function AddUserForm() {
   const [collegeName,setCollegeName] = useState(selectedUser?.collegeName ?? '')
   const [role,setRole] = useState(selectedUser?.role ?? 'Student');
   const dispatch = useAppDispatch()
+  const {addNewUser} = useUserCRUD()
  async function handleSubmit(){
-    let input = {}
+    let input;
     if(!isEditing){
       input = {
       collegeName:collegeName,
@@ -32,6 +34,8 @@ export default function AddUserForm() {
       role:role,
       username:username
     }
+    const res = await addNewUser({input})
+    dispatch(storeInfo({email:res.}))
     }
     else{
       if(profileImg){

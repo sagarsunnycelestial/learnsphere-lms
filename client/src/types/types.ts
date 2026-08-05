@@ -50,6 +50,11 @@ export type FormInitialState  = {
  mode: string;
  isUserAddFormOpen: boolean;
  selectedUser: null | UserDetails;
+ createdUser:{
+  didValueReceive:boolean;
+  email:string;
+  temp_password:string
+ }
  };
  courses: {
  mode: string;
@@ -57,4 +62,18 @@ export type FormInitialState  = {
  selectedcourse: null;
  };
 
+}
+
+export interface RegisterResponse {
+  message:string
+email?:string
+temp_password?:string
+}
+export interface RegisterMutationInput {
+  input: {
+    collegeName: string,
+    email: string,
+    role: string,
+    username: string,
+  }
 }
