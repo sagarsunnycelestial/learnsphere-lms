@@ -78,5 +78,6 @@ type Mutation {
   login(input:LoginCredentials!): LoginResponse!
   registerUser(input:UserDetails!): RegisterResponse!
   updateProfile(input:UpdateDetails!) : Response!
+  logout:Response
 }
 `

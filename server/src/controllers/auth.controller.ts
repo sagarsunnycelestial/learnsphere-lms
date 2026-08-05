@@ -40,6 +40,8 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
           expiresIn:"7d",
         });
         user.refreshToken= refreshToken;
+        user.isActive =true;
+        user.lastLoginAt = new Date();
         await userRepo.save(user);
         res.cookie('jwt',refreshToken,{
           httpOnly:true,
@@ -178,4 +180,17 @@ throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
     }
   
 }
-export {loginUser,registerUserInDB,fetchUserByRefreshToken}
+
+async function removeRefreshToken(userId:string){
+  const userRepo = AppDataSource.getRepository(Users)
+  const user = await userRepo.findOne({where:{
+    userId:userId
+  }})
+  if(!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
+
+    user.refreshToken = ''
+    user.lastLoginAt = new Date();
+    await userRepo.save(user)
+    return {message:'User logged out successfully'}
+}
+export {loginUser,registerUserInDB,fetchUserByRefreshToken,removeRefreshToken}

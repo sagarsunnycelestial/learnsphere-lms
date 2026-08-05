@@ -1,8 +1,8 @@
 import { GraphQLError } from "graphql/error"
 import { Context, UserRoles,LoginArgs } from "../../types/types.js"
-import { loginUser,registerUserInDB,fetchUserByRefreshToken } from "../controllers/auth.controller.js"
+import { loginUser,registerUserInDB,fetchUserByRefreshToken ,removeRefreshToken} from "../controllers/auth.controller.js"
 import { updateUserDetails,fetchUserProfile } from "../controllers/users.controller.js"
-import { RegisterArgs,UpdateArgs } from "../../types/types.js"
+import { RegisterArgs,UpdateArgs,AuthPayload } from "../../types/types.js"
 import { Response ,Request} from "express"
 import { ERROR_MESSAGES } from "../constants/messages.js"
 import { fetchRolesfromDB } from "../controllers/roles.controller.js"
@@ -69,5 +69,18 @@ export const resolvers = {
       return await updateUserDetails(args,context.user)
      }
     
+  },
+  logout:async(
+    _parents:unknown,
+      args:unknown,
+      {res,user}:{res:Response,user:AuthPayload | null}
+  ) =>{
+    if(!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
+    await removeRefreshToken(user?.user_id)
+  res.clearCookie('jwt',{
+    httpOnly:true,
+    secure:true,
+    sameSite:'lax',
+  })
   }
 }
