@@ -3,6 +3,7 @@ import Root from "../pages/Root";
 import Home from "../pages/HomePage";
 import Login from "../pages/LoginPage";
 import ProtectedLayout from '../components/layouts/ProtectedLayout'
+import Dashboard from "../pages/Dashboard";
  const router = createBrowserRouter([
   {
     path: "/",
@@ -25,10 +26,10 @@ import ProtectedLayout from '../components/layouts/ProtectedLayout'
     ],
   },
   {
-    path: "home",
+    path: "dashboard",
     Component:ProtectedLayout,
     children:[
-
+      {index: true, Component:Dashboard}
     ]
   }
 ]);

@@ -31,7 +31,7 @@ if(!result.success){
   try {
     setLoading(true);
     await dispatch(loginThunk({ email, password }))
-    navigate("/home");
+    navigate("/dashboard");
   } catch(err) {
     toast.error(err as string)
   } finally {
@@ -142,7 +142,7 @@ if(!result.success){
             fontSize: 13,
           }}
         >
-          Humanly HR Management System
+          Learning Management System
         </Typography>
       </Card>
     </Box>

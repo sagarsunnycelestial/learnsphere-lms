@@ -20,7 +20,7 @@ const HomePage = () => {
       console.log(response?.data?.refreshEndpoint);
       const {accessToken,role,profile_image_path} = response.data.refreshEndpoint
       dispatch(refreshUser({accessToken,role,isAuthenticated:true,profile_image_path}));
-      navigate('/home')
+      navigate('/dashboard')
     } catch (error) {
       console.error("Refresh failed:", error);
     }

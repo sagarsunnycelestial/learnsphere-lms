@@ -16,7 +16,7 @@ const ROLES = {
     "view:profile",
     "create:course"
   ],
-  student:[
+  Student:[
     "view:profile",
   ]
 } as const
@@ -25,6 +25,7 @@ export function hasPermission(
 user:{
 accessToken:string | null,
   role:Role,
+  isAuthenticated:boolean
   },
   permission:Permission
 ){
