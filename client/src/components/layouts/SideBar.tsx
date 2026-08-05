@@ -304,8 +304,8 @@ export default function SideBar({children}:DrawerProps) {
                 />
               </ListItemButton>
           </ListItem>
-          <ListItem key={"attendance"} disablePadding sx={{display:'block', bgcolor:theme.palette.primary.main,borderRadius:4,}}>
-            <ListItemButton onClick={()=>navigate('/home')} sx={[
+          <ListItem key={"Profile"} disablePadding sx={{display:'block', bgcolor:theme.palette.primary.main,borderRadius:4,}}>
+            <ListItemButton onClick={()=>navigate('/dashboard/profile')} sx={[
                   {
                     minHeight: 48,
                     px: 2.5,
@@ -335,7 +335,7 @@ export default function SideBar({children}:DrawerProps) {
                   ]}
                 ><WorkIcon /></ListItemIcon>
                  <ListItemText
-                  primary={"Attendance"}
+                  primary={"Profile"}
                   sx={[
                     { color:theme.palette.primary.light},
                     open

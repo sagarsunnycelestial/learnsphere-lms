@@ -65,9 +65,12 @@ export type FormInitialState  = {
 }
 
 export interface RegisterResponse {
-  message:string
+  registerUser:{
+message:string
 email?:string
 temp_password?:string
+  }
+  
 }
 export interface RegisterMutationInput {
   input: {
@@ -76,4 +79,7 @@ export interface RegisterMutationInput {
     role: string,
     username: string,
   }
+}
+export interface FetchRoleResponse {
+  fetchRoles:{roleId:string,roleName:string}[]
 }
