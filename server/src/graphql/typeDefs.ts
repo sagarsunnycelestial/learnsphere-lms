@@ -24,9 +24,14 @@ type LoginResponse {
   role:String
   profile_image_path:String
 }
+type RoleResponse {
+  roleName:String
+  roleId:String
+}
 
 type Query {
 refreshEndpoint:LoginResponse
+fetchRoles:[RoleResponse]
 }
 
 input UpdateDetails {

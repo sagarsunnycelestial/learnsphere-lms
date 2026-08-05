@@ -5,9 +5,17 @@ import { updateUserDetails } from "../controllers/users.controller.js"
 import { RegisterArgs,UpdateArgs } from "../../types/types.js"
 import { Response ,Request} from "express"
 import { ERROR_MESSAGES } from "../constants/messages.js"
-
+import { fetchRolesfromDB } from "../controllers/roles.controller.js"
 export const resolvers = {
   Query:{
+    fetchRoles:async(
+       _parents: unknown,
+      _args:unknown,
+      context:Context
+    )=>{
+      if(context.user?.role != UserRoles.ADMIN || !context.user) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED)
+        return await fetchRolesfromDB();
+    },
      refreshEndpoint:async(
       _parents: unknown,
       _args:unknown,
@@ -36,7 +44,7 @@ export const resolvers = {
       args:RegisterArgs,
       context:Context
     ) =>{
-      if(context.user?.role != UserRoles.ADMIN || !context.user) throw new GraphQLError('unauthorized')
+      if(context.user?.role != UserRoles.ADMIN || !context.user) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED)
       const registerResponse = await registerUserInDB(args
         ,context.user
         
