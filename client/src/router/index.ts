@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router";
 import Root from "../pages/Root";
 import Home from "../pages/HomePage";
 import Login from "../pages/LoginPage";
+import ProtectedLayout from '../components/layouts/ProtectedLayout'
  const router = createBrowserRouter([
   {
     path: "/",
@@ -23,5 +24,12 @@ import Login from "../pages/LoginPage";
       },
     ],
   },
+  {
+    path: "home",
+    Component:ProtectedLayout,
+    children:[
+
+    ]
+  }
 ]);
 export default router;

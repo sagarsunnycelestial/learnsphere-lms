@@ -21,7 +21,7 @@ if (!email || !password) {
   try {
     setLoading(true);
     await dispatch(loginThunk({ email, password })).unwrap();
-    navigate("/courses");
+    navigate("/home");
   } catch(err) {
     toast.error(err as string)
   } finally {
