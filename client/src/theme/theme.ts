@@ -5,52 +5,52 @@ export const lightTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#4F5DED",
-      light: "#EEF0FE",
+      main: "#3B4A9E",
+      light: "#EAEDFA",
     },
     success: {
-      main: "#1E9E5A",
-      light: "#E4F7EC",
+      main: "#2E7D5B",
+      light: "#E6F3EC",
     },
     error: {
-      main: "#E1543A",
-      light: "#FDEAE6",
+      main: "#C0533F",
+      light: "#FBEAE6",
     },
     background: {
-      default: "#F5F6FB",
+      default: "#F7F7FB",
       paper: "#FFFFFF",
     },
     text: {
-      primary: "#12131A",
-      secondary: "#7C7F8E",
+      primary: "#1A1B23",
+      secondary: "#6E7180",
     },
-    divider: "#EEF0F5",
+    divider: "#EBEBF2",
   },
 });
- 
+
 export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#6D7BFF",
-      light: "#242840",
+      main: "#7B87D6",
+      light: "#252A47",
     },
     success: {
-      main: "#4ADE8A",
-      light: "#123423",
+      main: "#5FB98A",
+      light: "#152C22",
     },
     error: {
-      main: "#FF7A5C",
-      light: "#3A1B18",
+      main: "#D97F68",
+      light: "#331E19",
     },
     background: {
-      default: "#12141F",
-      paper: "#1B1E2E",
+      default: "#14151F",
+      paper: "#1C1E2B",
     },
     text: {
-      primary: "#F5F6FA",
-      secondary: "#9295AB",
+      primary: "#F2F2F6",
+      secondary: "#8E90A3",
     },
-    divider: "#272B3F",
+    divider: "#282B3C",
   },
 });
