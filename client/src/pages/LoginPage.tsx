@@ -1,6 +1,7 @@
 import { Card, Box, Typography, TextField, Button } from "@mui/material";
 // import auth from "../assets/auth.webp";
 // import MyLogo from "../assets/HR-logo.webp";
+import {z} from 'zod'
 import { useState } from "react";
 import { useAppDispatch } from "../store/hooks";
 import { loginThunk } from "../store/thunks/loginThunk";
@@ -18,6 +19,15 @@ if (!email || !password) {
     toast.error("Please enter both email and password");
     return;
   }
+const loginSchema = z.object({
+  email: z.email("Pleaser enter a valid email"),
+  password: z.string().min(1,"Password is required")
+});
+const result = loginSchema.safeParse({email,password});
+if(!result.success){
+  toast.error(result.error.issues[0].message);
+  return
+}
   try {
     setLoading(true);
     await dispatch(loginThunk({ email, password }))
