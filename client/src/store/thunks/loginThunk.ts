@@ -12,7 +12,7 @@ export const loginThunk = createAsyncThunk('auth/login',async(credentials:LoginI
       if (!result.data?.login) {
   throw new Error("Login failed");
 }
-
+      console.log(result.data.login)
       return result.data.login;
     } catch (err) {
   if (err instanceof Error) {

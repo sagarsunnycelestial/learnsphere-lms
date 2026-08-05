@@ -19,21 +19,21 @@ export type LoginInputs =  {
   password: string;
 }
 export interface RefreshResponse {
-  refreshEndpoint: LoginResponse | null;
-}
-export interface LoginResponse {
-  accessToken:string,
+  refreshEndpoint: {
+    accessToken:string,
   role:UserRoles,
   profile_image_path: string | null,
+  }
+}
+export interface LoginResponse {
+ login:{
+   accessToken:string,
+  role:UserRoles,
+  profile_image_path: string | null,
+ }
 }
 
-export interface LoginResponse {
-  login: {
-    accessToken: string;
-    profile_image_path: string | null;
-    role: string;
-  };
-}
+
 export interface LoginMutationVariables {
   input: LoginInputs;
 }
