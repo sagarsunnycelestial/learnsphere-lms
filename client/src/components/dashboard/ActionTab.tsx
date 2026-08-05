@@ -5,12 +5,15 @@ import { userAddFormControl } from "../../store/slices/formSlice";
 import { hasPermission } from "../../permissions/auth";
 import { useAppSelector } from "../../store/hooks";
 import AddIcon from "@mui/icons-material/Add";
+import AddUserForm from "../forms/AddUserForm";
 export default function ActionTab() {
   const user = useAppSelector((state) => state.auth.user);
   const isOpen = useAppSelector((state) => state.form.users.isUserAddFormOpen);
   const dispatch = useAppDispatch();
   function handleOpen() {
-    dispatch(userAddFormControl({mode:'add',isOpen:true,employee:null}));
+    dispatch(userAddFormControl({ mode:'add',
+isUserAddFormOpen: true,
+selectedUser: null}));
   }
   return (
     <Box
@@ -55,7 +58,7 @@ export default function ActionTab() {
     )}
 
     <Dialog open={isOpen}>
-      {/* <EmployeeForm /> */}
+     <AddUserForm />
     </Dialog>
   </Box>
     </Box>

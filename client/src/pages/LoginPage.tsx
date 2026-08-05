@@ -1,6 +1,6 @@
 import { Card, Box, Typography, TextField, Button } from "@mui/material";
-// import auth from "../assets/auth.webp";
-// import MyLogo from "../assets/HR-logo.webp";
+import auth from '../assets/auth.webp'
+import LMSLogo from '../assets/LMSlogo.jpg'
 import {z} from 'zod'
 import { useState } from "react";
 import { useAppDispatch } from "../store/hooks";
@@ -41,7 +41,7 @@ if(!result.success){
   return (
     <Box
       sx={{
-        // backgroundImage: `url(${auth})`,
+        backgroundImage: `url(${auth})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -74,7 +74,7 @@ if(!result.success){
         >
           <Box
             component="img"
-            // src={MyLogo}
+            src={LMSLogo}
             alt="Company Logo"
             sx={{
               width: 120,

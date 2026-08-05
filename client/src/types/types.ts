@@ -37,3 +37,24 @@ export interface LoginResponse {
 export interface LoginMutationVariables {
   input: LoginInputs;
 }
+
+export interface UserDetails {
+  collegeName:string;
+  email:string;
+  role:UserRoles;
+  username:string
+}
+export type FormInitialState  = {
+
+ users: {
+ mode: string;
+ isUserAddFormOpen: boolean;
+ selectedUser: null | UserDetails;
+ };
+ courses: {
+ mode: string;
+ isAddCourseFormOpen: boolean;
+ selectedcourse: null;
+ };
+
+}

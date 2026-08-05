@@ -1,6 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { type FormInitialState,  } from "../../types/types";
 
-const initialState = {
+
+
+const initialState:FormInitialState = {
   users:{
     mode:'add',
 isUserAddFormOpen: false,

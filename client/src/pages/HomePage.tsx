@@ -6,7 +6,7 @@ import { useAppDispatch } from "../store/hooks";
 import { apolloClient } from "../graphql/apolloClient";
 import { refreshUser } from "../store/slices/authSlice";
 import { REFRESH_QUERY } from "../graphql/queries/REFRESH_QUERY";
-
+import LMSlogo from '../assets/LMSlogo.jpg'
 const HomePage = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -53,7 +53,7 @@ const HomePage = () => {
         >
           <Box
             component="img"
-            // src={MyLogo}
+            src={LMSlogo}
             alt="Company Logo"
             sx={{
               width: 120,

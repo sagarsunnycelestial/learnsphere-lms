@@ -10,11 +10,13 @@ const ROLES = {
     "view:user",
     "edit:user",
     "deactivate:user",
-    "create:course"
+    "create:course",
+    "view:action"
   ],
   Instructor:[
     "view:profile",
-    "create:course"
+    "create:course",
+      "view:action"
   ],
   Student:[
     "view:profile",
