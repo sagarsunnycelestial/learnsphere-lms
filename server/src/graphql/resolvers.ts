@@ -67,20 +67,22 @@ export const resolvers = {
       if(!context.user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
 
       return await updateUserDetails(args,context.user)
-     }
-    
-  },
-  logout:async(
+     },
+       logout:async(
     _parents:unknown,
-      args:unknown,
+      _args:unknown,
       {res,user}:{res:Response,user:AuthPayload | null}
   ) =>{
     if(!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
-    await removeRefreshToken(user?.user_id)
+    const response = await removeRefreshToken(user?.user_id)
   res.clearCookie('jwt',{
     httpOnly:true,
     secure:true,
     sameSite:'lax',
   })
-  }
+  return response
+  },
+    
+  },
+
 }

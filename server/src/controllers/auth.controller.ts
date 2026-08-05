@@ -183,7 +183,8 @@ throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
 
 async function removeRefreshToken(userId:string){
   const userRepo = AppDataSource.getRepository(Users)
-  const user = await userRepo.findOne({where:{
+  try{
+const user = await userRepo.findOne({where:{
     userId:userId
   }})
   if(!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
@@ -192,5 +193,9 @@ async function removeRefreshToken(userId:string){
     user.lastLoginAt = new Date();
     await userRepo.save(user)
     return {message:'User logged out successfully'}
+  }catch(err){
+    return {message:err}
+  }
+  
 }
 export {loginUser,registerUserInDB,fetchUserByRefreshToken,removeRefreshToken}
