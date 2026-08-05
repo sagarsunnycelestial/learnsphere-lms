@@ -7,4 +7,5 @@ export const ERROR_MESSAGES = {
   UNAUTHORIZED: "Unauthorized",
   NO_REFRESH_TOKEN: "User has no refresh token",
   FAILED_TO_CREATE_USER: "Failed to create user",
+  PASSWORD_NOT_VALID: "Password must be at least 5 characters  no spaces"
 } as const;
