@@ -42,7 +42,7 @@ export interface UserDetails {
   collegeName:string;
   email:string;
   role:UserRoles;
-  username:string
+  userName:string
 }
 export type FormInitialState  = {
 
@@ -74,6 +74,7 @@ temp_password?:string
 }
 export interface RegisterMutationInput {
   input: {
+    password?:string
     collegeName: string,
     email: string,
     role: string,

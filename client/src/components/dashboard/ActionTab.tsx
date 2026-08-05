@@ -9,6 +9,7 @@ import AddUserForm from "../forms/AddUserForm";
 export default function ActionTab() {
     const theme = useTheme();
   const user = useAppSelector((state) => state.auth.user);
+  const mode = useAppSelector(state=>state.form.users.mode)
   const isOpen = useAppSelector((state) => state.form.users.isUserAddFormOpen);
   const dispatch = useAppDispatch();
   function handleOpen() {
@@ -63,9 +64,9 @@ selectedUser: null}));
       </Button>
     )}
 
-    <Dialog open={isOpen}>
+    {mode==='add' && <Dialog open={isOpen}>
      <AddUserForm />
-    </Dialog>
+    </Dialog>}
   </Box>
     </Paper>
   );

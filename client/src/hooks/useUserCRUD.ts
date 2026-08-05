@@ -1,8 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation,} from "@tanstack/react-query";
 import { apolloClient } from "../graphql/apolloClient";
 import { ADD_USER_MUTATION } from "../graphql/mutations/ADD_USER_MUTATION";
 import type { RegisterMutationInput } from "../types/types";
 import { useQueryClient } from "@tanstack/react-query";
+import { UpdateProfileDocument, UpdateProfileMutationVariables } from "../generated/graphql";
+import { toast } from "react-toastify";
 
 export default function useUserCRUD() {
   const queryClient = useQueryClient();
@@ -24,6 +26,24 @@ export default function useUserCRUD() {
       });
     },
   });
+  const {mutateAsync:updateProfile} = useMutation({
+    mutationFn: async(input:UpdateProfileMutationVariables) =>{
+      const {data} = await apolloClient.mutate({
+        mutation:UpdateProfileDocument,
+        variables:input,
+        fetchPolicy: "network-only",
+      });
+      return data?.updateProfile
+    },
+    onSuccess: ()=>{
+      queryClient.invalidateQueries({
+        queryKey:['user-profile']
+      })
+    },
+    onError:()=>{
+      toast.error("Update Failed")
+    }
+  })
 
-  return { addNewUser };
+  return { addNewUser,updateProfile };
 }

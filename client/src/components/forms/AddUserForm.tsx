@@ -19,18 +19,20 @@ import { FETCH_ROLES } from "../../graphql/queries/FETCH_ROLES";
 import { toast } from "react-toastify";
 export default function AddUserForm() {
   const selectedUser = useAppSelector((state) => state.form.users.selectedUser);
+  console.log('selected user:',selectedUser)
   const mode = useAppSelector((state) => state.form.users.mode);
   const publicUrl = useRef<string | null>(null);
   const isEditing = mode === "edit";
   const [email, setEmail] = useState(selectedUser?.email ?? "");
+  const [password,setPassword] = useState('')
   const [profileImg, setProfileImg] = useState<File | null>(null);
-  const [username, setUsername] = useState(selectedUser?.username ?? "");
+  const [username, setUsername] = useState(selectedUser?.userName ?? "");
   const [collegeName, setCollegeName] = useState(
     selectedUser?.collegeName ?? "",
   );
   const [role, setRole] = useState(selectedUser?.role ?? "");
   const dispatch = useAppDispatch();
-  const { addNewUser } = useUserCRUD();
+  const { addNewUser,updateProfile } = useUserCRUD();
   const { data } = useQuery(FETCH_ROLES);
   const roles = data?.fetchRoles ?? [];
   async function handleSubmit() {
@@ -62,16 +64,29 @@ export default function AddUserForm() {
         toast.error(err as string);
       }
     } else {
-      if (profileImg) {
+      try{
+ if (profileImg) {
         publicUrl.current = await uploadImage(profileImg);
       }
       input = {
         collegeName: collegeName,
         email: email,
-        role: role,
+        password:password,
         username: username,
         profile_image_path: publicUrl.current,
       };
+      const res = await updateProfile({ input });
+      if(res?.message) toast.success(res?.message)
+        dispatch(
+          userAddFormControl({
+            isUserAddFormOpen: false,
+            selectedUser: null,
+          }),
+        );
+      }catch(err){
+         toast.error(err as string);
+      }
+     
     }
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -146,6 +161,13 @@ export default function AddUserForm() {
           required
           fullWidth
         />
+        {isEditing && <TextField
+              fullWidth
+              type="password"
+              label=" New Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />} 
 
         <TextField
           label="College Name"
@@ -155,7 +177,9 @@ export default function AddUserForm() {
           fullWidth
         />
 
-        <FormControl fullWidth>
+         {!isEditing && 
+         
+          <FormControl fullWidth>
           <InputLabel id="role-label">User Role</InputLabel>
 
           <Select
@@ -171,6 +195,8 @@ export default function AddUserForm() {
             ))}
           </Select>
         </FormControl>
+         }
+       
         {isEditing && (
           <Button
             variant="outlined"

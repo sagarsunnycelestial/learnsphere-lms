@@ -260,7 +260,7 @@ export default function SideBar({children}:DrawerProps) {
     px: 1, 
   }}>
           <ListItem key={"attendance"} disablePadding sx={{display:'block', bgcolor:theme.palette.primary.main,borderRadius:4,mb:1}}>
-            <ListItemButton onClick={()=>navigate('/home')} sx={[
+            <ListItemButton onClick={()=>navigate('/dashboard')} sx={[
                   {
                     minHeight: 48,
                     px: 2.5,
