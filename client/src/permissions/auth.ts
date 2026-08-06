@@ -11,15 +11,23 @@ const ROLES = {
     "edit:user",
     "deactivate:user",
     "create:course",
-    "view:action"
+    "edit:course",
+    "delete:course",
+    "view:action",
+    "action:course"
   ],
   Instructor:[
+    "action:course",
     "view:profile",
     "create:course",
-      "view:action"
+      "view:action",
+      "create:course",
+    "edit:course",
+    "delete:course",
   ],
   Student:[
     "view:profile",
+    'course:enroll'
   ]
 } as const
 

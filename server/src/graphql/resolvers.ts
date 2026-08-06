@@ -59,7 +59,7 @@ export const resolvers = {
     ) => {
        if (!context.user?.user_id)
         throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
-      return await fetchAllCourses();
+      return await fetchAllCourses(context.user.user_id);
     },
   },
   Mutation: {

@@ -35,20 +35,27 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
     } catch (err) {}
   }
 }
-async function fetchAllCourses() {
+async function fetchAllCourses(userId:string) {
   const courseRepo = AppDataSource.getRepository(Courses);
   try {
     const courses = await courseRepo.find({
       relations: {
         createdBy: true,
         lessons: true,
-        enrollments: true,
+        enrollments:{
+          user:true
+        },
         quizzes: true,
       },
     });
     if (!courses) throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
-
-    return courses;
+    const filteredcourses = courses.map((course)=>{
+     const isEnrolled = course.enrollments.some(
+      (enrollment) =>enrollment.user.userId === userId
+     )
+     return {...course,isEnrolled}
+    })
+    return filteredcourses;
   } catch (err) {
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
@@ -81,7 +88,8 @@ async function editCourseDetails(args: CourseUpdateArgs) {
     }
     if(isActive === false){
       updatedCourse.isActive = false
-    }
+    } else updatedCourse.isActive = true
+    
     await courseRepo.save(updatedCourse);
     return { message: "Course edited successfully" };
   } catch (err) {

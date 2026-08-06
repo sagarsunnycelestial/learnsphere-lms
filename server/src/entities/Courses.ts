@@ -67,7 +67,7 @@ export class Courses {
   lessons!: Lessons[];
 
   @OneToMany(()=>Enrollments,(enrollment) => enrollment.course)
-  enrollments!:Enrollments
+  enrollments!:Enrollments[]
 
   @OneToMany(() => Quizzes, (quiz) => quiz.course)
   quizzes!: Quizzes[];

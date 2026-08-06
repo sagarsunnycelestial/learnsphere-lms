@@ -4,10 +4,13 @@ export const FETCH_COURSES = gql`query FetchCourses {
   fetchCourses {
     courseId
     courseName
+    description
+    isEnrolled
+    thumbnail_image_path
     createdBy {
       profile_image_path
       userId
-      userName
+      username
     }
     enrollments {
     

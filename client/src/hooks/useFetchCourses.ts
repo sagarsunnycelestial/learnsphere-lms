@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query"
 import { FetchCoursesDocument } from "../generated/graphql"
 import { apolloClient } from "../graphql/apolloClient"
 
-export default function useFetchProfile() {
+export default function useFetchCourses() {
   return useQuery({
     queryKey:['courses'],
     queryFn: async()=>{

@@ -92,6 +92,7 @@ createdBy: CreatedBy
 lessons: [LessonResponse]
 enrollments:[Enrollments]
 quizzes:[QuizResponse]
+isEnrolled:Boolean
   }
 
 type Query {
