@@ -85,6 +85,7 @@ isActive:Boolean
   type Courses {
   courseId:String
 courseName:String
+description:String
 isActive:Boolean
 thumbnail_image_path:String
 createdBy: CreatedBy
