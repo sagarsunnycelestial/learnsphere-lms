@@ -17,7 +17,7 @@ type Documents = {
     "mutation CreateCourse($input: CourseDetails!) {\n  createCourse(input: $input) {\n    message\n  }\n}": typeof types.CreateCourseDocument,
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": typeof types.RegisterUserDocument,
     "mutation DeleteCourse($courseId: String!) {\n  deleteCourse(courseId: $courseId) {\n    message\n  }\n}": typeof types.DeleteCourseDocument,
-    "mutation Mutation($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": typeof types.MutationDocument,
+    "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": typeof types.EditCourseDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": typeof types.LoginDocument,
     "mutation Logout {\n  logout {\n    message\n  }\n}": typeof types.LogoutDocument,
     "mutation UpdateProfile($input: UpdateDetails!) {\n  updateProfile(input: $input) {\n    message\n  }\n}": typeof types.UpdateProfileDocument,
@@ -30,7 +30,7 @@ const documents: Documents = {
     "mutation CreateCourse($input: CourseDetails!) {\n  createCourse(input: $input) {\n    message\n  }\n}": types.CreateCourseDocument,
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": types.RegisterUserDocument,
     "mutation DeleteCourse($courseId: String!) {\n  deleteCourse(courseId: $courseId) {\n    message\n  }\n}": types.DeleteCourseDocument,
-    "mutation Mutation($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": types.MutationDocument,
+    "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": types.EditCourseDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout {\n    message\n  }\n}": types.LogoutDocument,
     "mutation UpdateProfile($input: UpdateDetails!) {\n  updateProfile(input: $input) {\n    message\n  }\n}": types.UpdateProfileDocument,
@@ -69,7 +69,7 @@ export function graphql(source: "mutation DeleteCourse($courseId: String!) {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation Mutation($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation Mutation($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}"];
+export function graphql(source: "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
