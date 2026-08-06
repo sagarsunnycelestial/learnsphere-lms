@@ -28,7 +28,7 @@ collegeName:String!
 }
 type CourseResponse {
 courseId:String
-coursename:String
+courseName:String
 isActive:Boolean
 }
 
@@ -45,7 +45,7 @@ score:Float
 
 type CreatedBy{
 profile_image_path:String
-userName:String
+username:String
 userId:String
 }
 type RegisterResponse {
