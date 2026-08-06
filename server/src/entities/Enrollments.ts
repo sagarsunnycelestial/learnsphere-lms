@@ -4,11 +4,12 @@ import {
   ManyToOne,
   JoinColumn,
   CreateDateColumn,
-  Column,
+  Column,Unique
 } from "typeorm";
 import { Users } from "./Users.js";
 import { Courses } from "./Courses.js";
 
+@Unique(["user", "course"])
 @Entity("enrollments")
 export class Enrollments {
 

@@ -9,12 +9,20 @@ role:String!
 collegeName:String!
 profile_image_path:String
 }
+type EnrollmentResponse {
+enrollmentId: String
+enrolledAt:String
+isActive:Boolean
+course: CourseResponse
+
+}
 type UserResponse {
 username:String!
 email:String!
 profile_image_path:String
 role:RoleResponse
 courses:[CourseResponse]
+enrollments:[EnrollmentResponse]
 results:[ResultResponse]
 collegeName:String!
 }

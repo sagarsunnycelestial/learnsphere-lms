@@ -73,11 +73,13 @@ async function fetchUserProfile(userId:string){
   },
 relations:{
   role:true,
+  enrollments:{
+    course:true
+  },
   courses:true,
   results:{quiz:true},
   
 }})
-
 if(!userProfile) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
   
   return userProfile;

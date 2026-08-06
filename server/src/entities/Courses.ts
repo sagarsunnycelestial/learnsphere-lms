@@ -7,14 +7,12 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  Unique
 } from "typeorm";
 import { Users } from "./Users.js";
 import { Lessons } from "./Lessons.js";
 import { Quizzes } from "./Quizzes.js";
 import { Enrollments } from "./Enrollments.js";
 
-@Unique(["user", "course"])
 @Entity("courses")
 export class Courses {
   @PrimaryGeneratedColumn("uuid",{name:'course_id'})
