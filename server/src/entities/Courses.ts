@@ -55,6 +55,9 @@ export class Courses {
   })
   createdAt!: Date;
 
+    @Column({ type: "text", nullable: true })
+  thumbnail_image_path!: string | null;
+
   @UpdateDateColumn({
     name: "updated_at",
   })

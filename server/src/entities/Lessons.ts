@@ -22,6 +22,14 @@ export class Lessons {
 
   @Column({
     type: "text",
+    name:'lesson_name',
+    nullable:true,
+    default:'Lesson'
+  })
+  lessonName!: string;
+
+  @Column({
+    type: "text",
     nullable: true,
   })
   description?: string;

@@ -1,4 +1,4 @@
-export const typeDefs =`
+export const typeDefs = `
 
 
 
@@ -43,7 +43,11 @@ quiz:QuizResponse
 score:Float
 }
 
-
+type CreatedBy{
+profile_image_path:String
+userName:String
+userId:String
+}
 type RegisterResponse {
 message:String!
 email:String!
@@ -63,11 +67,36 @@ type RoleResponse {
   roleName:String
   roleId:String
 }
+  type LessonResponse{
+  lessonId:String
+  lessonName:String
+  description:String
+  videoLink:String
+  sortOrder:Int
+  }
+
+  type Enrollments {
+  enrollmentId: String
+enrolledAt:String
+isActive:Boolean
+  }
+  
+  
+  type Courses {
+  courseId:String
+courseName:String
+isActive:Boolean
+createdBy: CreatedBy
+lessons: [LessonResponse]
+enrollments:[Enrollments]
+quizzes:[QuizResponse]
+  }
 
 type Query {
 refreshEndpoint:LoginResponse
 fetchRoles:[RoleResponse]
 fetchProfile:UserResponse
+fetchCourses:[Courses]
 }
 
 input UpdateDetails {
@@ -81,11 +110,17 @@ profile_image_path:String
 type Response {
 message: String!
 }
+input CourseDetails {
+courseName:String
+description:String
+thumbnail_image_path:String
+}
 
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
   registerUser(input:UserDetails!): RegisterResponse!
   updateProfile(input:UpdateDetails!) : Response!
   logout:Response
+  createCourse(input:CourseDetails!) : Response!
 }
-`
+`;

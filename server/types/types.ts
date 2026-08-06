@@ -60,3 +60,14 @@ type UpdateDetails ={
 export interface UpdateArgs {
   input: UpdateDetails
 }
+
+type CourseUpdate = {
+ courseName:string;
+    description:string;
+    thumbnail_image_path: string | null
+}
+export type CourseUpdateArgs = {
+  input: CourseUpdate
+   
+  
+}
