@@ -3,11 +3,13 @@ import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material";
+import { logout } from "../../store/slices/authSlice";
 import {Badge} from "@mui/material";
 import { apolloClient } from "../../graphql/apolloClient";
 import { LogoutDocument } from "../../generated/graphql";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import { useAppDispatch } from "../../store/hooks";
 type ProfileMenuProps = {
   profile_image: string;
 };
@@ -42,7 +44,7 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
 export default function ProfileMenu({ profile_image }: ProfileMenuProps) {
   const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
+  const dispatch = useAppDispatch()
   const open = Boolean(anchorEl);
 
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -62,8 +64,10 @@ const handleProfile =() => {
       mutation:LogoutDocument
     })
     if(res?.logout?.message){
-      toast.success(res.logout.message)
+      dispatch(logout())
       navigate('/')
+      toast.success(res.logout.message)
+      
     }
     console.log("logout");
   };

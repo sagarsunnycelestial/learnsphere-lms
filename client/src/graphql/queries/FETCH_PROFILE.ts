@@ -1,20 +1,15 @@
 import { gql } from "@apollo/client";
 
-export const FETCH_ROLES = gql`
+export const FETCH_PROFILE = gql`
 query FetchProfile {
   fetchProfile {
     collegeName
-    courses {
-      courseId
-      courseName
-      isActive
-    }
     email
     profile_image_path
     results {
       quiz {
-        quizName
         quizId
+        quizName
       }
       resultId
       score
@@ -24,5 +19,20 @@ query FetchProfile {
       roleName
     }
     username
+    enrollments {
+      course {
+        courseId
+        courseName
+        isActive
+      }
+      enrolledAt
+      enrollmentId
+      isActive
+    }
+    courses {
+      courseName
+      isActive
+      courseId
+    }
   }
 }`

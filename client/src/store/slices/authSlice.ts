@@ -21,8 +21,9 @@ const authSlice = createSlice({
   reducers:{
 
     logout(state){
-      state.user.accessToken = '';
+      state.user.accessToken = null;
       state.user.role =UserRoles.STUDENT;
+      state.user.isAuthenticated =false
       state.user.profile_image_path =null
     },
     refreshUser(state,action){
