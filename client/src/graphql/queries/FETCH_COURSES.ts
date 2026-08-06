@@ -6,6 +6,7 @@ export const FETCH_COURSES = gql`query FetchCourses {
     courseName
     description
     isEnrolled
+    canModify
     thumbnail_image_path
     createdBy {
       profile_image_path

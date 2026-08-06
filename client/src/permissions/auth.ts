@@ -14,7 +14,9 @@ const ROLES = {
     "edit:course",
     "delete:course",
     "view:action",
-    "action:course"
+    "action:course",
+    'edit all:courses',
+    'view:archived courses'
   ],
   Instructor:[
     "action:course",

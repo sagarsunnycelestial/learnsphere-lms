@@ -1,6 +1,6 @@
 import { Button, Typography, Box, Dialog,Paper } from "@mui/material";
 import { useAppDispatch } from "../../store/hooks";
-import { userAddFormControl } from "../../store/slices/formSlice";
+import { addCourseFormControl, userAddFormControl } from "../../store/slices/formSlice";
 import {useTheme} from "@mui/material";
 import { hasPermission } from "../../permissions/auth";
 import { useAppSelector } from "../../store/hooks";
@@ -61,6 +61,23 @@ selectedUser: null}));
         }}
       >
         Add User
+      </Button>
+    )}
+    {hasPermission(user, "create:course") && (
+      <Button
+        variant="contained"
+        startIcon={<AddIcon />}
+        onClick={()=>dispatch(addCourseFormControl({mode:'add',isAddCourseFormOpen:true,selectedcourse:null}))}
+        sx={{
+          px: 3.5,
+          py: 1.5,
+          borderRadius: 3,
+          textTransform: "none",
+          fontWeight: 600,
+          fontSize: "1rem",
+        }}
+      >
+        Add Course
       </Button>
     )}
 

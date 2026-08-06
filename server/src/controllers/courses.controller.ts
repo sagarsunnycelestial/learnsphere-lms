@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql/error/GraphQLError.js";
-import { CourseUpdateArgs, Context, UpdateArgs } from "../../types/types.js";
+import { CourseUpdateArgs, Context, UpdateArgs, UserRoles } from "../../types/types.js";
 import { AppDataSource } from "../config/dbConfig.js";
 import { Courses } from "../entities/Courses.js";
 import { Users } from "../entities/Users.js";
@@ -35,7 +35,7 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
     } catch (err) {}
   }
 }
-async function fetchAllCourses(userId:string) {
+async function fetchAllCourses(userId:string,userRole:string) {
   const courseRepo = AppDataSource.getRepository(Courses);
   try {
     const courses = await courseRepo.find({
@@ -53,7 +53,8 @@ async function fetchAllCourses(userId:string) {
      const isEnrolled = course.enrollments.some(
       (enrollment) =>enrollment.user.userId === userId
      )
-     return {...course,isEnrolled}
+     const canModify = course.createdBy.userId === userId || userRole === UserRoles.ADMIN;
+     return {...course,isEnrolled:isEnrolled,canModify:canModify}
     })
     return filteredcourses;
   } catch (err) {

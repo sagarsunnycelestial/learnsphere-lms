@@ -43,7 +43,8 @@ export default function CourseCard({course}:CourseCardProps) {
     dispatch(addCourseFormControl({mode:'edit',isAddCourseFormOpen:true,selectedcourse:course}))
     setAnchorEl(null)
   }
-  console.log(course)
+  // console.log(course)
+  if(!hasPermission(user,'view:archived courses') &&!course.isActive && !course.canModify) return null
   return (
        <Paper
   elevation={0}
@@ -81,7 +82,7 @@ export default function CourseCard({course}:CourseCardProps) {
             open={open}
             onClose={handleClose}
           >
-        
+          {course.canModify || hasPermission(user,'edit all:courses')}
           <MenuItem onClick={handleEdit} disableRipple>
               <EditIcon sx={{ mr: 1 }} />
               Edit

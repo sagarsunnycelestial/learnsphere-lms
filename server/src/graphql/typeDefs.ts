@@ -93,6 +93,7 @@ lessons: [LessonResponse]
 enrollments:[Enrollments]
 quizzes:[QuizResponse]
 isEnrolled:Boolean
+canModify:Boolean
   }
 
 type Query {
