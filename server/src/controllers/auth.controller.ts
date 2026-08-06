@@ -26,7 +26,7 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
     else {
       const match = await bcrypt.compare(password,user.passwordHash);
       if(!match){
-        throw new Error(ERROR_MESSAGES.UNAUTHORIZED)
+        throw new Error(ERROR_MESSAGES.PASSWORD_NOT_MATCHING)
       }
       else {
         const payload = {

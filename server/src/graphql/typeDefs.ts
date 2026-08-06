@@ -116,11 +116,21 @@ description:String
 thumbnail_image_path:String
 }
 
+input UpdateCourseDetails {
+courseId:String
+courseName:String
+description:String
+thumbnail_image_path:String
+ isActive:Boolean
+}
+
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
   registerUser(input:UserDetails!): RegisterResponse!
   updateProfile(input:UpdateDetails!) : Response!
   logout:Response
   createCourse(input:CourseDetails!) : Response!
+  editCourse(input:UpdateCourseDetails) : Response!
+  deleteCourse(courseId: String!): Response!
 }
 `;

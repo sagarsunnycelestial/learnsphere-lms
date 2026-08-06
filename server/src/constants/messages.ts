@@ -11,5 +11,8 @@ export const ERROR_MESSAGES = {
   FAILED_TO_CREATE_COURSE: "Failed to create course",
     FAILED_TO_FETCH_COURSES: "Failed to fetch courses",
   COURSES_NOT_FOUND: "Courses not found",
-  
+    COURSES_ID_INVALID: "Course Id is invalid",
+   FAILED_TO_EDIT_COURSE: "Failed to edit the course",
+   PASSWORD_NOT_MATCHING: "Password entered did not match",
+    FAILED_TO_DELETE_COURSE: "Failed to delete the course",
 } as const;

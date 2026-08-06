@@ -19,7 +19,7 @@ import {
 import { Response, Request } from "express";
 import { ERROR_MESSAGES } from "../constants/messages.js";
 import { fetchRolesfromDB } from "../controllers/roles.controller.js";
-import { createACourse,fetchAllCourses } from "../controllers/courses.controller.js";
+import { createACourse,fetchAllCourses,editCourseDetails,deleteCourseFromDB} from "../controllers/courses.controller.js";
 export const resolvers = {
   Query: {
     fetchProfile: async (
@@ -112,10 +112,35 @@ export const resolvers = {
         !context.user?.user_id ||
         (context.user?.role !== UserRoles.INSTRUCTOR &&
           context.user?.role !== UserRoles.ADMIN)
-      )
-        throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+      ) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await createACourse(args, context);
     },
+    editCourse: async(
+      _parents: unknown,
+      args: CourseUpdateArgs,
+      context: Context,
+    ) => {
+       if (
+        !context.user?.user_id ||
+        (context.user?.role !== UserRoles.INSTRUCTOR &&
+          context.user?.role !== UserRoles.ADMIN)
+      ) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+      return await editCourseDetails(args)
+
+    },
+    deleteCourse: async(
+       _parents: unknown,
+      args: {courseId:string},
+      context: Context,
+    ) => {
+      if (
+        !context.user?.user_id ||
+        (context.user?.role !== UserRoles.INSTRUCTOR &&
+          context.user?.role !== UserRoles.ADMIN)
+      ) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+      return await deleteCourseFromDB(args.courseId);
+    }
   },
 };
