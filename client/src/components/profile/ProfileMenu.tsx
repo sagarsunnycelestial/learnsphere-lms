@@ -64,12 +64,13 @@ const handleProfile =() => {
       mutation:LogoutDocument
     })
     if(res?.logout?.message){
-      dispatch(logout())
-      navigate('/')
+      
       toast.success(res.logout.message)
       
     }
     console.log("logout");
+    dispatch(logout())
+      navigate('/login')
   };
 
   return (

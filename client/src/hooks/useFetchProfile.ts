@@ -7,7 +7,8 @@ export default function useFetchProfile() {
     queryKey:['user-profile'],
     queryFn: async()=>{
       const {data} = await apolloClient.query({
-        query:FetchProfileDocument
+        query:FetchProfileDocument,
+        fetchPolicy:'network-only',
       })
       return data?.fetchProfile
     }

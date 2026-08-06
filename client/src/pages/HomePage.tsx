@@ -15,6 +15,7 @@ const HomePage = () => {
     try {
       const response= await apolloClient.query({
         query: REFRESH_QUERY,
+        fetchPolicy:'network-only',
       });
  if (!response.data?.refreshEndpoint) return;
       console.log(response?.data?.refreshEndpoint);
