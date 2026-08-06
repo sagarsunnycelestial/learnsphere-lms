@@ -86,6 +86,7 @@ isActive:Boolean
   courseId:String
 courseName:String
 isActive:Boolean
+thumbnail_image_path:String
 createdBy: CreatedBy
 lessons: [LessonResponse]
 enrollments:[Enrollments]
