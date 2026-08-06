@@ -28,7 +28,7 @@ collegeName:String!
 }
 type CourseResponse {
 courseId:String
-courseName:String
+coursename:String
 isActive:Boolean
 }
 
