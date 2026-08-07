@@ -32,6 +32,7 @@ import {
   fetchASingleCourse,
   enrollAStudent,
 } from "../controllers/courses.controller.js";
+import { fetchStudentDetails } from "../controllers/student.controller.js";
 export const resolvers = {
   Query: {
     fetchProfile: async (
@@ -83,6 +84,16 @@ export const resolvers = {
 
       return await fetchASingleCourse(args.courseId, context.user);
     },
+    fetchStudents:async (
+      _parents: unknown,
+      args: { courseId?: string },
+      context: Context,
+    ) => {
+         if (context.user?.role === UserRoles.STUDENT || !context.user)
+        throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+         return await fetchStudentDetails(args)
+    }
   },
   Mutation: {
     login: async (

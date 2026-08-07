@@ -9,6 +9,16 @@ role:String!
 collegeName:String!
 profile_image_path:String
 }
+
+type StudentResponse {
+username:String!
+email:String!
+collegeName:String!
+profile_image_path:String
+results:[BasicResultResponse]
+isEnrolled:Boolean
+}
+
 type EnrollmentResponse {
 enrollmentId: String
 enrolledAt:String
@@ -54,7 +64,10 @@ resultId:String
 quiz:QuizResponse
 score:Float
 }
-
+type BasicResultResponse{
+resultId:String
+score:Float
+}
 type CreatedBy{
 profile_image_path:String
 username:String
@@ -100,7 +113,6 @@ isActive:Boolean
 user:EnrollmentUser
   }
   
-  
   type Courses {
   courseId:String
 courseName:String
@@ -114,7 +126,7 @@ quizzes:[QuizResponse]
 isEnrolled:Boolean
 canModify:Boolean
   }
-type SingleCourse{
+type SingleCourse {
 courseId:String
 courseName:String
 description:String
@@ -136,6 +148,8 @@ fetchRoles:[RoleResponse]
 fetchProfile:UserResponse
 fetchCourses:[Courses]
 fetchCourseById(courseId:String!):SingleCourse!
+fetchStudents(courseId:String):[StudentResponse]
+
 }
 
 input UpdateDetails {
