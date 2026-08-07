@@ -1,6 +1,6 @@
 import { Paper,Chip,
   IconButton,Avatar,Stack, Typography,Menu,MenuItem, Box,
-  Button,
+  Button,List,ListItemText,ListItemButton,
   Dialog} from "@mui/material"
 import {useTheme} from "@mui/material"
 import type { FetchCoursesQuery } from "../../generated/graphql";
@@ -14,6 +14,10 @@ import useCoursesCRUD from "../../hooks/useCoursesCRUD";
 import { addCourseFormControl } from "../../store/slices/formSlice";
 import { useNavigate } from "react-router";
 import { useState } from "react";
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import useFetchStudents from "../../hooks/useFetchStudents";
+import useUserCRUD from "../../hooks/useUserCRUD";
+import { toast } from "react-toastify";
 type Course = NonNullable<
   NonNullable<FetchCoursesQuery["fetchCourses"]>[number]
 >;
@@ -23,10 +27,14 @@ type CourseCardProps = {
 
 export default function CourseCard({course}:CourseCardProps) {
   const [confirm,setConfirm] = useState<boolean>(false)
+  const [enrollBox,setEnrollBox] = useState<boolean>(false)
+  const [enrollUserId,setEnrollUserId] = useState<string | null>(null);
   const theme = useTheme()
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const {deleteCourse} = useCoursesCRUD()
+  const {data:students} = useFetchStudents(course.courseId)
+  const {deleteCourse,} = useCoursesCRUD()
+ const {enrollStudent} = useUserCRUD();
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
      const open = Boolean(anchorEl);
    const statusClr =
@@ -39,6 +47,8 @@ export default function CourseCard({course}:CourseCardProps) {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
+  const canEnroll = hasPermission(user, "course:enroll");
+const canManualEnroll = hasPermission(user, "manual:enroll");
     const handleDelete = async () => {
       if(course.courseId) await deleteCourse({courseId:course.courseId})
     setAnchorEl(null);
@@ -46,6 +56,17 @@ export default function CourseCard({course}:CourseCardProps) {
   const handleEdit = ()=>{
     dispatch(addCourseFormControl({mode:'edit',isAddCourseFormOpen:true,selectedcourse:course}))
     setAnchorEl(null)
+  }
+  const handleManualEnroll = async(enrollUserId:string)=>{
+    if(!course.courseId) return;
+    const res = await enrollStudent({input:{userId:enrollUserId,courseId:course.courseId}})
+    if(res?.message) toast.success(res?.message)
+      setEnrollBox(false)
+  }
+  const handleSelfEnroll = async()=>{
+    if(!course.courseId) return;
+    const res = await enrollStudent({input:{courseId:course.courseId}})
+    if(res?.message) toast.success(res?.message)
   }
   // console.log(course)
   if(!hasPermission(user,'view:archived courses') &&!course.isActive && !course.canModify) return null
@@ -180,16 +201,39 @@ fontWeight:500
         </Typography>
        
       </Stack>
-      {hasPermission(user,'course:enroll') &&
-       (course.isEnrolled? <Chip
-  label="ENROLLED"
-  sx={{
-    borderRadius: 0,
-  }}
-/> : <Button variant="contained" sx={{ ml: "auto" }}>
-  Enroll
-</Button>)
-      }
+{canManualEnroll ? (
+  <Button color="warning" startIcon={<PersonAddIcon />} onClick={()=>setEnrollBox(true)} variant="contained" size="small"  sx={{ ml: "auto",
+    borderRadius: 1,
+    textTransform: "none",
+    fontWeight: 600,
+    px: 2.5,
+    transition: "0.2s ease",
+    "&:hover": {
+      transform: "translateY(-1px)",
+    },
+   }}>
+    Manual Enroll
+  </Button>
+) : canEnroll ? (
+  course.isEnrolled === true ? (
+    <Chip
+      label="ENROLLED"
+      sx={{ borderRadius: 0 }}
+    />
+  ) : (
+    <Button variant="contained" onClick={handleSelfEnroll} startIcon={<PersonAddIcon />}  size="small" sx={{  ml: "auto",
+    borderRadius: 2,
+    textTransform: "none",
+    fontWeight: 600,
+    px: 2.5,
+    transition: "0.2s ease",
+    "&:hover": {
+      transform: "translateY(-1px)",
+    }, }}>
+      Enroll
+    </Button>
+  )
+) : null}
     
         </Stack>
     </Stack>
@@ -221,6 +265,49 @@ fontWeight:500
         Delete
       </Button>
     </Box>
+  </Paper>
+</Dialog>
+<Dialog open={enrollBox} onClose={() => setEnrollBox(false)}>
+  <Paper sx={{ p: 3, minWidth: 320 }}>
+    <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 1 }}>
+  Select a user to enroll
+</Typography>
+   <List sx={{ mb: 2,gap:2 }}>
+  {students?.map((c) => (
+    <ListItemButton
+    sx={{ml:-2}}
+      key={c?.userId}
+      selected={enrollUserId === c?.userId}
+      disabled={c?.isEnrolled ===true}
+      onClick={() => setEnrollUserId(c?.userId as string)}
+    >
+        <Avatar
+        src={`${c?.profile_image_path}`}
+        alt={c?.username ?? "A"}
+        sx={{ width: 45, height: 45,mr:2}}
+      />
+      <ListItemText primary={c?.username} />
+      {c?.isEnrolled && <Chip size="small" label="Already Enrolled" />}
+    </ListItemButton>
+  ))}
+</List>
+
+<Box sx={{
+  display:"flex",justifyContent:"flex-end",gap:1
+}}>
+  <Button onClick={() => setEnrollBox(false)}>
+    Cancel
+  </Button>
+  <Button
+    variant="contained"
+    color="error"
+    startIcon={<PersonAddIcon />}
+    disabled={!enrollUserId}
+    onClick={() => handleManualEnroll(enrollUserId as string)}
+  >
+    Enroll
+  </Button>
+</Box>
   </Paper>
 </Dialog>
 </Paper>

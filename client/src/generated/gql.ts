@@ -18,6 +18,7 @@ type Documents = {
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": typeof types.RegisterUserDocument,
     "mutation DeleteCourse($courseId: String!) {\n  deleteCourse(courseId: $courseId) {\n    message\n  }\n}": typeof types.DeleteCourseDocument,
     "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": typeof types.EditCourseDocument,
+    "mutation EnrollCourse($input: EnrollDetails) {\n  enrollCourse(input: $input) {\n    message\n  }\n}": typeof types.EnrollCourseDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": typeof types.LoginDocument,
     "mutation Logout {\n  logout {\n    message\n  }\n}": typeof types.LogoutDocument,
     "mutation UpdateProfile($input: UpdateDetails!) {\n  updateProfile(input: $input) {\n    message\n  }\n}": typeof types.UpdateProfileDocument,
@@ -25,6 +26,7 @@ type Documents = {
     "\nquery FetchProfile {\n  fetchProfile {\n    collegeName\n    email\n    profile_image_path\n    results {\n      quiz {\n        quizId\n        quizName\n      }\n      resultId\n      score\n    }\n    role {\n      roleId\n      roleName\n    }\n    username\n    enrollments {\n      course {\n        courseId\n        courseName\n        isActive\n      }\n      enrolledAt\n      enrollmentId\n      isActive\n    }\n    courses {\n      courseName\n      isActive\n      courseId\n    }\n  }\n}": typeof types.FetchProfileDocument,
     "query FetchRoles {\n  fetchRoles {\n    roleId\n    roleName\n  }\n}": typeof types.FetchRolesDocument,
     "query FetchCourseById($courseId: String!) {\n  fetchCourseById(courseId: $courseId) {\n    canModify\n    courseId\n    courseName\n    createdBy {\n      profile_image_path\n      userId\n      username\n    }\n    description\n    enrollments {\n      enrolledAt\n      enrollmentId\n      isActive\n      user {\n        collegeName\n        email\n        profile_image_path\n        username\n      }\n    }\n    isActive\n    isEnrolled\n    lessons {\n      description\n      lessonId\n      lessonName\n      sortOrder\n      videoLink\n    }\n    quizzes {\n      quizId\n      quizName\n      questions {\n        options {\n          optionId\n          optionText\n        }\n        questionId\n        questionText\n      }\n    }\n    thumbnail_image_path\n    totalEnrolled\n    totalLessons\n  }\n}": typeof types.FetchCourseByIdDocument,
+    "query FetchStudents($courseId: String) {\n  fetchStudents(courseId: $courseId) {\n    userId\n    collegeName\n    email\n    isEnrolled\n    profile_image_path\n    username\n    results {\n      resultId\n      score\n    }\n  }\n}": typeof types.FetchStudentsDocument,
     "query RefreshEndpoint {\n  refreshEndpoint {\n    accessToken\n    profile_image_path\n    role\n  }\n}": typeof types.RefreshEndpointDocument,
 };
 const documents: Documents = {
@@ -32,6 +34,7 @@ const documents: Documents = {
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": types.RegisterUserDocument,
     "mutation DeleteCourse($courseId: String!) {\n  deleteCourse(courseId: $courseId) {\n    message\n  }\n}": types.DeleteCourseDocument,
     "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": types.EditCourseDocument,
+    "mutation EnrollCourse($input: EnrollDetails) {\n  enrollCourse(input: $input) {\n    message\n  }\n}": types.EnrollCourseDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout {\n    message\n  }\n}": types.LogoutDocument,
     "mutation UpdateProfile($input: UpdateDetails!) {\n  updateProfile(input: $input) {\n    message\n  }\n}": types.UpdateProfileDocument,
@@ -39,6 +42,7 @@ const documents: Documents = {
     "\nquery FetchProfile {\n  fetchProfile {\n    collegeName\n    email\n    profile_image_path\n    results {\n      quiz {\n        quizId\n        quizName\n      }\n      resultId\n      score\n    }\n    role {\n      roleId\n      roleName\n    }\n    username\n    enrollments {\n      course {\n        courseId\n        courseName\n        isActive\n      }\n      enrolledAt\n      enrollmentId\n      isActive\n    }\n    courses {\n      courseName\n      isActive\n      courseId\n    }\n  }\n}": types.FetchProfileDocument,
     "query FetchRoles {\n  fetchRoles {\n    roleId\n    roleName\n  }\n}": types.FetchRolesDocument,
     "query FetchCourseById($courseId: String!) {\n  fetchCourseById(courseId: $courseId) {\n    canModify\n    courseId\n    courseName\n    createdBy {\n      profile_image_path\n      userId\n      username\n    }\n    description\n    enrollments {\n      enrolledAt\n      enrollmentId\n      isActive\n      user {\n        collegeName\n        email\n        profile_image_path\n        username\n      }\n    }\n    isActive\n    isEnrolled\n    lessons {\n      description\n      lessonId\n      lessonName\n      sortOrder\n      videoLink\n    }\n    quizzes {\n      quizId\n      quizName\n      questions {\n        options {\n          optionId\n          optionText\n        }\n        questionId\n        questionText\n      }\n    }\n    thumbnail_image_path\n    totalEnrolled\n    totalLessons\n  }\n}": types.FetchCourseByIdDocument,
+    "query FetchStudents($courseId: String) {\n  fetchStudents(courseId: $courseId) {\n    userId\n    collegeName\n    email\n    isEnrolled\n    profile_image_path\n    username\n    results {\n      resultId\n      score\n    }\n  }\n}": types.FetchStudentsDocument,
     "query RefreshEndpoint {\n  refreshEndpoint {\n    accessToken\n    profile_image_path\n    role\n  }\n}": types.RefreshEndpointDocument,
 };
 
@@ -75,6 +79,10 @@ export function graphql(source: "mutation EditCourse($input: UpdateCourseDetails
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation EnrollCourse($input: EnrollDetails) {\n  enrollCourse(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation EnrollCourse($input: EnrollDetails) {\n  enrollCourse(input: $input) {\n    message\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}"): (typeof documents)["mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -100,6 +108,10 @@ export function graphql(source: "query FetchRoles {\n  fetchRoles {\n    roleId\
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "query FetchCourseById($courseId: String!) {\n  fetchCourseById(courseId: $courseId) {\n    canModify\n    courseId\n    courseName\n    createdBy {\n      profile_image_path\n      userId\n      username\n    }\n    description\n    enrollments {\n      enrolledAt\n      enrollmentId\n      isActive\n      user {\n        collegeName\n        email\n        profile_image_path\n        username\n      }\n    }\n    isActive\n    isEnrolled\n    lessons {\n      description\n      lessonId\n      lessonName\n      sortOrder\n      videoLink\n    }\n    quizzes {\n      quizId\n      quizName\n      questions {\n        options {\n          optionId\n          optionText\n        }\n        questionId\n        questionText\n      }\n    }\n    thumbnail_image_path\n    totalEnrolled\n    totalLessons\n  }\n}"): (typeof documents)["query FetchCourseById($courseId: String!) {\n  fetchCourseById(courseId: $courseId) {\n    canModify\n    courseId\n    courseName\n    createdBy {\n      profile_image_path\n      userId\n      username\n    }\n    description\n    enrollments {\n      enrolledAt\n      enrollmentId\n      isActive\n      user {\n        collegeName\n        email\n        profile_image_path\n        username\n      }\n    }\n    isActive\n    isEnrolled\n    lessons {\n      description\n      lessonId\n      lessonName\n      sortOrder\n      videoLink\n    }\n    quizzes {\n      quizId\n      quizName\n      questions {\n        options {\n          optionId\n          optionText\n        }\n        questionId\n        questionText\n      }\n    }\n    thumbnail_image_path\n    totalEnrolled\n    totalLessons\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "query FetchStudents($courseId: String) {\n  fetchStudents(courseId: $courseId) {\n    userId\n    collegeName\n    email\n    isEnrolled\n    profile_image_path\n    username\n    results {\n      resultId\n      score\n    }\n  }\n}"): (typeof documents)["query FetchStudents($courseId: String) {\n  fetchStudents(courseId: $courseId) {\n    userId\n    collegeName\n    email\n    isEnrolled\n    profile_image_path\n    username\n    results {\n      resultId\n      score\n    }\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

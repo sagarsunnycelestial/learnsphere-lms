@@ -11,6 +11,7 @@ profile_image_path:String
 }
 
 type StudentResponse {
+userId:String!
 username:String!
 email:String!
 collegeName:String!
@@ -50,7 +51,7 @@ optionText:String
 type QuestionResponse {
 questionId:String
 questionText:String
-options: [OptionResponse]
+options:[OptionResponse]
 }
 
 type QuizResponse {
