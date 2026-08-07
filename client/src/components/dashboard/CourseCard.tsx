@@ -1,6 +1,7 @@
 import { Paper,Chip,
-  IconButton,Avatar,Stack, Typography,Menu,MenuItem, 
-  Button} from "@mui/material"
+  IconButton,Avatar,Stack, Typography,Menu,MenuItem, Box,
+  Button,
+  Dialog} from "@mui/material"
 import {useTheme} from "@mui/material"
 import type { FetchCoursesQuery } from "../../generated/graphql";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -20,6 +21,7 @@ type CourseCardProps = {
 };
 
 export default function CourseCard({course}:CourseCardProps) {
+  const [confirm,setConfirm] = useState<boolean>(false)
   const theme = useTheme()
   const dispatch = useAppDispatch()
   const {deleteCourse} = useCoursesCRUD()
@@ -88,7 +90,7 @@ export default function CourseCard({course}:CourseCardProps) {
               Edit
             </MenuItem>
          
-           <MenuItem onClick={handleDelete} disableRipple>
+           <MenuItem onClick={()=>setConfirm(true)} disableRipple>
               <DeleteForeverIcon
                 sx={{
                   mr: 1,
@@ -111,11 +113,23 @@ export default function CourseCard({course}:CourseCardProps) {
       height: 180,
     }}
   />
-  <Stack spacing={1} sx={{ px: 2, py: 1.5 }}>
+  <Stack spacing={1} sx={{ px: 2, py: 1.5 , minHeight: 0, display: "flex",
+    flexDirection: "column",}}>
     <Typography variant="subtitle1" sx={{fontWeight:600}} noWrap>
       {course.courseName}
     </Typography>
     <Typography
+      sx={{
+              flex: 1,
+      overflow: "hidden",
+    minHeight: 40, 
+      textOverflow: "ellipsis",
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 2,
+      
+      }}
+     
       variant="body2"
       color="text.secondary"
     >
@@ -156,6 +170,34 @@ fontWeight:500
     </Stack>
    
   </Stack>
+<Dialog open={confirm} onClose={() => setConfirm(false)}>
+  <Paper sx={{ p: 3, minWidth: 320 }}>
+    <Typography variant="h6" gutterBottom>
+      Delete Course?
+    </Typography>
+
+    <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+      Are you sure you want to delete the <Typography component='span' sx={{fontWeight:600}}>{course.courseName} </Typography>  course? This action cannot be undone.
+    </Typography>
+
+    <Box sx={{
+      display:"flex",justifyContent:"flex-end",gap:1
+    }}>
+      <Button onClick={() => setConfirm(false)}>
+        Cancel
+      </Button>
+
+      <Button
+        variant="contained"
+        color="error"
+        startIcon={<DeleteForeverIcon />}
+        onClick={handleDelete}
+      >
+        Delete
+      </Button>
+    </Box>
+  </Paper>
+</Dialog>
 </Paper>
   )
 }
