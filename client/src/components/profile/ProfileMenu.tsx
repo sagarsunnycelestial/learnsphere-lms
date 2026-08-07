@@ -10,6 +10,7 @@ import { LogoutDocument } from "../../generated/graphql";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../store/hooks";
+import {Box} from "@mui/material";
 type ProfileMenuProps = {
   profile_image: string;
 };
@@ -75,7 +76,7 @@ const handleProfile =() => {
 
   return (
     <>
-      <div onClick={handleOpen} style={{ cursor: "pointer" }}>
+      <Box onClick={handleOpen} sx={{ cursor: "pointer" }}>
         <StyledBadge
           overlap="circular"
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
@@ -83,7 +84,7 @@ const handleProfile =() => {
         >
           <Avatar src={profile_image} alt="A" />
         </StyledBadge>
-      </div>
+      </Box>
 
       <Menu
         anchorEl={anchorEl}

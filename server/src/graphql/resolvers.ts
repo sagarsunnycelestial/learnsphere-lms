@@ -19,7 +19,7 @@ import {
 import { Response, Request } from "express";
 import { ERROR_MESSAGES } from "../constants/messages.js";
 import { fetchRolesfromDB } from "../controllers/roles.controller.js";
-import { createACourse,fetchAllCourses,editCourseDetails,deleteCourseFromDB} from "../controllers/courses.controller.js";
+import { createACourse,fetchAllCourses,editCourseDetails,deleteCourseFromDB,fetchASingleCourse} from "../controllers/courses.controller.js";
 export const resolvers = {
   Query: {
     fetchProfile: async (
@@ -61,6 +61,17 @@ export const resolvers = {
         throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
       return await fetchAllCourses(context.user.user_id,context.user.role);
     },
+    fetchCourseById:async(
+       _parents: unknown,
+      args: {courseId:string},
+      context: Context,
+    )=>{
+       if (!context.user?.user_id)
+        throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
+
+       return await fetchASingleCourse(args.courseId,context.user)
+
+    }
   },
   Mutation: {
     login: async (

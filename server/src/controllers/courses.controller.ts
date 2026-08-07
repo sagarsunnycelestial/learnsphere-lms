@@ -1,5 +1,5 @@
 import { GraphQLError } from "graphql/error/GraphQLError.js";
-import { CourseUpdateArgs, Context, UpdateArgs, UserRoles } from "../../types/types.js";
+import { CourseUpdateArgs, Context, UpdateArgs, UserRoles, AuthPayload } from "../../types/types.js";
 import { AppDataSource } from "../config/dbConfig.js";
 import { Courses } from "../entities/Courses.js";
 import { Users } from "../entities/Users.js";
@@ -113,5 +113,51 @@ async function deleteCourseFromDB(courseId:string){
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }
+async function fetchASingleCourse(courseId:string,user:AuthPayload){
+  const courseRepo = AppDataSource.getRepository(Courses);
+  try {
+    const course = await courseRepo.findOne({
+      where:{
+        courseId:courseId
+      },
+      relations: {
+        createdBy: true,
+        lessons: true,
+        enrollments:{
+          user:true
+        },
+        quizzes: {
+          questions:{
+            options:true
+          }
+        },
+      },
+    })
+    if(!course) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
 
-export { createACourse, fetchAllCourses, editCourseDetails,deleteCourseFromDB };
+     const isEnrolled = course.enrollments.some(
+      (enrollment) =>enrollment.user.userId === user.user_id
+     )
+      const canModify = course.createdBy.userId === user.user_id || user.role === UserRoles.ADMIN;
+      console.log(canModify)
+      if(!isEnrolled && !canModify) {
+        const filteredcourse = {...course,totalLessons:course.lessons.length,lessons:[],quizzes:[],totalEnrolled:course.enrollments.length,enrollments:[]}
+        return filteredcourse
+      }
+      // if(!canModify || isEnrolled){
+      //    const filteredcourse = 
+      //   return filteredcourse
+      // }
+      if(canModify){
+
+          const filteredcourse = {...course,totalLessons:course.lessons.length,totalEnrolled:course.enrollments.length,canModify:true}
+        return filteredcourse
+      }
+      return {...course,totalLessons:course.lessons.length,totalEnrolled:course.enrollments.length,canModify:false,isEnrolled:true}
+
+  } catch (error) {
+     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
+  }
+}
+
+export { createACourse, fetchAllCourses, editCourseDetails,deleteCourseFromDB ,fetchASingleCourse};

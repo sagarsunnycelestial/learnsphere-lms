@@ -12,6 +12,7 @@ import { green, red } from "@mui/material/colors";
 import { hasPermission } from "../../permissions/auth";
 import useCoursesCRUD from "../../hooks/useCoursesCRUD";
 import { addCourseFormControl } from "../../store/slices/formSlice";
+import { useNavigate } from "react-router";
 import { useState } from "react";
 type Course = NonNullable<
   NonNullable<FetchCoursesQuery["fetchCourses"]>[number]
@@ -24,6 +25,7 @@ export default function CourseCard({course}:CourseCardProps) {
   const [confirm,setConfirm] = useState<boolean>(false)
   const theme = useTheme()
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
   const {deleteCourse} = useCoursesCRUD()
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
      const open = Boolean(anchorEl);
@@ -104,7 +106,13 @@ export default function CourseCard({course}:CourseCardProps) {
         </IconButton>
       </Stack>}
   
-  <Avatar
+    <Box onClick={()=>navigate(`/dashboard/course/${course.courseId}`)} sx={{ cursor: "pointer",
+    position: "relative", 
+    overflow: "hidden",  
+    "&:hover .overlay": {
+      opacity: 1,
+    }, }}>
+<Avatar
     variant="square"
     src={`${course.thumbnail_image_path}`}
     alt={course.courseName!}
@@ -113,6 +121,22 @@ export default function CourseCard({course}:CourseCardProps) {
       height: 180,
     }}
   />
+  <Box sx={{position:'absolute',top:0,left:0,opacity:0,
+     width: "100%",
+      height: "100%",
+      bgcolor:'rgba(0,0,0,0.6)',
+      color:'white',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontWeight:600,
+       transition: "opacity 0.3s ease",
+       fontSize:18
+  }} className="overlay">Visit this course
+
+  </Box>
+    </Box>
+  
   <Stack spacing={1} sx={{ px: 2, py: 1.5 , minHeight: 0, display: "flex",
     flexDirection: "column",}}>
     <Typography variant="subtitle1" sx={{fontWeight:600}} noWrap>

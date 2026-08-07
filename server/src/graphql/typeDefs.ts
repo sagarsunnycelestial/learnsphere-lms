@@ -32,9 +32,21 @@ courseName:String
 isActive:Boolean
 }
 
+type OptionResponse {
+optionId:String
+optionText:String
+}
+
+type QuestionResponse {
+questionId:String
+questionText:String
+options: [OptionResponse]
+}
+
 type QuizResponse {
 quizId:String
 quizName:String
+questions:[QuestionResponse]
 
 }
 type ResultResponse {
@@ -74,11 +86,18 @@ type RoleResponse {
   videoLink:String
   sortOrder:Int
   }
+  type EnrollmentUser {
+username:String!
+email:String!
+profile_image_path:String
+collegeName:String!
+  }
 
   type Enrollments {
   enrollmentId: String
 enrolledAt:String
 isActive:Boolean
+user:EnrollmentUser
   }
   
   
@@ -95,12 +114,28 @@ quizzes:[QuizResponse]
 isEnrolled:Boolean
 canModify:Boolean
   }
+type SingleCourse{
+courseId:String
+courseName:String
+description:String
+isActive:Boolean
+thumbnail_image_path:String
+createdBy: CreatedBy
+lessons: [LessonResponse]
+enrollments:[Enrollments]
+quizzes:[QuizResponse]
+isEnrolled:Boolean
+canModify:Boolean
+totalEnrolled: Int
+totalLessons: Int
+}
 
 type Query {
 refreshEndpoint:LoginResponse
 fetchRoles:[RoleResponse]
 fetchProfile:UserResponse
 fetchCourses:[Courses]
+fetchCourseById(courseId:String!):SingleCourse!
 }
 
 input UpdateDetails {

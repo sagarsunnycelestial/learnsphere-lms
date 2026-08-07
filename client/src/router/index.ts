@@ -5,6 +5,7 @@ import Login from "../pages/LoginPage";
 import ProtectedLayout from '../components/layouts/ProtectedLayout'
 import Dashboard from "../pages/Dashboard";
 import Profile from "../pages/Profile";
+import SingleCoursePage from "../pages/SingleCoursePage";
  const router = createBrowserRouter([
   {
     path: "/",
@@ -31,7 +32,8 @@ import Profile from "../pages/Profile";
     Component:ProtectedLayout,
     children:[
       {index: true, Component:Dashboard},
-      {path:'profile',Component:Profile}
+      {path:'profile',Component:Profile},
+      {path:'course/:id',Component:SingleCoursePage}
     ]
   }
 ]);
