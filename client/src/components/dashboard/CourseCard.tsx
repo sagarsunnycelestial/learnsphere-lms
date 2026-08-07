@@ -106,7 +106,7 @@ export default function CourseCard({course}:CourseCardProps) {
         </IconButton>
       </Stack>}
   
-    <Box onClick={()=>navigate(`/dashboard/course/${course.courseId}`)} sx={{ cursor: "pointer",
+   <Box  sx={{ cursor: "pointer",
     position: "relative", 
     overflow: "hidden",  
     "&:hover .overlay": {
@@ -121,7 +121,7 @@ export default function CourseCard({course}:CourseCardProps) {
       height: 180,
     }}
   />
-  <Box sx={{position:'absolute',top:0,left:0,opacity:0,
+  {(course.isEnrolled || course.canModify) && <Box sx={{position:'absolute',top:0,left:0,opacity:0,
      width: "100%",
       height: "100%",
       bgcolor:'rgba(0,0,0,0.6)',
@@ -132,10 +132,11 @@ export default function CourseCard({course}:CourseCardProps) {
       fontWeight:600,
        transition: "opacity 0.3s ease",
        fontSize:18
-  }} className="overlay">Visit this course
-
-  </Box>
+  }} className="overlay">
+<Button sx={{ fontWeight:600,fontSize:14,color:'white',width:'100%', height: "100%",}} onClick={()=>navigate(`/dashboard/course/${course.courseId}`)}>Visit this course</Button>
+  </Box>}
     </Box>
+  
   
   <Stack spacing={1} sx={{ px: 2, py: 1.5 , minHeight: 0, display: "flex",
     flexDirection: "column",}}>

@@ -162,6 +162,10 @@ description:String
 thumbnail_image_path:String
  isActive:Boolean
 }
+input EnrollDetails {
+ courseId: String!
+ userId: String
+ }
 
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
@@ -171,5 +175,6 @@ type Mutation {
   createCourse(input:CourseDetails!) : Response!
   editCourse(input:UpdateCourseDetails) : Response!
   deleteCourse(courseId: String!): Response!
+  enrollCourse(input:EnrollDetails):Response!
 }
 `;

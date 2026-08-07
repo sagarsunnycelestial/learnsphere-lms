@@ -21,7 +21,7 @@ export default function useCoursesCRUD() {
      },
      onSuccess: () => {
        queryClient.invalidateQueries({
-         queryKey: ["courses"],
+         queryKey: ["course"],
        });
      },
       onError:()=>{
@@ -37,9 +37,13 @@ export default function useCoursesCRUD() {
        });
        return data?.editCourse
      },
-     onSuccess: ()=>{
+     onSuccess: (_,variables)=>{
        queryClient.invalidateQueries({
-         queryKey:['courses']
+         queryKey:['course']
+        
+       })
+       queryClient.invalidateQueries({
+        queryKey:['course',variables.input?.courseId]
        })
      },
      onError:()=>{
@@ -55,9 +59,12 @@ export default function useCoursesCRUD() {
        });
        return data?.deleteCourse
      },
-     onSuccess: ()=>{
+     onSuccess: (_,variables)=>{
        queryClient.invalidateQueries({
-         queryKey:['courses']
+         queryKey:['course']
+       })
+        queryClient.invalidateQueries({
+        queryKey:['course',variables.courseId]
        })
      },
      onError:()=>{

@@ -75,3 +75,10 @@ export type CourseUpdateArgs = {
   input: CourseUpdate
   
 }
+export type EnrollDetails = {
+  courseId: string
+  userId?: string
+}
+export type EnrollCourseArgs = {
+  input:EnrollDetails
+}

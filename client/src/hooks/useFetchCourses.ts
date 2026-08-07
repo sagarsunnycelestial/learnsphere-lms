@@ -4,7 +4,7 @@ import { apolloClient } from "../graphql/apolloClient"
 
 export default function useFetchCourses() {
   return useQuery({
-    queryKey:['courses'],
+    queryKey:['course'],
     queryFn: async()=>{
       const {data} = await apolloClient.query({
         query:FetchCoursesDocument,

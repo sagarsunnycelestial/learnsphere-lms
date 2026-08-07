@@ -21,12 +21,12 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
       }
     })
     if(!user || !user.isActive){
-      throw new Error(ERROR_MESSAGES.USER_NOT_FOUND)
+      throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
     }
     else {
       const match = await bcrypt.compare(password,user.passwordHash);
       if(!match){
-        throw new Error(ERROR_MESSAGES.PASSWORD_NOT_MATCHING)
+        throw new GraphQLError(ERROR_MESSAGES.PASSWORD_NOT_MATCHING)
       }
       else {
         const payload = {
@@ -118,7 +118,7 @@ const admin = await userRepo.findOne({
       temp_password: temp_password
     }
   } catch (error) {
-    throw new Error(`${ERROR_MESSAGES.FAILED_TO_CREATE_USER} ${(error as Error).message}`);
+    throw new GraphQLError(`${ERROR_MESSAGES.FAILED_TO_CREATE_USER} ${(error as Error).message}`);
   }
 }
 
@@ -134,10 +134,10 @@ async function fetchUserByRefreshToken(refreshToken: string,res:Response) {
       envSchema.REFRESH_TOKEN_SECRET,
     ) as AuthPayload;
   } catch {
-    throw new Error("Invalid refresh token")
+    throw new GraphQLError("Invalid refresh token")
   }
   const userfound = await userRepo.findOneBy({ refreshToken: refreshToken });
-  if (!userfound) throw new Error(ERROR_MESSAGES.INVALID_REFRESH_TOKEN);
+  if (!userfound) throw new GraphQLError(ERROR_MESSAGES.INVALID_REFRESH_TOKEN);
 
   const user = await userRepo.findOne({
     where:{

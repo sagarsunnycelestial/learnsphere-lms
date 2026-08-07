@@ -15,4 +15,5 @@ export const ERROR_MESSAGES = {
    FAILED_TO_EDIT_COURSE: "Failed to edit the course",
    PASSWORD_NOT_MATCHING: "Password entered did not match",
     FAILED_TO_DELETE_COURSE: "Failed to delete the course",
+    FAILED_TO_ENROLL_USER: "Failed to enroll this student into the course"
 } as const;

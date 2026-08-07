@@ -1,9 +1,10 @@
 import { GraphQLError } from "graphql/error/GraphQLError.js";
-import { CourseUpdateArgs, Context, UpdateArgs, UserRoles, AuthPayload } from "../../types/types.js";
+import { CourseUpdateArgs, Context, UpdateArgs, UserRoles, AuthPayload, EnrollCourseArgs } from "../../types/types.js";
 import { AppDataSource } from "../config/dbConfig.js";
 import { Courses } from "../entities/Courses.js";
 import { Users } from "../entities/Users.js";
 import { ERROR_MESSAGES } from "../constants/messages.js";
+import { Enrollments } from "../entities/Enrollments.js";
 
 async function createACourse(args: CourseUpdateArgs, context: Context) {
   const courseRepo = AppDataSource.getRepository(Courses);
@@ -159,5 +160,31 @@ async function fetchASingleCourse(courseId:string,user:AuthPayload){
      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }
+async function enrollAStudent(args:EnrollCourseArgs,context:Context){
+  const courseRepo = AppDataSource.getRepository(Courses)
+  const userRepo = AppDataSource.getRepository(Users)
+  const enrollmentRepo = AppDataSource.getRepository(Enrollments)
+  const userId = args.input.userId ?? context.user?.user_id
+  try{
+    const course = await courseRepo.findOne({where:{
+      courseId:args.input.courseId
+    }})
+    const enrollingUser = await userRepo.findOne({
+      where:{
+        userId:userId!
+      }
+    })
+    if(!course || !enrollingUser) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER)
 
-export { createACourse, fetchAllCourses, editCourseDetails,deleteCourseFromDB ,fetchASingleCourse};
+    const newEnrollment = enrollmentRepo.create({
+      user:enrollingUser,
+      course:course,
+    })
+    await enrollmentRepo.save(newEnrollment)
+    return {message:`${enrollingUser.username} enrolled successfully`}
+  }catch(err){
+   return {message:err}
+  }
+}
+
+export { createACourse, fetchAllCourses, editCourseDetails,deleteCourseFromDB ,fetchASingleCourse,enrollAStudent};
