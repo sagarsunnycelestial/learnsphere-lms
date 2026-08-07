@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../store/hooks";
 import {Box} from "@mui/material";
+import { useQueryClient } from "@tanstack/react-query";
 type ProfileMenuProps = {
   profile_image: string;
 };
@@ -47,7 +48,7 @@ export default function ProfileMenu({ profile_image }: ProfileMenuProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch()
   const open = Boolean(anchorEl);
-
+  const queryClient = useQueryClient();
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -71,6 +72,7 @@ const handleProfile =() => {
     }
     console.log("logout");
     dispatch(logout())
+    queryClient.clear()
       navigate('/login')
   };
 
