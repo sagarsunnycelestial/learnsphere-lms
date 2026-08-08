@@ -18,5 +18,12 @@ export const ERROR_MESSAGES = {
     FAILED_TO_ENROLL_USER: "Failed to enroll this student into the course",
     STUDENTS_NOT_FOUND:"Failed to fetch student details",
     LESSON_NOT_CREATED:"Failed to create a lesson",
-     LESSON_NOT_FOUND:"Failed to fetch the lesson"
+     LESSON_NOT_FOUND:"Failed to fetch the lesson",
+     QUIZ_NOT_CREATED:'Failed to create quiz',
+     QUIZ_NOT_FOUND:'Failed to find quiz',
+     QUESTION_NOT_CREATED:'Failed to create question',
+     QUIZ_ID_INVALID:'Failed to fetch the Quiz',
+     QUIZ_SUBMIT_FAILED:'Failed to submit answers',
+     QUIZ_HAS_DUPLICATES:'Submitted question has duplicates'
+
 } as const;

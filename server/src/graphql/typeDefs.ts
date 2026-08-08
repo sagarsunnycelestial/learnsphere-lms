@@ -193,6 +193,41 @@ input DeleteLessonDetails {
 courseId:String
 lessonId:String
 }
+input QuizDetails {
+  quizName:String!
+  courseId:String!
+}
+
+  input QuestionDetails {
+    quizId:String
+    questionText:String
+    correctOption:Int
+    optionOne:String
+    optionTwo:String
+    optionThree:String
+    optionFour:String
+  }
+
+   input AnswerInput {
+   questionId:String
+   selectionOption:String
+   }
+  input QuizAnswerDetails {
+  quizId:String
+  answerList: [AnswerInput]
+  }
+  type QuizResultResponse {
+  courseDetail:CourseResponse
+  userId:String
+  username:String
+  profile_image_path:String
+resultId:String
+quizId:String
+quizName:String
+score:Float
+
+  }
+
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
   registerUser(input:UserDetails!): RegisterResponse!
@@ -205,5 +240,8 @@ type Mutation {
   addALesson(input:LessonDetails):Response!
   editALesson(input:LessonDetails):Response!
   deleteALesson(input:DeleteLessonDetails!):Response!
+  createAQuiz(input:QuizDetails):Response!
+  createAQuestion(input:QuestionDetails):Response!
+  submitQuiz(input:QuizAnswerDetails): QuizResultResponse!
 }
 `;

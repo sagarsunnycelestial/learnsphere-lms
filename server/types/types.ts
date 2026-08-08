@@ -99,3 +99,27 @@ export type DeleteLessonArgs = {
     lessonId:string;
   }
 }
+export interface QuestionDetails {
+  quizId?: string;
+  questionText?: string;
+  correctOption?: number;
+  optionOne?: string;
+  optionTwo?: string;
+  optionThree?: string;
+  optionFour?: string;
+}
+export type QuestionArgs = {
+  input:QuestionDetails
+}
+export type AnswerInput = {
+  questionId?: string;
+  selectionOption?: string;
+};
+
+export type QuizAnswerDetails = {
+  quizId?: string;
+  answerList?: AnswerInput[];
+};
+export type SubmitQuizArgs = {
+  input: QuizAnswerDetails;
+};

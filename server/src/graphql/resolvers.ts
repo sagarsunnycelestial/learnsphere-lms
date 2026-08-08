@@ -6,6 +6,8 @@ import {
   EnrollCourseArgs,
   LessonUpdateArgs,
   DeleteLessonArgs,
+  QuestionArgs,
+  SubmitQuizArgs,
 } from "../../types/types.js";
 import {
   loginUser,
@@ -34,6 +36,7 @@ import {
   fetchASingleCourse,
   enrollAStudent,
 } from "../controllers/courses.controller.js";
+import { createAQuizForCourse,createAQuestionForQuiz,submitQuizAnswers } from "../controllers/quiz.controller.js";
 import { fetchStudentDetails } from "../controllers/student.controller.js";
 import { addLessonToCourse,editLessonInCourse,deleteLessonInCourse } from "../controllers/lessons.controller.js";
 export const resolvers = {
@@ -216,5 +219,36 @@ export const resolvers = {
 
       return await deleteLessonInCourse(args,context)
     },
+     createAQuiz:async(
+       _parents: unknown,
+      args: {input:{
+        courseId:string
+        quizName:string
+      }},
+      context: Context,
+     )=>{
+       if(context.user?.role === UserRoles.STUDENT) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+       return await createAQuizForCourse(args,context)
+     },
+     createAQuestion: async(
+          _parents: unknown,
+      args:QuestionArgs,
+      context: Context,
+     )=>{
+       if(context.user?.role === UserRoles.STUDENT) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+       return await createAQuestionForQuiz(args,context)
   },
-};
+  submitQuiz:async(
+      _parents: unknown,
+      args:SubmitQuizArgs,
+      context: Context,
+     )=>{
+       if(context.user?.role !== UserRoles.STUDENT) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+       return await submitQuizAnswers(args,context)
+     }
+  
+},
+}
