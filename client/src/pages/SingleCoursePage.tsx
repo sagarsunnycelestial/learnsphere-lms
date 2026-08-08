@@ -6,7 +6,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   List,
-  ListItem,
   ListItemText,
   Card,
   CardContent,
@@ -21,7 +20,7 @@ import {
   Slide,
 } from "@mui/material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import PlayLessonIcon from '@mui/icons-material/PlayLesson';
+import PlayLessonIcon from "@mui/icons-material/PlayLesson";
 import { hasPermission } from "../permissions/auth";
 import PeopleIcon from "@mui/icons-material/People";
 import EditIcon from "@mui/icons-material/Edit";
@@ -38,20 +37,23 @@ import CircularProgress from "@mui/material/CircularProgress";
 // import CourseActionTab from "../components/dashboard/CourseActionTab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
-import { alpha } from '@mui/material/styles';
+import { alpha } from "@mui/material/styles";
 import useCoursesCRUD from "../hooks/useCoursesCRUD";
-import { addCourseFormControl, lessonFormControl } from "../store/slices/formSlice";
+import {
+  addCourseFormControl,
+  lessonFormControl,
+} from "../store/slices/formSlice";
 import CourseForm from "../components/forms/CourseForm";
 import useLessonsCRUD from "../hooks/useLessonsCRUD";
 import { Lesson } from "../types/types";
 import { toast } from "react-toastify";
 import LessonForm from "../components/forms/LessonForm";
 export default function SingleCoursePage() {
-  const [lessonToDelete,setLessonToDelete] = useState<Lesson | null>()
-  const lessonDialog = Boolean(lessonToDelete)
+  const [lessonToDelete, setLessonToDelete] = useState<Lesson | null>();
+  const lessonDialog = Boolean(lessonToDelete);
   const [enrolled, setEnrolled] = useState(false);
-  const {deleteLesson} = useLessonsCRUD();
-  
+  const { deleteLesson } = useLessonsCRUD();
+
   const { id } = useParams();
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, error } = useFetchCourseById(id!);
@@ -62,7 +64,9 @@ export default function SingleCoursePage() {
   const isOpen = useAppSelector(
     (state) => state.form.courses.isAddCourseFormOpen,
   );
-  const lessonForm = useAppSelector(state=>state.form.lessons.isLessonFormOpen)
+  const lessonForm = useAppSelector(
+    (state) => state.form.lessons.isLessonFormOpen,
+  );
   const theme = useTheme();
   const { deleteCourse } = useCoursesCRUD();
   const [confirm, setConfirm] = useState<boolean>(false);
@@ -70,10 +74,9 @@ export default function SingleCoursePage() {
   const isEnrolled = course?.isEnrolled;
   const handleDelete = async () => {
     if (course?.courseId) {
- const res = await deleteCourse({ courseId: course.courseId });
-  toast.success(res?.message)
+      const res = await deleteCourse({ courseId: course.courseId });
+      toast.success(res?.message);
     }
-     
   };
   const handleEdit = () => {
     dispatch(
@@ -84,35 +87,36 @@ export default function SingleCoursePage() {
       }),
     );
   };
- const handleLessonEdit = (lesson:Lesson) => {
-  console.log(lesson.lessonId)
+  const handleLessonEdit = (lesson: Lesson) => {
+    console.log(lesson.lessonId);
     dispatch(
       lessonFormControl({
         mode: "edit",
         isLessonFormOpen: true,
-        selectedLesson: {...lesson,courseId:course?.courseId}
+        selectedLesson: { ...lesson, courseId: course?.courseId },
       }),
     );
   };
-  const handleLessonDialog=(lesson:Lesson) =>{
+  const handleLessonDialog = (lesson: Lesson) => {
     setLessonToDelete(lesson);
-  }
-  const handleLessonDelete =async() =>{
+  };
+  const handleLessonDelete = async () => {
     if (course?.courseId) {
-      try{
-const res = await deleteLesson({ input:{
-      courseId:course.courseId,
-      lessonId:lessonToDelete?.lessonId,
-    } });
-    toast.success(res?.message)
-    setLessonToDelete(null)
+      try {
+        const res = await deleteLesson({
+          input: {
+            courseId: course.courseId,
+            lessonId: lessonToDelete?.lessonId,
+          },
+        });
+        toast.success(res?.message);
+        setLessonToDelete(null);
+      } catch {
+        toast.error("Failed to delete lesson");
+        setLessonToDelete(null);
       }
-      catch{
-        toast.error('Failed to delete lesson',)
-        setLessonToDelete(null)
-      }
-  }
-}
+    }
+  };
   const canModify = course?.canModify;
   if (isLoading) {
     return (
@@ -143,22 +147,40 @@ const res = await deleteLesson({ input:{
     );
   } else if (course) {
     return (
-        <Box component='main' sx={{
-  py: 3,
- maxWidth: { xs: 400, sm: 500, md: '100%', lg: '100%'},
-  mx: 'auto',
-  width: '100%',
-  boxSizing: 'border-box',
-        }}> 
-        <Card elevation={3} sx={{border:'1px solid', borderColor:theme.palette.divider,borderRadius:4}}>
+      <Paper
+        elevation={0}
+        sx={{
+          py: 3,
+          maxWidth: { xs: 400, sm: 500, md: "100%", lg: "100%" },
+          mx: "auto",
+          width: "100%",
+          boxSizing: "border-box",
+         
+        
+          bgcolor: alpha(theme.palette.background.default, 0.5),
+          borderRadius: 4,
+        }}
+      >
+        <Card
+          elevation={0}
+          sx={{
+            border: "1px solid",
+            borderColor: theme.palette.divider,
+            borderRadius: 4,
+
+          }}
+        >
           <CardMedia
             component="img"
             height="260"
             src={`${course.thumbnail_image_path}`}
           />
+          <Divider />
 
           <CardContent>
-            <Typography variant="h4" sx={{fontWeight:600}}>{course.courseName}</Typography>
+            <Typography variant="h4" sx={{ fontWeight: 600 }}>
+              {course.courseName}
+            </Typography>
 
             <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
               {course.description}
@@ -196,207 +218,297 @@ const res = await deleteLesson({ input:{
                 label={course.isActive ? "Active" : "Archived"}
               />
             </Stack>
+            <Divider  sx={{mt:3}}/>
             <Stack direction="row" spacing={2} sx={{ mt: 3, flexWrap: "wrap" }}>
+              
               {hasPermission(user, "action:course") && (
-                   <Paper
-      elevation={0}
-      sx={{
-        border: "1px solid",
-        borderColor: theme.palette.divider,
-       bgcolor: alpha(theme.palette.background.default, 0.5),
-        borderRadius: 4,
-        px: 3,
-        py: 2.5,
-        mb: 4,
-        display: "flex",
-        flexDirection:'column',
-        alignItems: "left",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
-        gap: 2,
-       
-      }}
-    >
-      <Stack direction='row' spacing={2} sx={{alignItems:'center'}}>
-        <Avatar sx={{bgcolor:theme.palette.primary.main,width:44,
-          height:44
-        }}>
-           <AdminPanelSettingsIcon />
-        </Avatar>
-        <Box>
-          <Typography variant="h5" sx={{fontWeight:700,}}>Course Controls</Typography>
-          <Typography variant="body2" sx={{color:'text.secondary'}}>Manager lessons and quizzes</Typography>
-        </Box>
-      </Stack>
-                    <Stack direction="row" spacing={1} sx={{
- flexWrap:"wrap"
+                <Paper
+                  elevation={0}
+                  sx={{
+                    border: "1px solid",
+                    borderColor: theme.palette.divider,
+                    bgcolor: alpha(theme.palette.background.default, 0.5),
+                    borderRadius: 4,
+                    px: 3,
+                    py: 2.5,
+                    mb: 4,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "left",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    gap: 2,
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    spacing={2}
+                    sx={{ alignItems: "center" }}
+                  >
+                    <Avatar
+                      sx={{
+                        bgcolor: theme.palette.primary.main,
+                        width: 44,
+                        height: 44,
+                      }}
+                    >
+                      <AdminPanelSettingsIcon />
+                    </Avatar>
+                    <Box>
+                      <Typography variant="h5" sx={{ fontWeight: 700 }}>
+                        Course Controls
+                      </Typography>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: "text.secondary" }}
+                      >
+                        Manager lessons and quizzes
+                      </Typography>
+                    </Box>
+                  </Stack>
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{
+                      flexWrap: "wrap",
                     }}
-                    useFlexGap>
-  {(course.canModify || hasPermission(user, "edit all:courses")) && (
-    <Button
-      startIcon={<EditIcon />}
-      onClick={handleEdit}
-      variant="outlined"
-      size="small"
-      sx={{ borderRadius: 2, textTransform: "none" }}
-    >
-      Edit Course Preview
-    </Button>
-  )}
+                    useFlexGap
+                  >
+                    {(course.canModify ||
+                      hasPermission(user, "edit all:courses")) && (
+                      <Button
+                        startIcon={<EditIcon />}
+                        onClick={handleEdit}
+                        variant="outlined"
+                        size="small"
+                        sx={{
+                          borderRadius: 2,
+                          textTransform: "none",
+                          width: 220,
+                        }}
+                      >
+                        Edit Course Preview
+                      </Button>
+                    )}
 
-  <Button
-    startIcon={<DeleteForeverIcon />}
-    onClick={() => setConfirm(true)}
-    color="error"
-    variant="outlined"
-    size="small"
-    sx={{ borderRadius: 2, textTransform: "none" }}
-  >
-    Delete Entire Course
-  </Button>
-
-  <Button
-    startIcon={<PeopleIcon />}
-    onClick={() => setEnrolled(!enrolled)}
-    color={!enrolled ? "info" : "warning"}
-    variant={enrolled ? "contained" : "outlined"}
-    size="small"
-    sx={{ borderRadius: 2, textTransform: "none" }}
-  >
-    {enrolled ? "Close List" : "View Enrolled Students"}
-  </Button>
-
-  <Button
-    startIcon={<PlayLessonIcon />}
-    onClick={() =>
-      dispatch(
-        lessonFormControl({ mode: "add", isLessonFormOpen: true, selectedLesson: null }),
-      )
-    }
-    color="primary"
-    variant="contained"
-    size="small"
-    sx={{ borderRadius: 2, textTransform: "none" }}
-  >
-    Add a Lesson
-  </Button>
-</Stack>
+                    <Button
+                      startIcon={<DeleteForeverIcon />}
+                      onClick={() => setConfirm(true)}
+                      color="error"
+                      variant="outlined"
+                      size="small"
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: "none",
+                        width: 220,
+                      }}
+                    >
+                      Delete Entire Course
+                    </Button>
+                    <Button
+                      startIcon={<PlayLessonIcon />}
+                      onClick={() =>
+                        dispatch(
+                          lessonFormControl({
+                            mode: "add",
+                            isLessonFormOpen: true,
+                            selectedLesson: null,
+                          }),
+                        )
+                      }
+                      color="primary"
+                      variant="contained"
+                      size="small"
+                      sx={{ borderRadius: 2, width: 220 }}
+                    >
+                      Add a Lesson
+                    </Button>
+                    <Button
+                      startIcon={<PeopleIcon />}
+                      onClick={() => setEnrolled(!enrolled)}
+                      color={!enrolled ? "info" : "warning"}
+                      variant={enrolled ? "contained" : "outlined"}
+                      size="small"
+                      sx={{
+                        borderRadius: 2,
+                        textTransform: "none",
+                        width: 220,
+                      }}
+                    >
+                      {enrolled ? "Close List" : "View Enrolled Students"}
+                    </Button>
+                  </Stack>
                 </Paper>
               )}
             </Stack>
           </CardContent>
-         <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-  {enrolled &&
-    course.enrollments?.map((student,index) => (
-      <Slide
-      mountOnEnter unmountOnExit
-      key={student?.enrollmentId}
-      direction="right"
-      in={enrolled}
-      timeout={500 + index * 100}
-    >
-      <Paper
-        key={student?.enrollmentId}
-        elevation={1}
-        sx={{
-          p: 2,
-          borderRadius: 2,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-         
-        }}
-      >
-        <Stack direction="row" sx={{alignItems:'center',gap:2, transition: "all 0.6s ease",}}>
-        <Avatar src={`${student?.user?.profile_image_path}`} sx={{ width: 52, height: 52 }} />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, px: 3, py: 2.5 }}>
+  {course.enrollments && course.enrollments.length > 0 &&(
+    <>
+     {enrolled && <Typography variant="subtitle1" sx={{ px: 1, fontWeight: 600 }}>
+      <Divider sx={{mb:2}}/>
+       Enrolled Students ({course.enrollments?.length})
+      </Typography> } 
+      {course.enrollments?.map((student, index) => (
+        
+        <Slide
+          mountOnEnter
+          unmountOnExit
+          key={student?.enrollmentId}
+          direction="right"
+          in={enrolled}
+          timeout={500 + index * 100}
+        >
+          <Paper
+            key={student?.enrollmentId}
+            elevation={0}
+            sx={{
+              px: 2,
+              py: 1.5,
+              bgcolor: theme.palette.background.default,
+              borderRadius: 2,
+              border: "1px solid",
+              borderColor: theme.palette.divider,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <Stack
+              direction="row"
+              sx={{
+                alignItems: "center",
+                gap: 2,
+                transition: "all 0.6s ease",
+              }}
+            >
+              <Avatar
+                src={`${student?.user?.profile_image_path}`}
+                sx={{ width: 48, height: 48 }}
+              />
 
-          <Box sx={{gap:2 ,transition: "all 0.6s ease",}}>
-            <Typography sx={{fontWeight:600}}>
-              {student?.user?.username}
-            </Typography>
+              <Box sx={{ transition: "all 0.6s ease" }}>
+                <Typography sx={{ fontWeight: 600 }}>
+                  {student?.user?.username}
+                </Typography>
 
-            <Typography variant="body2" color="text.secondary">
-              {student?.user?.collegeName}
-            </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {student?.user?.collegeName}
+                </Typography>
 
-            <Typography variant="caption" color="text.secondary">
-              Enrolled on{" "}
-              {new Date(Number(student?.enrolledAt)).toLocaleDateString(
-                "en-IN",
-                {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                }
-              )}
-            </Typography>
-          </Box>
-        </Stack>
+                <Typography variant="caption" color="text.secondary">
+                  Enrolled on{" "}
+                  {new Date(Number(student?.enrolledAt)).toLocaleDateString(
+                    "en-IN",
+                    {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    },
+                  )}
+                </Typography>
+              </Box>
+            </Stack>
 
-        <Chip
-          color={student?.isActive ? "success" : "default"}
-          label={student?.isActive ? "Active" : "Completed"}
-          size="small"
-        />
-      </Paper>
-      </Slide>
-    ))}
+            <Chip
+              color={student?.isActive ? "success" : "default"}
+              label={student?.isActive ? "Active" : "Completed"}
+              size="small"
+            />
+          </Paper>
+        </Slide>
+      ))}
+    </>
+  )}
 </Box>
         </Card>
-        <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 3 }}>
-         <Accordion>
-  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-    <Typography variant="h6">
-      Lessons ({course?.lessons?.length})
-    </Typography>
-  </AccordionSummary>
+        <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 3}}>
+          <Accordion sx={{borderRadius:4,border:'1px solid',borderColor:theme.palette.divider,boxShadow:'none'}}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h6" sx={{fontWeight:700}}>
+                Lessons
+              </Typography>
+            </AccordionSummary>
 
-  <AccordionDetails>
-    {isEnrolled || canModify ? (
-      <List>
-        {[...lessons]
-          .sort((a, b) => (a?.sortOrder ?? 0) - (b?.sortOrder ?? 0))
-          .map((lesson) => (
-            <ListItem key={lesson?.lessonId}>
-              <ListItemText
-                primary={`${lesson?.sortOrder}. ${lesson?.lessonName}`}
-                secondary={lesson?.description}
-              />
-              <Box sx={{ width: 400 }}>
-                <CardMedia
-                  component="video"
-                  controls
-                  muted
-                  src={`${lesson?.videoLink}`}
-                />
-              </Box>
-             {(hasPermission(user,'modify:lessons') || canModify) && <>
-             <Button
-             startIcon={<EditIcon />}
-                onClick={() => handleLessonEdit(lesson as Lesson)}
-                variant="outlined"
-                sx={{ ml: 2 }}
+            <AccordionDetails>
+              {isEnrolled || canModify ? (
+                <Box sx={{display:'flex',flexDirection:'column',gap:2}}>
+                <List>
+                  {[...lessons]
+                    .sort((a, b) => (a?.sortOrder ?? 0) - (b?.sortOrder ?? 0))
+                    .map((lesson,index) => (
+                      <Paper
+                key={lesson?.lessonId}
+                elevation={0}
+                sx={{
+                  m:1,
+                  p: 2,
+                  borderRadius: 2,
+                  border: "1px solid",
+                  borderColor: theme.palette.divider,
+                  bgcolor: theme.palette.background.default,
+                }}
               >
-                Edit
-              </Button>
-              <Button
-               startIcon={<DeleteForeverIcon />}
-                onClick={() => handleLessonDialog(lesson as Lesson)}
-                variant="contained"
-                color="error"
-                sx={{ ml: 1 }}
-              >
-                Delete
-              </Button>
-             </>} 
-            </ListItem>
-          ))}
-      </List>
-    ) : (
-      <Typography>Enroll to view lessons</Typography>
-    )}
-  </AccordionDetails>
-</Accordion>
+                      <Stack
+                  direction="row"
+                  spacing={2}
+                 sx={{
+    alignItems: "center",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 2,
+  }}
+                >
+
+                        <ListItemText
+                        sx={{flex:" 1 1 auto",minWidth:200}}
+                          primary={`${index + 1}. ${lesson?.lessonName}`}
+                          secondary={lesson?.description}
+                        />
+                        <Box sx={{ width: {xs:"100%",sm:300,md:400} }}>
+                          <CardMedia
+                            component="video"
+                            controls
+                            muted
+                            src={`${lesson?.videoLink}`}
+                            sx={{borderRadius:1}}
+                          />
+                        </Box>
+                        {(hasPermission(user, "modify:lessons") ||
+                          canModify) && (
+                          <Stack direction='row' spacing={2}>
+                            <Button
+                              startIcon={<EditIcon />}
+                              onClick={() => handleLessonEdit(lesson as Lesson)}
+                              variant="outlined"
+                              size="small"
+                              sx={{ ml: 2 }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              startIcon={<DeleteForeverIcon />}
+                              onClick={() =>
+                                handleLessonDialog(lesson as Lesson)
+                              }
+                              variant="contained"
+                              color="error"
+                              size="small"
+                              sx={{ ml: 1 }}
+                            >
+                              Delete
+                            </Button>
+                          </Stack>
+                        )}
+                   </Stack>
+                  </Paper>  ))}
+                </List>
+                </Box>
+              ) : (
+                <Typography>Enroll to view lessons</Typography>
+              )}
+            </AccordionDetails>
+          </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h6">Quizzes ({quizzes?.length})</Typography>
@@ -490,7 +602,8 @@ const res = await deleteLesson({ input:{
             </Box>
           </Paper>
         </Dialog>
-        <Dialog open={lessonDialog} onClose={() => setLessonToDelete(null)}>o
+        <Dialog open={lessonDialog} onClose={() => setLessonToDelete(null)}>
+          o
           <Paper sx={{ p: 3, minWidth: 320 }}>
             <Typography variant="h6" gutterBottom>
               Delete this Lesson?
@@ -524,14 +637,24 @@ const res = await deleteLesson({ input:{
             </Box>
           </Paper>
         </Dialog>
-        <Dialog open={isOpen}>
+        <Dialog
+          open={isOpen}
+          onClose={() =>
+            dispatch(addCourseFormControl({ isAddCourseFormOpen: false }))
+          }
+        >
           <CourseForm />
         </Dialog>
-        <Dialog open={lessonForm}>
+        <Dialog
+          open={lessonForm}
+          onClose={() => {
+            setLessonToDelete(null);
+            dispatch(lessonFormControl({ isLessonFormOpen: false }));
+          }}
+        >
           <LessonForm />
         </Dialog>
-
-      </Box>
+      </Paper>
     );
   }
 }
