@@ -3,6 +3,8 @@ import { styled, useTheme, type Theme, type CSSObject } from '@mui/material/styl
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar, { type AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import SchoolIcon from '@mui/icons-material/School';
 import Toolbar from '@mui/material/Toolbar';
 import {ListItemText} from '@mui/material';
 import List from '@mui/material/List';
@@ -12,16 +14,16 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import WorkIcon from '@mui/icons-material/Work';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import Switch from '@mui/material/Switch';
 import { useAppDispatch } from '../../store/hooks';
 import { toggleTheme } from '../../store/slices/themeSlice';
 import {  ListItem, ListItemButton, ListItemIcon } from '@mui/material';
+import LMSlogo from '../../assets/LMSlogo.png'
 import { useAppSelector } from '../../store/hooks';
 import ProfileMenu from '../profile/ProfileMenu';
 import { useNavigate } from 'react-router';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+
 
 const MaterialUISwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -186,8 +188,11 @@ export default function SideBar({children}:DrawerProps) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+     
       <AppBar position="fixed" open={open}>
+         
         <Toolbar sx={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+          
           <Box sx={{display:'flex',alignItems:'center'}}>
           <IconButton
             color="inherit"
@@ -201,11 +206,30 @@ export default function SideBar({children}:DrawerProps) {
               open && { display: 'none' },
             ]}
           >
+           
             <MenuIcon />
           </IconButton>
-        
-          <Typography variant="h6" noWrap component="div">
-           LearnSphere - An LMS App
+          <Box
+    component="img"
+    src={LMSlogo}
+    alt="LearnSphere logo"
+    sx={{
+      height: 40,
+      width: 40,
+      objectFit: 'contain',
+      mr: 1.5,
+       filter: "brightness(0) invert(1)",
+        transform: "scale(1.5)",
+        animation:{
+          transition:'all 0.4s ease'
+        }
+    }}
+  />
+          <Typography sx={{
+            letterSpacing:1,
+            fontWeight:600
+          }} variant="h6" noWrap component="div">
+           LearnSphere
           </Typography>
             </Box>
              <Box sx={{display:'flex',alignItems:'center'}}>
@@ -224,6 +248,14 @@ export default function SideBar({children}:DrawerProps) {
           </IconButton>
         </DrawerHeader>
         <Divider />
+         {open && (
+          <Typography
+            variant="overline"
+            sx={{ px: 2.5, pt: 2, pb: 0.5, color: theme.palette.text.secondary, fontWeight: 600 }}
+          >
+            Menu
+          </Typography>
+        )}
         <List  sx={{
     px: 1, 
   }}>
@@ -256,9 +288,9 @@ export default function SideBar({children}:DrawerProps) {
                           mr: 'auto',
                         },
                   ]}
-                ><DashboardIcon /></ListItemIcon>
+                ><SchoolIcon /></ListItemIcon>
                  <ListItemText
-                  primary={"Dashboard"}
+                  primary={"Courses"}
                   sx={[
                     { color:theme.palette.primary.light},
                     open
@@ -301,7 +333,7 @@ export default function SideBar({children}:DrawerProps) {
                           mr: 'auto',
                         },
                   ]}
-                ><WorkIcon /></ListItemIcon>
+                ><AccountBoxIcon /></ListItemIcon>
                  <ListItemText
                   primary={"Profile"}
                   sx={[

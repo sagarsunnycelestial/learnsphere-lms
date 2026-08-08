@@ -20,6 +20,7 @@ import {
   useTheme,
   Slide,
 } from "@mui/material";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import { hasPermission } from "../permissions/auth";
 import PeopleIcon from "@mui/icons-material/People";
@@ -37,6 +38,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 // import CourseActionTab from "../components/dashboard/CourseActionTab";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
+import { alpha } from '@mui/material/styles';
 import useCoursesCRUD from "../hooks/useCoursesCRUD";
 import { addCourseFormControl, lessonFormControl } from "../store/slices/formSlice";
 import CourseForm from "../components/forms/CourseForm";
@@ -49,6 +51,7 @@ export default function SingleCoursePage() {
   const lessonDialog = Boolean(lessonToDelete)
   const [enrolled, setEnrolled] = useState(false);
   const {deleteLesson} = useLessonsCRUD();
+  
   const { id } = useParams();
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, error } = useFetchCourseById(id!);
@@ -194,75 +197,88 @@ const res = await deleteLesson({ input:{
             </Stack>
             <Stack direction="row" spacing={2} sx={{ mt: 3, flexWrap: "wrap" }}>
               {hasPermission(user, "action:course") && (
-                <Paper
-                  elevation={0}
-                  sx={{
-                    border: "1px solid",
-                    borderColor: theme.palette.background.paper,
-                    px: 2,
-                    py: 1,
-                    borderRadius: 4,
-                    bgcolor: theme.palette.background.default,
-                    flexGrow: 1,
-                    display: "flex",
-                    justifyContent: "flex-start",
-                    paddingBottom: 5,
-                  }}
-                >
-                  <Box>
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                        lineHeight: 1,
-                        pb: 2,
-                      }}
-                    >
-                      Course Controls
-                    </Typography>
+                   <Paper
+      elevation={0}
+      sx={{
+        border: "1px solid",
+        borderColor: theme.palette.divider,
+       bgcolor: alpha(theme.palette.background.default, 0.5),
+        borderRadius: 4,
+        px: 3,
+        py: 2.5,
+        mb: 4,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 2,
+       
+      }}
+    >
+      <Stack direction='row' spacing={2} sx={{alignItems:'center'}}>
+        <Avatar sx={{bgcolor:theme.palette.primary.main,width:44,
+          height:44
+        }}>
+           <AdminPanelSettingsIcon />
+        </Avatar>
+        <Box>
+          <Typography variant="h5" sx={{fontWeight:700,}}>Course Controls</Typography>
+          <Typography variant="body2" sx={{color:'text.secondary'}}>Manager lessons and quizzes</Typography>
+        </Box>
+      </Stack>
+                    <Stack direction="row" spacing={1} sx={{
+ flexWrap:"wrap"
+                    }}
+                    useFlexGap>
+  {(course.canModify || hasPermission(user, "edit all:courses")) && (
+    <Button
+      startIcon={<EditIcon />}
+      onClick={handleEdit}
+      variant="outlined"
+      size="small"
+      sx={{ borderRadius: 2, textTransform: "none" }}
+    >
+      Edit Course Preview
+    </Button>
+  )}
 
-                    <Stack direction="row" spacing={1}>
-                      {(course.canModify ||
-                        hasPermission(user, "edit all:courses")) && (
-                        <Button
-                          startIcon={<EditIcon />}
-                          onClick={handleEdit}
-                          variant="outlined"
-                          size="small"
-                        >
-                          Edit Course Preview
-                        </Button>
-                      )}
+  <Button
+    startIcon={<DeleteForeverIcon />}
+    onClick={() => setConfirm(true)}
+    color="error"
+    variant="outlined"
+    size="small"
+    sx={{ borderRadius: 2, textTransform: "none" }}
+  >
+    Delete Entire Course
+  </Button>
 
-                      <Button
-                        startIcon={<DeleteForeverIcon />}
-                        onClick={() => setConfirm(true)}
-                        color="error"
-                        variant="outlined"
-                        size="small"
-                      >
-                        Delete Entire Course
-                      </Button>
-                      <Button
-                        startIcon={<PeopleIcon />}
-                        onClick={() => setEnrolled(!enrolled)}
-                        color={!enrolled ? "info" : "warning"}
-                        variant={enrolled ? "contained" : "outlined"}
-                        size="small"
-                      >
-                        {enrolled ? "Close List" : "View Enrolled Students"}
-                      </Button>
-                      <Button
-                        startIcon={<PlayLessonIcon />}
-                        onClick={() => dispatch(lessonFormControl({mode:'add',isLessonFormOpen:true,selectedLesson:null}))}
-                        color="primary"
-                        variant="outlined"
-                        size="small"
-                      >
-                        Add a lesson
-                      </Button>
-                    </Stack>
-                  </Box>
+  <Button
+    startIcon={<PeopleIcon />}
+    onClick={() => setEnrolled(!enrolled)}
+    color={!enrolled ? "info" : "warning"}
+    variant={enrolled ? "contained" : "outlined"}
+    size="small"
+    sx={{ borderRadius: 2, textTransform: "none" }}
+  >
+    {enrolled ? "Close List" : "View Enrolled Students"}
+  </Button>
+
+  <Button
+    startIcon={<PlayLessonIcon />}
+    onClick={() =>
+      dispatch(
+        lessonFormControl({ mode: "add", isLessonFormOpen: true, selectedLesson: null }),
+      )
+    }
+    color="primary"
+    variant="contained"
+    size="small"
+    sx={{ borderRadius: 2, textTransform: "none" }}
+  >
+    Add a Lesson
+  </Button>
+</Stack>
                 </Paper>
               )}
             </Stack>

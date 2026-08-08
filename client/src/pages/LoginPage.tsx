@@ -1,6 +1,6 @@
 import { Card, Box, Typography, TextField, Button } from "@mui/material";
 import auth from '../assets/auth.webp'
-import LMSLogo from '../assets/LMSlogo.jpg'
+import LMSLogo from '../assets/LMSlogo.png'
 import {z} from 'zod'
 import { useState } from "react";
 import { useAppDispatch } from "../store/hooks";
@@ -77,7 +77,7 @@ if(!result.success){
             src={LMSLogo}
             alt="Company Logo"
             sx={{
-              width: 120,
+              width: 160,
               objectFit: "contain",
             }}
           />
