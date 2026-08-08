@@ -32,6 +32,9 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
             userId: context.user?.user_id,
           },
         },
+        relations:{
+          lessons:true
+        }
       });
     }
 
@@ -46,6 +49,7 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
     await lessonRepo.save(newLesson);
     return { message: `Lesson for ${course.courseName}. created successfully` };
   } catch (err) {
+      console.error("ADD LESSON ERROR:", err);
     if (err instanceof GraphQLError) {
       throw err;
     }
@@ -84,7 +88,7 @@ async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
     if (description) {
       updatingLesson.description = description;
     }
-    if (sortOrder) {
+    if (sortOrder!==undefined) {
       updatingLesson.sortOrder = sortOrder;
     }
     if (videoLink) {
@@ -95,6 +99,7 @@ async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
       message: `Lesson ${updatingLesson.lessonName}. updated successfully`,
     };
   } catch (err) {
+     console.error("ADD LESSON ERROR:", err);
     if (err instanceof GraphQLError) {
       throw err;
     }

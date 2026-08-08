@@ -189,7 +189,7 @@ input EnrollDetails {
   videoLink:String
   sortOrder:Int
  }
-input DeletLessonDetails {
+input DeleteLessonDetails {
 courseId:String
 lessonId:String
 }
