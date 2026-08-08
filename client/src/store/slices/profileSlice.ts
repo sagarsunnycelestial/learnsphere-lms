@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 interface ProfileProps {
   viewType:'card' | 'list',
   searchQuery:string,
-  currentTab: 0 | 1,
+  currentTab: string,
   page:number,
   totalEnrolled:number
 }
@@ -11,7 +11,7 @@ interface ProfileProps {
 const initialState:ProfileProps = {
   viewType:'card',
   searchQuery:'',
-  currentTab:0,
+  currentTab:'1',
   page:1,
   totalEnrolled:0
 }
@@ -24,6 +24,7 @@ const profileSlice= createSlice({
       state.viewType=action.payload;
     },
     searchQ(state,action){
+      state.searchQuery=action.payload
       state.searchQuery=action.payload
     },
     changeTab(state,action){

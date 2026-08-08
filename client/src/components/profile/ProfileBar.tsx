@@ -35,7 +35,7 @@ export default function ProfileBar() {
         }}
       >
         <Box sx={{ width: "100%", typography: "body1" }}>
-          <TabContext value={String(tab)}>
+          <TabContext value={tab}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <TabList
                 onChange={(_e, value) => dispatch(changeTab(value))}
