@@ -143,13 +143,14 @@ const res = await deleteLesson({ input:{
     );
   } else if (course) {
     return (
-      <>
-        {/* {data.canModify && (
-          <Box sx={{ mb: 2 }}>
-            <CourseActionTab />
-          </Box>
-        )} */}
-        <Card elevation={3} sx={{}}>
+        <Box component='main' sx={{
+  py: 3,
+ maxWidth: { xs: 400, sm: 500, md: '100%', lg: '100%'},
+  mx: 'auto',
+  width: '100%',
+  boxSizing: 'border-box',
+        }}> 
+        <Card elevation={3} sx={{border:'1px solid', borderColor:theme.palette.divider,borderRadius:4}}>
           <CardMedia
             component="img"
             height="260"
@@ -157,7 +158,7 @@ const res = await deleteLesson({ input:{
           />
 
           <CardContent>
-            <Typography variant="h4">{course.courseName}</Typography>
+            <Typography variant="h4" sx={{fontWeight:600}}>{course.courseName}</Typography>
 
             <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
               {course.description}
@@ -208,7 +209,8 @@ const res = await deleteLesson({ input:{
         py: 2.5,
         mb: 4,
         display: "flex",
-        alignItems: "center",
+        flexDirection:'column',
+        alignItems: "left",
         justifyContent: "space-between",
         flexWrap: "wrap",
         gap: 2,
@@ -528,7 +530,8 @@ const res = await deleteLesson({ input:{
         <Dialog open={lessonForm}>
           <LessonForm />
         </Dialog>
-      </>
+
+      </Box>
     );
   }
 }

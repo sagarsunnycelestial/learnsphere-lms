@@ -83,9 +83,6 @@ export default function ActionTab() {
               fontWeight: 600,
               fontSize: "0.95rem",
               boxShadow: "none",
-              "&:hover": {
-                boxShadow: theme.shadows[2],
-              },
             }}
           >
             Add User

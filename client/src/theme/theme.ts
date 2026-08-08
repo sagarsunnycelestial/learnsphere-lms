@@ -1,30 +1,29 @@
-import {createTheme} from '@mui/material/styles'
-
+import { createTheme } from '@mui/material/styles'
 
 export const lightTheme = createTheme({
   palette: {
     mode: "light",
     primary: {
-      main: "#3B4A9E",
-      light: "#EAEDFA",
+      main: "#3D4FA8",
+      light: "#EDF0FB",
     },
     success: {
-      main: "#2E7D5B",
-      light: "#E6F3EC",
+      main: "#2E8564",
+      light: "#E5F4EC",
     },
     error: {
-      main: "#C0533F",
-      light: "#FBEAE6",
+      main: "#C85A45",
+      light: "#FCEBE7",
     },
     background: {
-      default: "#e7e7f2",
+      default: "#EEF0F7",
       paper: "#FFFFFF",
     },
     text: {
-      primary: "#1A1B23",
-      secondary: "#6E7180",
+      primary: "#1D1E2A",
+      secondary: "#6B6E82",
     },
-    divider: "#EBEBF2",
+    divider: "#E4E6F0",
   },
 });
 
@@ -32,25 +31,25 @@ export const darkTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
-      main: "#7B87D6",
-      light: "#252A47",
+      main: "#8992DE",
+      light: "#282E52",
     },
     success: {
-      main: "#5FB98A",
-      light: "#152C22",
+      main: "#68C295",
+      light: "#173327",
     },
     error: {
-      main: "#D97F68",
-      light: "#331E19",
+      main: "#E08A72",
+      light: "#3A211B",
     },
     background: {
-      default: "#14151F",
-      paper: "#1C1E2B",
+      default: "#12131C",
+      paper: "#1B1D2B",
     },
     text: {
-      primary: "#F2F2F6",
-      secondary: "#8E90A3",
+      primary: "#F4F4F8",
+      secondary: "#9497AC",
     },
-    divider: "#282B3C",
+    divider: "#1e223e",
   },
 });

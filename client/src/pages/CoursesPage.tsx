@@ -1,6 +1,8 @@
 import CourseCard from "../components/dashboard/CourseCard"
 import useFetchCourses from "../hooks/useFetchCourses"
-import { Paper,Dialog,Box,TextField,Stack ,useTheme} from "@mui/material"
+import SearchIcon from "@mui/icons-material/Search";
+import InputAdornment from "@mui/material/InputAdornment";
+import { Paper,Dialog,Box,TextField,useTheme} from "@mui/material"
 import { useState,useEffect } from "react"
 import CourseForm from "../components/forms/CourseForm"
 import { useAppSelector } from "../store/hooks"
@@ -25,37 +27,52 @@ const isOpen = useAppSelector(state=>state.form.courses.isAddCourseFormOpen)
   return ()=> clearTimeout(timer)
   },[search])
   return (<>
-  <Paper
-      elevation={0}
-      sx={{
-        border: "1px solid",
-        borderColor: theme.palette.background.paper,
-        px: 2,
-        py: 1,
-        display: "flex",
-        alignItems: "center",
-        mb:2
-      }}
-    >
-      <Stack direction="row">
-        <TextField
-          size="small"
-          value={search}
-          onChange={handleSearch}
-          placeholder="Search Course"
-          sx={{ width: 280 }}
-        />
-      </Stack>
-    </Paper>
-     <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          overflow: "auto",
-          gap: 5,
-          mt: 5,
-        }}
-      >
+ <Paper
+  elevation={0}
+  sx={{
+    border: "1px solid",
+    borderColor: theme.palette.divider,
+    borderRadius: 4,
+    px: 2,
+    py: 1,
+    display: "flex",
+    alignItems: "center",
+    mb: 3,
+  }}
+>
+  <TextField
+    size="small"
+    value={search}
+    onChange={handleSearch}
+    placeholder="Search courses..."
+  slotProps={{
+    input: {
+      startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon sx={{ color: "text.secondary", fontSize: 20 }} />
+        </InputAdornment>
+      ),
+    },
+  }}
+    sx={{
+      width: 320,
+      "& .MuiOutlinedInput-root": {
+        borderRadius: 3,
+        "& fieldset": { border: "none" },
+      },
+    }}
+  />
+</Paper>
+
+<Box
+  sx={{
+    display: "flex",
+    flexWrap: "wrap",
+    overflow: "auto",
+    gap: 3,
+    mt: 3,
+  }}
+>
 {filteredCourses?.map((course) => {
   return <CourseCard key={course?.courseId} course={course!} />;
 })}
