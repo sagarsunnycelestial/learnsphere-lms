@@ -69,9 +69,29 @@ export type FormInitialState  = {
  isAddCourseFormOpen: boolean;
  selectedcourse: Course | null;
  };
+ lessons: {
+    mode:string,
+    isLessonFormOpen:boolean,
+    selectedLesson:{
+      courseId:string;
+        lessonId?:string
+        lessonName:string
+        description?:string
+        videoLink?:string
+        sortOrder?:number
+    } | null
+  }
+  
 
 }
 
+export interface Lesson {
+  lessonId: string;
+  lessonName: string;
+  description?: string;
+  videoLink: string;
+  sortOrder: number;
+}
 export interface RegisterResponse {
   registerUser:{
 message:string

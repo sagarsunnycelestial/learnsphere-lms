@@ -19,7 +19,11 @@ createdUser:{
 isAddCourseFormOpen: false,
 selectedcourse:null
   },
-  
+  lessons: {
+    mode:'add',
+    isLessonFormOpen:false,
+    selectedLesson:null
+  }
   
 };
 
@@ -46,7 +50,12 @@ const formSlice = createSlice({
       state.users.createdUser.temp_password = pswrd;
       state.users.createdUser.didValueReceive = open
     },
-    } });
+     lessonFormControl(state,action){
+         const {mode,isLessonFormOpen,selectedLesson} = action.payload
+        state.lessons.isLessonFormOpen = isLessonFormOpen
+        state.lessons.mode = mode
+        state.lessons.selectedLesson =selectedLesson
+    },}});
 
-    export const {userAddFormControl,addCourseFormControl,storeInfo} = formSlice.actions;
+    export const {userAddFormControl,addCourseFormControl,storeInfo,lessonFormControl} = formSlice.actions;
     export default formSlice.reducer;

@@ -19,6 +19,7 @@ const ROLES = {
     'view:archived courses',
     'create:lesson',
     'manual:enroll',
+    'modify:lessons'
   ],
   Instructor:[
     "action:course",

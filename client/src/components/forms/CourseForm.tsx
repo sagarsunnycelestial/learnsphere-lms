@@ -42,7 +42,7 @@ export default function CourseForm() {
       };
       try {
         const res = await addNewCourse({ input });
-        toast.success(res.createCourse.message)
+        toast.success(res.message)
         dispatch(
           addCourseFormControl({
             isAddCourseFormOpen: false,

@@ -23,6 +23,10 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
         where: {
           courseId: courseId,
         },
+        relations:{
+          lessons:true
+        }
+        
       });
     } else if (context.user?.user_id) {
       course = await courseRepo.findOne({

@@ -20,6 +20,7 @@ import {
   useTheme,
   Slide,
 } from "@mui/material";
+import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import { hasPermission } from "../permissions/auth";
 import PeopleIcon from "@mui/icons-material/People";
 import EditIcon from "@mui/icons-material/Edit";
@@ -37,10 +38,17 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import useCoursesCRUD from "../hooks/useCoursesCRUD";
-import { addCourseFormControl } from "../store/slices/formSlice";
+import { addCourseFormControl, lessonFormControl } from "../store/slices/formSlice";
 import CourseForm from "../components/forms/CourseForm";
+import useLessonsCRUD from "../hooks/useLessonsCRUD";
+import { Lesson } from "../types/types";
+import { toast } from "react-toastify";
+import LessonForm from "../components/forms/LessonForm";
 export default function SingleCoursePage() {
+  const [lessonToDelete,setLessonToDelete] = useState<Lesson | null>()
+  const lessonDialog = Boolean(lessonToDelete)
   const [enrolled, setEnrolled] = useState(false);
+  const {deleteLesson} = useLessonsCRUD();
   const { id } = useParams();
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, error } = useFetchCourseById(id!);
@@ -51,13 +59,18 @@ export default function SingleCoursePage() {
   const isOpen = useAppSelector(
     (state) => state.form.courses.isAddCourseFormOpen,
   );
+  const lessonForm = useAppSelector(state=>state.form.lessons.isLessonFormOpen)
   const theme = useTheme();
   const { deleteCourse } = useCoursesCRUD();
   const [confirm, setConfirm] = useState<boolean>(false);
   console.log(quizzes);
   const isEnrolled = course?.isEnrolled;
   const handleDelete = async () => {
-    if (course?.courseId) await deleteCourse({ courseId: course.courseId });
+    if (course?.courseId) {
+ const res = await deleteCourse({ courseId: course.courseId });
+  toast.success(res?.message)
+    }
+     
   };
   const handleEdit = () => {
     dispatch(
@@ -68,6 +81,35 @@ export default function SingleCoursePage() {
       }),
     );
   };
+ const handleLessonEdit = (lesson:Lesson) => {
+  console.log(lesson.lessonId)
+    dispatch(
+      lessonFormControl({
+        mode: "edit",
+        isLessonFormOpen: true,
+        selectedLesson: {...lesson,courseId:course?.courseId}
+      }),
+    );
+  };
+  const handleLessonDialog=(lesson:Lesson) =>{
+    setLessonToDelete(lesson);
+  }
+  const handleLessonDelete =async() =>{
+    if (course?.courseId) {
+      try{
+const res = await deleteLesson({ input:{
+      courseId:course.courseId,
+      lessonId:lessonToDelete?.lessonId,
+    } });
+    toast.success(res?.message)
+    setLessonToDelete(null)
+      }
+      catch{
+        toast.error('Failed to delete lesson',)
+        setLessonToDelete(null)
+      }
+  }
+}
   const canModify = course?.canModify;
   if (isLoading) {
     return (
@@ -210,6 +252,15 @@ export default function SingleCoursePage() {
                       >
                         {enrolled ? "Close List" : "View Enrolled Students"}
                       </Button>
+                      <Button
+                        startIcon={<PlayLessonIcon />}
+                        onClick={() => dispatch(lessonFormControl({mode:'add',isLessonFormOpen:true,selectedLesson:null}))}
+                        color="primary"
+                        variant="outlined"
+                        size="small"
+                      >
+                        Add a lesson
+                      </Button>
                     </Stack>
                   </Box>
                 </Paper>
@@ -275,41 +326,59 @@ export default function SingleCoursePage() {
 </Box>
         </Card>
         <Box sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 3 }}>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">
-                Lessons ({course?.lessons?.length})
-              </Typography>
-            </AccordionSummary>
+         <Accordion>
+  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+    <Typography variant="h6">
+      Lessons ({course?.lessons?.length})
+    </Typography>
+  </AccordionSummary>
 
-            <AccordionDetails>
-              {isEnrolled || canModify ? (
-                <List>
-                  {[...lessons]
-                    .sort((a, b) => (a?.sortOrder ?? 0) - (b?.sortOrder ?? 0))
-                    .map((lesson) => (
-                      <ListItem key={lesson?.lessonId}>
-                        <ListItemText
-                          primary={`${lesson?.sortOrder}. ${lesson?.lessonName}`}
-                          secondary={lesson?.description}
-                        />
-                        <Box sx={{ width: 400 }}>
-                          <CardMedia
-                            component="video"
-                            controls
-                            autoPlay
-                            muted
-                            src={`${lesson?.videoLink}`}
-                          />
-                        </Box>
-                      </ListItem>
-                    ))}
-                </List>
-              ) : (
-                <Typography>Enroll to view lessons</Typography>
-              )}
-            </AccordionDetails>
-          </Accordion>
+  <AccordionDetails>
+    {isEnrolled || canModify ? (
+      <List>
+        {[...lessons]
+          .sort((a, b) => (a?.sortOrder ?? 0) - (b?.sortOrder ?? 0))
+          .map((lesson) => (
+            <ListItem key={lesson?.lessonId}>
+              <ListItemText
+                primary={`${lesson?.sortOrder}. ${lesson?.lessonName}`}
+                secondary={lesson?.description}
+              />
+              <Box sx={{ width: 400 }}>
+                <CardMedia
+                  component="video"
+                  controls
+                  muted
+                  src={`${lesson?.videoLink}`}
+                />
+              </Box>
+             {(hasPermission(user,'modify:lessons') || canModify) && <>
+             <Button
+             startIcon={<EditIcon />}
+                onClick={() => handleLessonEdit(lesson as Lesson)}
+                variant="outlined"
+                sx={{ ml: 2 }}
+              >
+                Edit
+              </Button>
+              <Button
+               startIcon={<DeleteForeverIcon />}
+                onClick={() => handleLessonDialog(lesson as Lesson)}
+                variant="contained"
+                color="error"
+                sx={{ ml: 1 }}
+              >
+                Delete
+              </Button>
+             </>} 
+            </ListItem>
+          ))}
+      </List>
+    ) : (
+      <Typography>Enroll to view lessons</Typography>
+    )}
+  </AccordionDetails>
+</Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h6">Quizzes ({quizzes?.length})</Typography>
@@ -403,8 +472,45 @@ export default function SingleCoursePage() {
             </Box>
           </Paper>
         </Dialog>
+        <Dialog open={lessonDialog} onClose={() => setLessonToDelete(null)}>o
+          <Paper sx={{ p: 3, minWidth: 320 }}>
+            <Typography variant="h6" gutterBottom>
+              Delete this Lesson?
+            </Typography>
+
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Are you sure you want to delete the{" "}
+              <Typography component="span" sx={{ fontWeight: 600 }}>
+                {lessonToDelete?.lessonName}{" "}
+              </Typography>{" "}
+              lesson? This action cannot be undone.
+            </Typography>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 1,
+              }}
+            >
+              <Button onClick={() => setLessonToDelete(null)}>Cancel</Button>
+
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<DeleteForeverIcon />}
+                onClick={handleLessonDelete}
+              >
+                Delete
+              </Button>
+            </Box>
+          </Paper>
+        </Dialog>
         <Dialog open={isOpen}>
           <CourseForm />
+        </Dialog>
+        <Dialog open={lessonForm}>
+          <LessonForm />
         </Dialog>
       </>
     );
