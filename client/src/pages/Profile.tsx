@@ -1,4 +1,4 @@
-import {Card, Typography,Button,Dialog,Avatar,Stack,Box,Divider} from '@mui/material'
+import {Card,Chip, Typography,Button,Dialog,Avatar,Stack,Box,Divider} from '@mui/material'
 import useFetchProfile from '../hooks/useFetchProfile'
 import AddIcon from "@mui/icons-material/Add";
 import { useAppDispatch,useAppSelector } from '../store/hooks';
@@ -39,7 +39,7 @@ selectedUser: selectedUser}));
  <Card
   elevation={0}
   sx={{
-    width: 450,
+    width: 400,
     p: 4,
 
     borderRadius: 4,
@@ -56,7 +56,8 @@ selectedUser: selectedUser}));
     }}
   >
     <Button
-      variant="contained"
+    size='small'
+      variant="outlined"
       startIcon={<AddIcon />}
       onClick={handleOpen}
       sx={{
@@ -87,11 +88,12 @@ selectedUser: selectedUser}));
       {profile?.username}
     </Typography>
 
-    <Typography
-      sx={{ color: "text.secondary" }}
-    >
-      {profile?.role?.roleName}
-    </Typography>
+    <Chip
+              label={profile?.role?.roleName}
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
   </Stack>
 
   <Divider sx={{ my: 3 }} />
@@ -115,7 +117,7 @@ selectedUser: selectedUser}));
         </Typography>
 
         <Typography
-        sx={{fontSize:20}}
+        sx={{fontSize:18}}
         >
           {value}
         </Typography>
