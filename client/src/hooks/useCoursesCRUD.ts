@@ -17,7 +17,7 @@ export default function useCoursesCRUD() {
        if (!data) {
          throw new Error("No response from server");
        }
-       return data;
+       return data.createCourse;
      },
      onSuccess: () => {
        queryClient.invalidateQueries({

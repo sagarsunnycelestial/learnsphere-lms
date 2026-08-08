@@ -15,9 +15,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 type Documents = {
     "mutation CreateCourse($input: CourseDetails!) {\n  createCourse(input: $input) {\n    message\n  }\n}": typeof types.CreateCourseDocument,
+    "mutation AddALesson($input: LessonDetails) {\n  addALesson(input: $input) {\n    message\n  }\n}": typeof types.AddALessonDocument,
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": typeof types.RegisterUserDocument,
     "mutation DeleteCourse($courseId: String!) {\n  deleteCourse(courseId: $courseId) {\n    message\n  }\n}": typeof types.DeleteCourseDocument,
+    "mutation DeleteALesson($input: DeleteLessonDetails!) {\n  deleteALesson(input: $input) {\n    message\n  }\n}": typeof types.DeleteALessonDocument,
     "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": typeof types.EditCourseDocument,
+    "mutation EditALesson($input: LessonDetails) {\n  editALesson(input: $input) {\n    message\n  }\n}": typeof types.EditALessonDocument,
     "mutation EnrollCourse($input: EnrollDetails) {\n  enrollCourse(input: $input) {\n    message\n  }\n}": typeof types.EnrollCourseDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": typeof types.LoginDocument,
     "mutation Logout {\n  logout {\n    message\n  }\n}": typeof types.LogoutDocument,
@@ -31,9 +34,12 @@ type Documents = {
 };
 const documents: Documents = {
     "mutation CreateCourse($input: CourseDetails!) {\n  createCourse(input: $input) {\n    message\n  }\n}": types.CreateCourseDocument,
+    "mutation AddALesson($input: LessonDetails) {\n  addALesson(input: $input) {\n    message\n  }\n}": types.AddALessonDocument,
     "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}": types.RegisterUserDocument,
     "mutation DeleteCourse($courseId: String!) {\n  deleteCourse(courseId: $courseId) {\n    message\n  }\n}": types.DeleteCourseDocument,
+    "mutation DeleteALesson($input: DeleteLessonDetails!) {\n  deleteALesson(input: $input) {\n    message\n  }\n}": types.DeleteALessonDocument,
     "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}": types.EditCourseDocument,
+    "mutation EditALesson($input: LessonDetails) {\n  editALesson(input: $input) {\n    message\n  }\n}": types.EditALessonDocument,
     "mutation EnrollCourse($input: EnrollDetails) {\n  enrollCourse(input: $input) {\n    message\n  }\n}": types.EnrollCourseDocument,
     "mutation Login($input: LoginCredentials!) {\n  login(input: $input) {\n    accessToken\n    profile_image_path\n    role\n  }\n}": types.LoginDocument,
     "mutation Logout {\n  logout {\n    message\n  }\n}": types.LogoutDocument,
@@ -67,6 +73,10 @@ export function graphql(source: "mutation CreateCourse($input: CourseDetails!) {
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation AddALesson($input: LessonDetails) {\n  addALesson(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation AddALesson($input: LessonDetails) {\n  addALesson(input: $input) {\n    message\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}"): (typeof documents)["mutation RegisterUser($input: UserDetails!) {\n  registerUser(input: $input) {\n    email\n    message\n    temp_password\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
@@ -75,7 +85,15 @@ export function graphql(source: "mutation DeleteCourse($courseId: String!) {\n  
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
+export function graphql(source: "mutation DeleteALesson($input: DeleteLessonDetails!) {\n  deleteALesson(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation DeleteALesson($input: DeleteLessonDetails!) {\n  deleteALesson(input: $input) {\n    message\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
 export function graphql(source: "mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation EditCourse($input: UpdateCourseDetails) {\n  editCourse(input: $input) {\n    message\n  }\n}"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "mutation EditALesson($input: LessonDetails) {\n  editALesson(input: $input) {\n    message\n  }\n}"): (typeof documents)["mutation EditALesson($input: LessonDetails) {\n  editALesson(input: $input) {\n    message\n  }\n}"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
