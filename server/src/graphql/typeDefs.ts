@@ -181,7 +181,18 @@ input EnrollDetails {
  courseId: String!
  userId: String
  }
-
+ input LessonDetails {
+ lessonId:String
+  courseId:String!
+  lessonName:String!
+  description:String
+  videoLink:String
+  sortOrder:Int
+ }
+input DeletLessonDetails {
+courseId:String
+lessonId:String
+}
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
   registerUser(input:UserDetails!): RegisterResponse!
@@ -191,5 +202,8 @@ type Mutation {
   editCourse(input:UpdateCourseDetails) : Response!
   deleteCourse(courseId: String!): Response!
   enrollCourse(input:EnrollDetails):Response!
+  addALesson(input:LessonDetails):Response!
+  editALesson(input:LessonDetails):Response!
+  deleteALesson(input:DeleteLessonDetails!):Response!
 }
 `;

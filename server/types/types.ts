@@ -82,3 +82,20 @@ export type EnrollDetails = {
 export type EnrollCourseArgs = {
   input:EnrollDetails
 }
+export type LessonDetails = {
+  courseId:string
+  lessonId?:string
+  lessonName:string
+  description?:string
+  videoLink?:string
+  sortOrder:number
+}
+export type LessonUpdateArgs = {
+  input: LessonDetails
+}
+export type DeleteLessonArgs = {
+  input: {
+    courseId:string;
+    lessonId:string;
+  }
+}

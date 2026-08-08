@@ -4,6 +4,8 @@ import {
   UserRoles,
   LoginArgs,
   EnrollCourseArgs,
+  LessonUpdateArgs,
+  DeleteLessonArgs,
 } from "../../types/types.js";
 import {
   loginUser,
@@ -33,6 +35,7 @@ import {
   enrollAStudent,
 } from "../controllers/courses.controller.js";
 import { fetchStudentDetails } from "../controllers/student.controller.js";
+import { addLessonToCourse,editLessonInCourse,deleteLessonInCourse } from "../controllers/lessons.controller.js";
 export const resolvers = {
   Query: {
     fetchProfile: async (
@@ -186,6 +189,32 @@ export const resolvers = {
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await enrollAStudent(args, context);
+    },
+    addALesson: async(
+      _parents: unknown,
+      args: LessonUpdateArgs,
+      context: Context,
+    )=>{
+      if(context.user?.role === UserRoles.STUDENT) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+      return await addLessonToCourse(args,context)
+    },
+    editALesson:async(
+      _parents: unknown,
+      args: LessonUpdateArgs,
+      context: Context,
+    )=>{
+      if(context.user?.role === UserRoles.STUDENT) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+      return await editLessonInCourse(args,context)
+    },deleteALesson:async(
+      _parents: unknown,
+      args: DeleteLessonArgs,
+      context: Context,
+    )=>{
+      if(context.user?.role === UserRoles.STUDENT) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+
+      return await deleteLessonInCourse(args,context)
     },
   },
 };

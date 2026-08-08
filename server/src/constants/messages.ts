@@ -16,5 +16,7 @@ export const ERROR_MESSAGES = {
    PASSWORD_NOT_MATCHING: "Password entered did not match",
     FAILED_TO_DELETE_COURSE: "Failed to delete the course",
     FAILED_TO_ENROLL_USER: "Failed to enroll this student into the course",
-    STUDENTS_NOT_FOUND:"Failed to fetch student details"
+    STUDENTS_NOT_FOUND:"Failed to fetch student details",
+    LESSON_NOT_CREATED:"Failed to create a lesson",
+     LESSON_NOT_FOUND:"Failed to fetch the lesson"
 } as const;
