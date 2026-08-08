@@ -218,10 +218,13 @@ export default function SingleCoursePage() {
                 label={course.isActive ? "Active" : "Archived"}
               />
             </Stack>
-            <Divider  sx={{mt:3}}/>
-            <Stack direction="row" spacing={2} sx={{ mt: 3, flexWrap: "wrap" }}>
+           
+          
               
-              {hasPermission(user, "action:course") && (
+              {hasPermission(user, "action:course") && (<>
+              <Divider sx={{mt:3}} />
+                  <Stack direction="row" spacing={2} sx={{  flexWrap: "wrap",mt:3 }}>
+                     
                 <Paper
                   elevation={0}
                   sx={{
@@ -338,11 +341,11 @@ export default function SingleCoursePage() {
                       {enrolled ? "Close List" : "View Enrolled Students"}
                     </Button>
                   </Stack>
-                </Paper>
+                </Paper>   </Stack></>
               )}
-            </Stack>
+         
           </CardContent>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, px: 3, py: 2.5 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, px: 3,py:1 }}>
   {course.enrollments && course.enrollments.length > 0 &&(
     <>
      {enrolled && <Typography variant="subtitle1" sx={{ px: 1, fontWeight: 600 }}>
