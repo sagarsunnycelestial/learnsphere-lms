@@ -19,7 +19,9 @@ const ROLES = {
     'view:archived courses',
     'create:lesson',
     'manual:enroll',
-    'modify:lessons'
+    'modify:lessons',
+    'modify:quiz',
+    'create:quiz',
   ],
   Instructor:[
     "action:course",
@@ -29,11 +31,13 @@ const ROLES = {
       "create:course",
     "edit:course",
     "delete:course",
-    'create:lesson'
+    'create:lesson',
+    'create:quiz',
   ],
   Student:[
     "view:profile",
-    'course:enroll'
+    'course:enroll',
+    'submit:quiz'
   ]
 } as const
 

@@ -198,6 +198,7 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
     await userRepo.save(user);
     if (result) {
       return {
+        message:"Submitted quiz answers successfully",
         courseDetail: {
           courseId: quiz.course.courseId,
           courseName: quiz.course.courseName,

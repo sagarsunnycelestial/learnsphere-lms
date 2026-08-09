@@ -217,6 +217,7 @@ input QuizDetails {
   answerList: [AnswerInput]
   }
   type QuizResultResponse {
+  message:String
   courseDetail:CourseResponse
   userId:String
   username:String

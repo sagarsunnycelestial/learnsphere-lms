@@ -48,12 +48,12 @@ import useLessonsCRUD from "../hooks/useLessonsCRUD";
 import { Lesson } from "../types/types";
 import { toast } from "react-toastify";
 import LessonForm from "../components/forms/LessonForm";
+import useQuizzesRUD from "../hooks/useQuizzesCRUD";
 export default function SingleCoursePage() {
   const [lessonToDelete, setLessonToDelete] = useState<Lesson | null>();
   const lessonDialog = Boolean(lessonToDelete);
   const [enrolled, setEnrolled] = useState(false);
   const { deleteLesson } = useLessonsCRUD();
-
   const { id } = useParams();
   const user = useAppSelector((state) => state.auth.user);
   const { data, isLoading, error } = useFetchCourseById(id!);
@@ -61,6 +61,7 @@ export default function SingleCoursePage() {
   const lessons = course?.lessons ?? [];
   const quizzes = course?.quizzes ?? [];
   const dispatch = useAppDispatch();
+  const {submitQuizAnswers} = useQuizzesRUD();
   const isOpen = useAppSelector(
     (state) => state.form.courses.isAddCourseFormOpen,
   );
@@ -118,6 +119,24 @@ export default function SingleCoursePage() {
     }
   };
   const canModify = course?.canModify;
+ async function handleQuizSubmit(e: React.SubmitEvent<HTMLFormElement>, quizId?: string){
+  e.preventDefault();
+  const formData = new FormData(e.currentTarget);
+   console.log(formData)
+
+      // const answerList = data.reduce((acc,q)=>{
+      //   acc.push({questionId:q.key,selectionOption:q.value})
+      // },[])
+    const answerList = Array.from(formData.entries(),([questionId,selectionOption])=>({questionId,selectionOption:selectionOption as string}))
+    console.log({input:{quizId,answerList}})
+    try{
+      const res = await submitQuizAnswers({input:{quizId,answerList}})
+      toast.success(res?.message)
+      console.log(res)
+    }catch{
+      toast.error("Failed to submit answers");
+    }
+ }
   if (isLoading) {
     return (
       <Box
@@ -514,56 +533,55 @@ export default function SingleCoursePage() {
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">Quizzes ({quizzes?.length})</Typography>
+              <Typography variant="h6">Quizzes</Typography>
             </AccordionSummary>
 
             <AccordionDetails>
               {isEnrolled || canModify ? (
                 <List>
-                  {quizzes.map((quiz, index) => (
-                    <Box
-                      sx={{
-                        bgcolor: "primary.light",
-                        color: "text.main",
-                        borderRadius: 4,
-                        p: 2,
-                        mb: 2,
-                      }}
-                      component="form"
-                      key={quiz?.quizId}
-                    >
-                      <Typography>Quiz Number {index + 1}</Typography>
-                      <Typography>{quiz?.quizName}</Typography>
-                      <List>
-                        {quiz?.questions?.map((question) => (
-                          <Box key={question?.questionId}>
-                            <FormControl>
-                              <FormLabel id={`${question?.questionId}`}>
-                                {question?.questionText}
-                              </FormLabel>
-                              <RadioGroup name="radio-buttons-group">
-                                {question?.options?.map((option) => (
-                                  <FormControlLabel
-                                    key={option?.optionId}
-                                    value={option?.optionId}
-                                    control={<Radio />}
-                                    label={option?.optionText}
-                                  />
-                                ))}
-                              </RadioGroup>
-                            </FormControl>
-                          </Box>
-                        ))}
-                      </List>
-                      <Button
-                        variant="contained"
-                        type="submit"
-                        onClick={() => alert("submitting")}
-                      >
-                        Submit Answers
-                      </Button>
-                    </Box>
-                  ))}
+                {quizzes.map((quiz, index) => (
+  <Box
+    sx={{
+      bgcolor: "primary.light",
+      color: "text.main",
+      borderRadius: 4,
+      p: 2,
+      mb: 2,
+    }}
+    component="form"
+    key={quiz?.quizId}
+    onSubmit={(e) => handleQuizSubmit(e, quiz?.quizId as string)}
+  >
+    <input type="hidden" name="quizId" value={quiz?.quizId ?? ""} />
+
+    <Typography>Quiz Number {index + 1}</Typography>
+    <Typography>{quiz?.quizName}</Typography>
+    <List>
+      {quiz?.questions?.map((question) => (
+        <Box key={question?.questionId}>
+          <FormControl>
+            <FormLabel id={`${question?.questionId}`}>
+              {question?.questionText}
+            </FormLabel>
+            <RadioGroup name={`${question?.questionId}`}>
+              {question?.options?.map((option) => (
+                <FormControlLabel
+                  key={option?.optionId}
+                  value={option?.optionId}
+                  control={<Radio />}
+                  label={option?.optionText}
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        </Box>
+      ))}
+    </List>
+    <Button variant="contained" type="submit">
+      Submit Answers
+    </Button>
+  </Box>
+))}
                 </List>
               ) : (
                 <Typography>Enroll to view lessons</Typography>
