@@ -4,13 +4,40 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "tsx src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tsx watch src/index.ts",
+    "migration:generate": "tsx --env-file=.env node_modules/typeorm/cli.js migration:generate src/migrations/InitialSchema -d src/config/dbConfig.ts",
+    "migration:run": "tsx --env-file=.env node_modules/typeorm/cli.js migration:run -d src/config/dbConfig.ts",
+    "migration:revert": "tsx --env-file=.env node_modules/typeorm/cli.js migration:revert -d src/config/dbConfig.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "dependencies": {
-    "express": "^5.2.1"
+    "@apollo/server": "^5.5.1",
+    "@as-integrations/express5": "^1.1.2",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "graphql": "^16.14.2",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.22.0",
+    "reflect-metadata": "^0.2.2",
+    "tsx": "^4.23.5",
+    "typeorm": "^1.1.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^26.1.2",
+    "cors": "^2.8.6",
+    "typescript": "^7.0.2"
   }
 }
