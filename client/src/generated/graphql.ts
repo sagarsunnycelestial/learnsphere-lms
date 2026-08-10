@@ -40,9 +40,8 @@ export type LoginCredentials = {
 };
 
 export type QuestionDetails = {
-  correctOption?: number | null | undefined;
+  correctOption?: string | null | undefined;
   optionFour?: string | null | undefined;
-  optionOne?: string | null | undefined;
   optionThree?: string | null | undefined;
   optionTwo?: string | null | undefined;
   questionText?: string | null | undefined;

@@ -102,8 +102,7 @@ export type DeleteLessonArgs = {
 export interface QuestionDetails {
   quizId?: string;
   questionText?: string;
-  correctOption?: number;
-  optionOne?: string;
+  correctOption?: string;
   optionTwo?: string;
   optionThree?: string;
   optionFour?: string;

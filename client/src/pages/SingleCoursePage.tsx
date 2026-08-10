@@ -35,6 +35,7 @@ import useFetchCourseById from "../hooks/useFetchCourseById";
 import CardMedia from "@mui/material/CardMedia";
 import CircularProgress from "@mui/material/CircularProgress";
 // import CourseActionTab from "../components/dashboard/CourseActionTab";
+import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useState } from "react";
 import { alpha } from "@mui/material/styles";
@@ -42,13 +43,20 @@ import useCoursesCRUD from "../hooks/useCoursesCRUD";
 import {
   addCourseFormControl,
   lessonFormControl,
+  quizFormControl,
+  questionFormControl,
+  resultDisplay
 } from "../store/slices/formSlice";
 import CourseForm from "../components/forms/CourseForm";
 import useLessonsCRUD from "../hooks/useLessonsCRUD";
 import { Lesson } from "../types/types";
 import { toast } from "react-toastify";
+import QuizIcon from "@mui/icons-material/Quiz";
 import LessonForm from "../components/forms/LessonForm";
 import useQuizzesRUD from "../hooks/useQuizzesCRUD";
+import QuizForm from "../components/forms/QuizForm";
+import QuestionForm from "../components/forms/QuestionForm";
+import QuizResultDisplay from "../components/course/QuizResultDisplay";
 export default function SingleCoursePage() {
   const [lessonToDelete, setLessonToDelete] = useState<Lesson | null>();
   const lessonDialog = Boolean(lessonToDelete);
@@ -68,6 +76,9 @@ export default function SingleCoursePage() {
   const lessonForm = useAppSelector(
     (state) => state.form.lessons.isLessonFormOpen,
   );
+  const submitted = useAppSelector(state=>state.form.results.submitted)
+  const quizForm = useAppSelector(state=>state.form.quizzes.isQuizFormOpen)
+  const questionForm = useAppSelector(state=>state.form.questions.isQuestionFormOpen)
   const theme = useTheme();
   const { deleteCourse } = useCoursesCRUD();
   const [confirm, setConfirm] = useState<boolean>(false);
@@ -132,6 +143,7 @@ export default function SingleCoursePage() {
     try{
       const res = await submitQuizAnswers({input:{quizId,answerList}})
       toast.success(res?.message)
+      dispatch(resultDisplay({submitted:true,quizResult:res}))
       console.log(res)
     }catch{
       toast.error("Failed to submit answers");
@@ -345,6 +357,24 @@ export default function SingleCoursePage() {
                     >
                       Add a Lesson
                     </Button>
+                <Button
+  startIcon={<QuizIcon />}
+  onClick={() =>
+    dispatch(
+      quizFormControl({
+        mode: "add",
+        isQuizFormOpen: true,
+        selectedQuiz: null,
+      }),
+    )
+  }
+  color="primary"
+  variant="contained"
+  size="small"
+  sx={{ borderRadius: 2, width: 220 }}
+>
+  Add a Quiz
+</Button>
                     <Button
                       startIcon={<PeopleIcon />}
                       onClick={() => setEnrolled(!enrolled)}
@@ -531,63 +561,133 @@ export default function SingleCoursePage() {
               )}
             </AccordionDetails>
           </Accordion>
-          <Accordion>
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">Quizzes</Typography>
-            </AccordionSummary>
+           <Accordion>
+    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <Typography variant="h6">Quizzes</Typography>
+    </AccordionSummary>
 
-            <AccordionDetails>
-              {isEnrolled || canModify ? (
-                <List>
-                {quizzes.map((quiz, index) => (
-  <Box
-    sx={{
-      bgcolor: "primary.light",
-      color: "text.main",
-      borderRadius: 4,
-      p: 2,
-      mb: 2,
-    }}
-    component="form"
-    key={quiz?.quizId}
-    onSubmit={(e) => handleQuizSubmit(e, quiz?.quizId as string)}
-  >
-    <input type="hidden" name="quizId" value={quiz?.quizId ?? ""} />
+    <AccordionDetails>
+      {isEnrolled || canModify ? (
+        <List>
+          {quizzes.map((quiz, index) => (
+            <Box
+              sx={{
+                bgcolor: "primary.light",
+                color: "text.main",
+                borderRadius: 4,
+                p: 2,
+                mb: 2,
+              }}
+              component="form"
+              key={quiz?.quizId}
+              onSubmit={(e) => handleQuizSubmit(e, quiz?.quizId as string)}
+            >
+              <input type="hidden" name="quizId" value={quiz?.quizId ?? ""} />
 
-    <Typography>Quiz Number {index + 1}</Typography>
-    <Typography>{quiz?.quizName}</Typography>
-    <List>
-      {quiz?.questions?.map((question) => (
-        <Box key={question?.questionId}>
-          <FormControl>
-            <FormLabel id={`${question?.questionId}`}>
-              {question?.questionText}
-            </FormLabel>
-            <RadioGroup name={`${question?.questionId}`}>
-              {question?.options?.map((option) => (
-                <FormControlLabel
-                  key={option?.optionId}
-                  value={option?.optionId}
-                  control={<Radio />}
-                  label={option?.optionText}
-                />
-              ))}
-            </RadioGroup>
-          </FormControl>
-        </Box>
-      ))}
-    </List>
-    <Button variant="contained" type="submit">
-      Submit Answers
-    </Button>
-  </Box>
-))}
-                </List>
-              ) : (
-                <Typography>Enroll to view lessons</Typography>
-              )}
-            </AccordionDetails>
-          </Accordion>
+              <Stack
+                direction="row"
+                spacing={2}
+                sx={{
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  mb: 1,
+                }}
+              >
+                <Box>
+                  <Typography>Quiz Number {index + 1}</Typography>
+                  <Typography>{quiz?.quizName}</Typography>
+                </Box>
+
+                {(hasPermission(user, "modify:quizzes") || canModify) && (
+                  <Stack direction="row" spacing={2}>
+                    <Button
+                      type="button"
+                      startIcon={<AddIcon />}
+                      onClick={() =>
+                        dispatch(
+                          questionFormControl({
+                            mode: "add",
+                            isQuestionFormOpen: true,
+                            quizId: quiz?.quizId ?? null,
+                          }),
+                        )
+                      }
+                      variant="outlined"
+                      size="small"
+                    >
+                      Add Question
+                    </Button>
+                    <Button
+                      type="button"
+                      startIcon={<DeleteForeverIcon />}
+                      variant="contained"
+                      color="error"
+                      size="small"
+                    >
+                      Delete Quiz
+                    </Button>
+                  </Stack>
+                )}
+              </Stack>
+
+              <List>
+                {quiz?.questions?.map((question) => (
+                  <Box key={question?.questionId} sx={{ mb: 1 }}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{
+                        alignItems: "flex-start",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        gap: 2,
+                      }}
+                    >
+                      <FormControl>
+                        <FormLabel id={`${question?.questionId}`}>
+                          {question?.questionText}
+                        </FormLabel>
+                        <RadioGroup name={`${question?.questionId}`}>
+                          {question?.options?.map((option) => (
+                            <FormControlLabel
+                              key={option?.optionId}
+                              value={option?.optionId}
+                              control={<Radio />}
+                              label={option?.optionText}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </FormControl>
+
+                      {(hasPermission(user, "modify:quizzes") || canModify) && (
+                        <Button
+                          type="button"
+                          startIcon={<DeleteForeverIcon />}
+                          variant="outlined"
+                          color="error"
+                          size="small"
+                        >
+                          Delete Question
+                        </Button>
+                      )}
+                    </Stack>
+                  </Box>
+                ))}
+              </List>
+
+              <Button variant="contained" type="submit" disabled ={!isEnrolled}>
+                Submit Answers
+              </Button>
+            </Box>
+          ))}
+        </List>
+      ) : (
+        <Typography>Enroll to view lessons</Typography>
+      )}
+    </AccordionDetails>
+  </Accordion>
         </Box>
         <Dialog open={confirm} onClose={() => setConfirm(false)}>
           <Paper sx={{ p: 3, minWidth: 320 }}>
@@ -674,6 +774,30 @@ export default function SingleCoursePage() {
           }}
         >
           <LessonForm />
+        </Dialog>
+          <Dialog
+    open={quizForm}
+    onClose={() =>
+      dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))
+            }
+         >
+   <QuizForm />
+        </Dialog>
+           <Dialog
+    open={questionForm}
+    onClose={() =>
+      dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))
+            }
+         >
+   <QuestionForm />
+        </Dialog>
+              <Dialog
+    open={submitted}
+    onClose={() =>
+      dispatch(resultDisplay({ submitted: false, quizResult: null }))
+            }
+         >
+   <QuizResultDisplay />
         </Dialog>
       </Paper>
     );

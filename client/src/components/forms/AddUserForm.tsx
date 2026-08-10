@@ -17,6 +17,7 @@ import { useAppSelector, useAppDispatch } from "../../store/hooks";
 import { uploadImage } from "../../supabase/uploadImage";
 import { FETCH_ROLES } from "../../graphql/queries/FETCH_ROLES";
 import { toast } from "react-toastify";
+import { newUserInfoToPDF } from "../../pdf-lib/pdfHandler";
 export default function AddUserForm() {
   const selectedUser = useAppSelector((state) => state.form.users.selectedUser);
   console.log('selected user:',selectedUser)
@@ -53,7 +54,10 @@ export default function AddUserForm() {
             didValueReceive: true,
           }),
         );
-
+        if(res.registerUser.email && res.registerUser.temp_password){
+ await newUserInfoToPDF({email:res.registerUser.email,temp_password:res.registerUser.temp_password})
+        }
+       
         dispatch(
           userAddFormControl({
             isUserAddFormOpen: false,
@@ -61,7 +65,13 @@ export default function AddUserForm() {
           }),
         );
       } catch (err) {
-        toast.error(err as string);
+        const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === "string"
+        ? err
+        : "Failed to create user";
+  toast.error(message);
       }
     } else {
       try{
@@ -158,7 +168,8 @@ export default function AddUserForm() {
         }}
       >
         <TextField
-          label="Full Name"
+          label="Username"
+          helperText='User name must be unique'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           required

@@ -80,10 +80,45 @@ export type FormInitialState  = {
         videoLink?:string
         sortOrder?:number
     } | null
-  }
+  },
+   quizzes: {
+    mode: string;
+    isQuizFormOpen: boolean;
+    selectedQuiz: {
+      courseId: string;
+      quizId?: string;
+      quizName: string;
+    } | null;
+  };
+  questions: {
+    mode: string;
+    isQuestionFormOpen: boolean;
+    quizId: string | null;
+  };
+  results :{
+  submitted:false,
+  quizResult :QuizResultResponse | null
+}
   
 
 }
+export type CourseResponse = {
+  courseId?: string | null;
+  courseName?: string | null;
+  isActive?: boolean | null;
+};
+
+export type QuizResultResponse = {
+  message?: string | null;
+  courseDetail?: CourseResponse | null;
+  userId?: string | null;
+  username?: string | null;
+  profile_image_path?: string | null;
+  resultId?: string | null;
+  quizId?: string | null;
+  quizName?: string | null;
+  score?: number | null;
+};
 
 export interface Lesson {
   lessonId: string;

@@ -3,9 +3,9 @@ import { apolloClient } from "../graphql/apolloClient";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { CreateAQuestionDocument, CreateAQuestionMutationVariables, CreateAQuizDocument, CreateAQuizMutationVariables, SubmitQuizDocument, SubmitQuizMutationVariables } from "../generated/graphql";
-import { useState } from "react";
+import { useParams } from "react-router";
 export default function useQuizzesRUD() {
-  const [courseId,setCourseId] = useState<string>()
+  const {id} = useParams()
   const queryClient = useQueryClient();
   const { mutateAsync: addNewQuiz } = useMutation({
     mutationFn: async (input: CreateAQuizMutationVariables) => {
@@ -19,12 +19,11 @@ export default function useQuizzesRUD() {
       }
       return data.createAQuiz;
     },
-    onSuccess: (_, variables) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["course", courseId],
+        queryKey: ["course", id],
         
       });
-      setCourseId(variables.input?.courseId);
     },
     onError: () => {
       toast.error("Creating a quiz failed");
@@ -41,7 +40,7 @@ export default function useQuizzesRUD() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["course",courseId],
+        queryKey: ["course",id],
       });
     },
     onError: () => {
@@ -57,9 +56,9 @@ export default function useQuizzesRUD() {
       });
       return data?.submitQuiz;
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["course", data?.courseDetail?.courseId],
+        queryKey: ["course", id],
       });
     },
     onError: () => {

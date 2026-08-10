@@ -53,7 +53,6 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
   const {
-    optionOne,
     optionTwo,
     optionFour,
     optionThree,
@@ -61,6 +60,16 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
     questionText,
   } = args.input;
   try {
+  if (
+      !questionText ||
+      !correctOption ||
+      !optionTwo ||
+      !optionThree ||
+      !optionFour
+    )
+      throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
+
+
     const quiz = await quizRepo.findOne({
       where: {
         quizId: args.input.quizId,
@@ -70,22 +79,14 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
       throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
     }
 
-    if (
-      !questionText ||
-      !correctOption ||
-      !optionOne ||
-      !optionTwo ||
-      !optionThree ||
-      !optionFour
-    )
-      throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
+  
     const question = questionRepo.create({
       questionText: questionText,
       quiz: quiz,
     });
     await questionRepo.save(question);
-    const option1 = optionRepo.create({
-      optionText: optionOne,
+    const correctAnswer = optionRepo.create({
+      optionText: correctOption,
       question: question,
     });
 
@@ -103,19 +104,13 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
       question: question,
     });
     await Promise.all([
-      optionRepo.save(option1),
+      optionRepo.save(correctAnswer),
       optionRepo.save(option2),
       optionRepo.save(option3),
       optionRepo.save(option4),
     ]);
 
-    const optionArray = [option1, option2, option3, option4];
-    if (correctOption <= 0 || correctOption > 4)
-      throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
-
-    const answerOption = optionArray[correctOption - 1] as Options;
-
-    question.correctOption = answerOption;
+    question.correctOption = correctAnswer;
     await questionRepo.save(question);
     return { message: "Question and options created successfully" };
   } catch (err) {
@@ -164,6 +159,7 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
     if (!quiz) throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
 
     const questionsInQuiz = quiz.questions;
+    const total_questions = quiz.questions.length
     const result = args.input.answerList?.reduce(
       (acc, question) => {
         const correctQuestion = questionsInQuiz.find((q) => {
@@ -187,11 +183,11 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
       },
       { score: 0 },
     );
-
+ const score = Number(((result.score / total_questions) * 100).toFixed(2));
     const quizResult = resultRepo.create({
       quiz: quiz,
       user: user,
-      score: result?.score || 0,
+      score: score || 0,
     });
     await resultRepo.save(quizResult);
     user.results.push(quizResult);

@@ -22,6 +22,7 @@ const ROLES = {
     'modify:lessons',
     'modify:quiz',
     'create:quiz',
+    'modify:quizzes'
   ],
   Instructor:[
     "action:course",

@@ -201,8 +201,7 @@ input QuizDetails {
   input QuestionDetails {
     quizId:String
     questionText:String
-    correctOption:Int
-    optionOne:String
+    correctOption:String
     optionTwo:String
     optionThree:String
     optionFour:String
