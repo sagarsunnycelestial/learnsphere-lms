@@ -12,5 +12,6 @@ export const AppDataSource = new DataSource({
     database: envSchema.DB_NAME,
     entities:[Users,Roles,Courses,Lessons,Quizzes,Questions,Options,Results,Enrollments],
     synchronize: false,
-    migrations: ['src/migrations/*.ts']
+    migrations: ['src/migrations/*.ts'],
+    ssl: envSchema.DB_SSL ? { rejectUnauthorized: false } : false,
 })
