@@ -1,10 +1,10 @@
 import store from "../store/store";
 import {ApolloClient,HttpLink,InMemoryCache} from '@apollo/client'
 import {SetContextLink} from '@apollo/client/link/context'
-
+const serverURL = import.meta.env.VITE_SERVER_URL;
 
 const httpLink = new HttpLink({
-  uri:'http://localhost:3000/graphql',
+  uri:serverURL,
   credentials:'include',
 })
 
