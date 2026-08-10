@@ -12,6 +12,7 @@ DB_SSL: z.coerce.boolean().default(true),
 ACCESS_TOKEN_SECRET: z.string(),
 REFRESH_TOKEN_SECRET:z.string(),
 PORT:z.coerce.number(),
+SUPABASE_DB_URL: z.string(),
 ALLOWED_ORIGIN1:z.string(),
 ALLOWED_ORIGIN2:z.string(),
 }).parse(process.env)
