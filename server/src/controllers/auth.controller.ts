@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { envSchema } from "../config/env.js";
 import { GraphQLError } from "graphql";
-import {ERROR_MESSAGES} from '../constants/messages.js'
+import { ERROR_MESSAGES } from "../constants/messages.js";
 const loginUser = async(args:LoginArgs,res:Response) =>{
   try{
 
@@ -40,6 +40,8 @@ const loginUser = async(args:LoginArgs,res:Response) =>{
           expiresIn:"7d",
         });
         user.refreshToken= refreshToken;
+        user.isActive =true;
+        user.lastLoginAt = new Date();
         await userRepo.save(user);
         res.cookie('jwt',refreshToken,{
           httpOnly:true,
@@ -178,4 +180,22 @@ throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
     }
   
 }
-export {loginUser,registerUserInDB,fetchUserByRefreshToken}
+
+async function removeRefreshToken(userId:string){
+  const userRepo = AppDataSource.getRepository(Users)
+  try{
+const user = await userRepo.findOne({where:{
+    userId:userId
+  }})
+  if(!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
+
+    user.refreshToken = ''
+    user.lastLoginAt = new Date();
+    await userRepo.save(user)
+    return {message:'User logged out successfully'}
+  }catch(err){
+    return {message:err}
+  }
+  
+}
+export {loginUser,registerUserInDB,fetchUserByRefreshToken,removeRefreshToken}

@@ -6,5 +6,6 @@ import { Results } from "./Results.js";
 import { Questions } from "./Questions.js";
 import { Options } from "./Options.js";
 import { Roles } from "./Roles.js";
+import { Enrollments } from "./Enrollments.js";
 
-export {Users,Quizzes,Courses,Lessons,Results,Questions,Options,Roles}
+export {Users,Quizzes,Courses,Lessons,Results,Questions,Options,Roles,Enrollments}

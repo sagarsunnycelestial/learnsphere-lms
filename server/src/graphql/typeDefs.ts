@@ -7,7 +7,42 @@ username:String!
 email:String!
 role:String!
 collegeName:String!
+profile_image_path:String
 }
+type EnrollmentResponse {
+enrollmentId: String
+enrolledAt:String
+isActive:Boolean
+course: CourseResponse
+
+}
+type UserResponse {
+username:String!
+email:String!
+profile_image_path:String
+role:RoleResponse
+courses:[CourseResponse]
+enrollments:[EnrollmentResponse]
+results:[ResultResponse]
+collegeName:String!
+}
+type CourseResponse {
+courseId:String
+courseName:String
+isActive:Boolean
+}
+
+type QuizResponse {
+quizId:String
+quizName:String
+
+}
+type ResultResponse {
+resultId:String
+quiz:QuizResponse
+score:Float
+}
+
 
 type RegisterResponse {
 message:String!
@@ -24,9 +59,15 @@ type LoginResponse {
   role:String
   profile_image_path:String
 }
+type RoleResponse {
+  roleName:String
+  roleId:String
+}
 
 type Query {
 refreshEndpoint:LoginResponse
+fetchRoles:[RoleResponse]
+fetchProfile:UserResponse
 }
 
 input UpdateDetails {
@@ -45,5 +86,6 @@ type Mutation {
   login(input:LoginCredentials!): LoginResponse!
   registerUser(input:UserDetails!): RegisterResponse!
   updateProfile(input:UpdateDetails!) : Response!
+  logout:Response
 }
 `

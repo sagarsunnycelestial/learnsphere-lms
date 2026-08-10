@@ -11,6 +11,7 @@ import {
 import { Users } from "./Users.js";
 import { Lessons } from "./Lessons.js";
 import { Quizzes } from "./Quizzes.js";
+import { Enrollments } from "./Enrollments.js";
 
 @Entity("courses")
 export class Courses {
@@ -61,6 +62,9 @@ export class Courses {
 
   @OneToMany(() => Lessons, (lesson) => lesson.course)
   lessons!: Lessons[];
+
+  @OneToMany(()=>Enrollments,(enrollment) => enrollment.course)
+  enrollments!:Enrollments
 
   @OneToMany(() => Quizzes, (quiz) => quiz.course)
   quizzes!: Quizzes[];
