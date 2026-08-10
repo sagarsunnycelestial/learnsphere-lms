@@ -95,5 +95,5 @@ export class Users {
   results!: Results[];
   
   @OneToMany(() => Enrollments,(enrollment) => enrollment.user)
-  enrollments!:Enrollments
+  enrollments!:Enrollments[]
 }

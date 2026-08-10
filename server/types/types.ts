@@ -1,3 +1,6 @@
+import type { Request, Response } from "express";
+
+
 export enum UserRoles {
   ADMIN = 'Admin',
   INSTRUCTOR = 'Instructor',
@@ -59,4 +62,23 @@ type UpdateDetails ={
 }
 export interface UpdateArgs {
   input: UpdateDetails
+}
+
+type CourseUpdate = {
+  courseId?:string;
+  isActive?:boolean;
+ courseName:string;
+    description:string;
+    thumbnail_image_path: string | null
+}
+export type CourseUpdateArgs = {
+  input: CourseUpdate
+  
+}
+export type EnrollDetails = {
+  courseId: string
+  userId?: string
+}
+export type EnrollCourseArgs = {
+  input:EnrollDetails
 }

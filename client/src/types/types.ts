@@ -44,6 +44,14 @@ export interface UserDetails {
   role:UserRoles;
   userName:string
 }
+
+type Course = {
+  courseName:string
+  courseId:string
+  description:string
+  thumbnail_image_path:string;
+  isActive:boolean
+}
 export type FormInitialState  = {
 
  users: {
@@ -59,7 +67,7 @@ export type FormInitialState  = {
  courses: {
  mode: string;
  isAddCourseFormOpen: boolean;
- selectedcourse: null;
+ selectedcourse: Course | null;
  };
 
 }

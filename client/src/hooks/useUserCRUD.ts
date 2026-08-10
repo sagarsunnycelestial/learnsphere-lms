@@ -3,7 +3,8 @@ import { apolloClient } from "../graphql/apolloClient";
 import { ADD_USER_MUTATION } from "../graphql/mutations/ADD_USER_MUTATION";
 import type { RegisterMutationInput } from "../types/types";
 import { useQueryClient } from "@tanstack/react-query";
-import { UpdateProfileDocument, UpdateProfileMutationVariables } from "../generated/graphql";
+
+import { UpdateProfileDocument, UpdateProfileMutationVariables,EnrollCourseDocument, EnrollCourseMutationVariables} from "../generated/graphql";
 import { toast } from "react-toastify";
 
 export default function useUserCRUD() {
@@ -44,6 +45,31 @@ export default function useUserCRUD() {
       toast.error("Update Failed")
     }
   })
-
-  return { addNewUser,updateProfile };
+  const {mutateAsync:enrollStudent} = useMutation({
+    mutationFn: async (
+     input:EnrollCourseMutationVariables
+    )=> {
+     const {data} = await apolloClient.mutate({
+        mutation:EnrollCourseDocument,
+        variables:input,
+        fetchPolicy: "network-only",
+      });
+      return data?.enrollCourse
+    },
+    onSuccess: (_,variables)=>{
+      queryClient.invalidateQueries({
+        queryKey:['student-profile',variables.input?.courseId]
+      })
+      queryClient.invalidateQueries({
+        queryKey:['course']
+      })
+      queryClient.invalidateQueries({
+        queryKey:['course',variables.input?.courseId]
+      })
+    },
+    onError:()=>{
+      toast.error("Update Failed")
+    }
+  })
+  return { addNewUser,updateProfile,enrollStudent };
 }

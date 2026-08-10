@@ -4,8 +4,17 @@ export const ERROR_MESSAGES = {
   ROLE_NOT_FOUND: "Role not found",
   INVALID_REFRESH_TOKEN: "Invalid refresh token",
   USER_DEACTIVATED: "User not found or deactivated",
-  UNAUTHORIZED: "Unauthorized",
+  UNAUTHORIZED: "Current user is not authorized to perfrom this operation",
   NO_REFRESH_TOKEN: "User has no refresh token",
   FAILED_TO_CREATE_USER: "Failed to create user",
-  PASSWORD_NOT_VALID: "Password must be at least 5 characters  no spaces"
+  PASSWORD_NOT_VALID: "Password must be at least 5 characters  no spaces",
+  FAILED_TO_CREATE_COURSE: "Failed to create course",
+    FAILED_TO_FETCH_COURSES: "Failed to fetch courses",
+  COURSES_NOT_FOUND: "Courses not found",
+    COURSES_ID_INVALID: "Course Id is invalid",
+   FAILED_TO_EDIT_COURSE: "Failed to edit the course",
+   PASSWORD_NOT_MATCHING: "Password entered did not match",
+    FAILED_TO_DELETE_COURSE: "Failed to delete the course",
+    FAILED_TO_ENROLL_USER: "Failed to enroll this student into the course",
+    STUDENTS_NOT_FOUND:"Failed to fetch student details"
 } as const;

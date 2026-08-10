@@ -20,7 +20,7 @@ async function updateUserDetails(args:UpdateArgs,user:AuthPayload) {
         userId:user.user_id
       }
     })
-    if(!updateUser) throw new Error(ERROR_MESSAGES.USER_NOT_FOUND)
+    if(!updateUser) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND)
 
      let password_hash = updateUser.passwordHash;
 
@@ -31,7 +31,7 @@ if (password) {
   password.trim().length > 0;
 
   if (!isStrongPassword) {
-    throw new Error(
+    throw new GraphQLError(
      ERROR_MESSAGES.PASSWORD_NOT_VALID
     );
   }

@@ -34,7 +34,11 @@ const formSlice = createSlice({
         state.users.selectedUser =selectedUser
       },
       addCourseFormControl(state,action){
-        state.courses.isAddCourseFormOpen = action.payload
+         const {mode,isAddCourseFormOpen,selectedcourse} = action.payload
+        state.courses.isAddCourseFormOpen = isAddCourseFormOpen
+        state.courses.mode = mode
+        state.courses.selectedcourse =selectedcourse
+
       },
        storeInfo(state, action) {
       const { email, pswrd,open } = action.payload;

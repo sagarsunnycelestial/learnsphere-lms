@@ -55,6 +55,9 @@ export class Courses {
   })
   createdAt!: Date;
 
+    @Column({ type: "text", nullable: true })
+  thumbnail_image_path!: string | null;
+
   @UpdateDateColumn({
     name: "updated_at",
   })
@@ -64,7 +67,7 @@ export class Courses {
   lessons!: Lessons[];
 
   @OneToMany(()=>Enrollments,(enrollment) => enrollment.course)
-  enrollments!:Enrollments
+  enrollments!:Enrollments[]
 
   @OneToMany(() => Quizzes, (quiz) => quiz.course)
   quizzes!: Quizzes[];

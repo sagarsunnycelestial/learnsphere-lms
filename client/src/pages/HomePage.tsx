@@ -31,7 +31,7 @@ const HomePage = () => {
 }, [dispatch,navigate]);
   
   return (
-<Box sx={{display:'flex',alignItems:'center',justifyContent:'center',mt:'25%',bgcolor:''}}>
+<Box sx={{display:'flex',alignItems:'center',justifyContent:'center',mt:'10%',bgcolor:''}}>
     <Card
         elevation={0}
         sx={{
