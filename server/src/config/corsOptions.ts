@@ -10,6 +10,7 @@ export const corsOptions:CorsOptions ={
       callback(new Error('Not allowd by CORS'))
     }
   },
+  allowedHeaders:['POST','GET','OPTIONS'],
   credentials:true,
   optionsSuccessStatus:204,
   maxAge:86400,
