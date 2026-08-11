@@ -120,6 +120,7 @@ export default function LoginPage() {
           <Button
             fullWidth
             variant="contained"
+            disabled={loading}
             onClick={handleLogin}
             sx={{
               mt: 1,

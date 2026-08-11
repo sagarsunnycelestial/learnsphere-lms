@@ -5,7 +5,6 @@ import Login from '../pages/LoginPage';
 import ProtectedLayout from '../components/layouts/ProtectedLayout';
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
-import SingleCoursePage from '../pages/SingleCoursePage';
 const router = createBrowserRouter([
   {
     path: '/',
@@ -33,7 +32,13 @@ const router = createBrowserRouter([
     children: [
       { index: true, Component: Dashboard },
       { path: 'profile', Component: Profile },
-      { path: 'course/:id', Component: SingleCoursePage },
+      {
+        path: 'course/:id',
+        lazy: async () => {
+          const { default: Component } = await import('../pages/SingleCoursePage');
+          return { Component };
+        },
+      },
     ],
   },
 ]);

@@ -6,9 +6,10 @@ import { Paper, Dialog, Box, TextField, useTheme } from '@mui/material';
 import { useState, useEffect } from 'react';
 import CourseForm from '../components/forms/CourseForm';
 import { useAppSelector } from '../store/hooks';
+import CircularProgress from '@mui/material/CircularProgress';
 export default function CoursesPage() {
   const theme = useTheme();
-  const { data: courses } = useFetchCourses();
+  const { data: courses,isLoading } = useFetchCourses();
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const isOpen = useAppSelector((state) => state.form.courses.isAddCourseFormOpen);
@@ -25,6 +26,20 @@ export default function CoursesPage() {
     }, 500);
     return () => clearTimeout(timer);
   }, [search]);
+  if (isLoading) {
+     return (
+       <Box
+         sx={{
+           display: 'flex',
+           justifyContent: 'center',
+           alignItems: 'center',
+           minHeight: '60vh',
+         }}
+       >
+         <CircularProgress color="inherit" aria-label="Loading…" />
+       </Box>
+     );
+   }
   return (
     <>
       <Paper

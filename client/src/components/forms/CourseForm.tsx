@@ -15,6 +15,7 @@ import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { uploadImage } from '../../supabase/uploadImage';
 import { toast } from 'react-toastify';
 import useCoursesCRUD from '../../hooks/useCoursesCRUD';
+import CircularProgress from '@mui/material/CircularProgress';
 export default function CourseForm() {
   const selectedCourse = useAppSelector((state) => state.form.courses.selectedcourse);
   console.log('selected course', selectedCourse);
@@ -24,10 +25,12 @@ export default function CourseForm() {
   const [courseName, setCourseName] = useState(selectedCourse?.courseName ?? '');
   const [thumbnailImg, setThumbnailImg] = useState<File | null>(null);
   const [description, setDescription] = useState(selectedCourse?.description ?? '');
+  const [loading,setLoading] = useState<boolean>(false)
   const [isActive, setIsActive] = useState(selectedCourse?.isActive ?? true);
   const dispatch = useAppDispatch();
   const { addNewCourse, updateCourse } = useCoursesCRUD();
   async function handleSubmit() {
+    setLoading(true)
     if (thumbnailImg) {
       publicUrl.current = await uploadImage(thumbnailImg);
     }
@@ -49,6 +52,8 @@ export default function CourseForm() {
         );
       } catch (err) {
         toast.error(err as string);
+      }finally{
+        setLoading(false)
       }
     } else {
       try {
@@ -69,6 +74,8 @@ export default function CourseForm() {
         );
       } catch (err) {
         toast.error(err as string);
+      }finally{
+        setLoading(false)
       }
     }
   }
@@ -181,6 +188,7 @@ export default function CourseForm() {
         type="submit"
         variant="contained"
         size="large"
+        disabled={loading}
         onClick={handleSubmit}
         sx={{
           textTransform: 'none',
@@ -188,7 +196,13 @@ export default function CourseForm() {
           fontWeight: 600,
         }}
       >
-        {isEditing ? 'Confirm Edit' : 'Submit'}
+       {loading ? (
+                 <CircularProgress size={22} color="inherit" />
+               ) : isEditing ? (
+                 'Confirm Edit'
+               ) : (
+                 'Submit'
+               )}
       </Button>
     </Box>
   );

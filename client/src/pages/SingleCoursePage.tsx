@@ -34,7 +34,6 @@ import FormLabel from '@mui/material/FormLabel';
 import useFetchCourseById from '../hooks/useFetchCourseById';
 import CardMedia from '@mui/material/CardMedia';
 import CircularProgress from '@mui/material/CircularProgress';
-// import CourseActionTab from "../components/dashboard/CourseActionTab";
 import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useState } from 'react';

@@ -4,9 +4,10 @@ import AddIcon from '@mui/icons-material/Add';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { userAddFormControl } from '../store/slices/formSlice';
 import AddUserForm from '../components/forms/AddUserForm';
+import CircularProgress from '@mui/material/CircularProgress';
 import ProfileBar from '../components/profile/ProfileBar';
 export default function Profile() {
-  const { data: profile } = useFetchProfile();
+  const { data: profile,isLoading } = useFetchProfile();
   const dispatch = useAppDispatch();
   const mode = useAppSelector((state) => state.form.users.mode);
   const isOpen = useAppSelector((state) => state.form.users.isUserAddFormOpen);
@@ -21,6 +22,20 @@ export default function Profile() {
     );
   }
   console.log(profile);
+  if (isLoading) {
+       return (
+         <Box
+           sx={{
+             display: 'flex',
+             justifyContent: 'center',
+             alignItems: 'center',
+             minHeight: '60vh',
+           }}
+         >
+           <CircularProgress color="inherit" aria-label="Loading…" />
+         </Box>
+       );
+     }
   return (
     <>
       <Box
