@@ -48,9 +48,7 @@ export class Quizzes {
   })
   updatedAt!: Date;
 
-  @OneToMany(() => Questions, (question) => question.quiz, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => Questions, (question) => question.quiz)
   questions!: Questions[];
 
   @OneToMany(() => Results, (result) => result.quiz)

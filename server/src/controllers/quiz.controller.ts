@@ -202,25 +202,27 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
   }
 }
 
-async function deleteQuizWithID(quizId: string, userId: string) {
+async function deleteQuizWithID(quizId: string, context: Context) {
   const quizRepo = AppDataSource.getRepository(Quizzes);
+  let quizToDelete = null
   try {
-    const quizToDelete = await quizRepo.findOne({
+   if(context.user){
+      quizToDelete = await quizRepo.findOne({
       where: {
         quizId: quizId,
-        course: {
-          createdBy: {
-            userId: userId,
-          },
-        },
+        ...(context.user.role !== UserRoles.ADMIN
+            ? { createdBy: { userId: context.user.user_id } }
+            : {}),
       },
     });
+   }
+    
     if (!quizToDelete) throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_FOUND);
 
     await quizRepo.remove(quizToDelete);
     return { message: 'Quiz deleted successfully' };
   } catch (err) {
-    if (err instanceof GraphQLError) throw err.message;
+    if (err instanceof GraphQLError) throw err;
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_DELETE);
   }
 }
@@ -233,11 +235,6 @@ async function deleteQuestionWithID(input: { questionId: string; quizId: string;
         questionId: input.questionId,
         quiz: {
           quizId: input.quizId,
-          course: {
-            createdBy: {
-              userId: input.userId,
-            },
-          },
         },
       },
     });
@@ -248,7 +245,7 @@ async function deleteQuestionWithID(input: { questionId: string; quizId: string;
       message: 'Question deleted successfully',
     };
   } catch (err) {
-    if (err instanceof GraphQLError) throw err.message;
+    if (err instanceof GraphQLError) throw err;
     throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
   }
 }
