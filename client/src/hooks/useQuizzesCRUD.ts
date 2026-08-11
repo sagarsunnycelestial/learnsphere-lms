@@ -75,7 +75,7 @@ export default function useQuizzesRUD() {
       toast.error('Submitting Quiz failed');
     },
   });
-const { mutateAsync: deleteQuiz } = useMutation({
+  const { mutateAsync: deleteQuiz } = useMutation({
     mutationFn: async (input: DeleteQuizMutationVariables) => {
       const { data } = await apolloClient.mutate({
         mutation: DeleteQuizDocument,
@@ -111,5 +111,5 @@ const { mutateAsync: deleteQuiz } = useMutation({
       toast.error('Deleting Question failed');
     },
   });
-  return { createAQuestion, addNewQuiz, submitQuizAnswers,deleteQuiz ,deleteQuestion};
+  return { createAQuestion, addNewQuiz, submitQuizAnswers, deleteQuiz, deleteQuestion };
 }

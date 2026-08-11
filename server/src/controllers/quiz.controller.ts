@@ -204,19 +204,19 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
 
 async function deleteQuizWithID(quizId: string, context: Context) {
   const quizRepo = AppDataSource.getRepository(Quizzes);
-  let quizToDelete = null
+  let quizToDelete = null;
   try {
-   if(context.user){
+    if (context.user) {
       quizToDelete = await quizRepo.findOne({
-      where: {
-        quizId: quizId,
-        ...(context.user.role !== UserRoles.ADMIN
+        where: {
+          quizId: quizId,
+          ...(context.user.role !== UserRoles.ADMIN
             ? { createdBy: { userId: context.user.user_id } }
             : {}),
-      },
-    });
-   }
-    
+        },
+      });
+    }
+
     if (!quizToDelete) throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_FOUND);
 
     await quizRepo.remove(quizToDelete);

@@ -116,7 +116,7 @@ const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
   }
 };
 
-async function fetchUserByRefreshToken(refreshToken: string, res: Response) {
+async function fetchUserByRefreshToken(refreshToken: string) {
   const userRepo = AppDataSource.getRepository(Users);
 
   const hashedRefreshToken = crypto

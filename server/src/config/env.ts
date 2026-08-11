@@ -16,6 +16,6 @@ export const envSchema = z
     PORT: z.coerce.number(),
     ALLOWED_ORIGIN1: z.string(),
     ALLOWED_ORIGIN2: z.string(),
-    REFRESH_TOKEN_EXPIRY_TIME:z.coerce.number()
+    REFRESH_TOKEN_EXPIRY_TIME: z.coerce.number(),
   })
   .parse(process.env);

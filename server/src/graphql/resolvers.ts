@@ -191,7 +191,7 @@ export const resolvers = {
       return await submitQuizAnswers(args, context);
     },
     deleteQuiz: async (_parents: unknown, args: { quizId: string }, context: Context) => {
-      if (context.user?.role === UserRoles.STUDENT ||!context.user)
+      if (context.user?.role === UserRoles.STUDENT || !context.user)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await deleteQuizWithID(args.quizId, context);

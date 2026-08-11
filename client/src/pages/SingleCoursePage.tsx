@@ -564,7 +564,9 @@ export default function SingleCoursePage() {
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>Quizzes</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Quizzes
+              </Typography>
             </AccordionSummary>
 
             <AccordionDetails>

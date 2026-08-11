@@ -1,7 +1,9 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-export const DELETE_QUIZ = gql`mutation DeleteQuiz($quizId: String!) {
-  deleteQuiz(quizId: $quizId) {
-    message
+export const DELETE_QUIZ = gql`
+  mutation DeleteQuiz($quizId: String!) {
+    deleteQuiz(quizId: $quizId) {
+      message
+    }
   }
-}` 
+`;
