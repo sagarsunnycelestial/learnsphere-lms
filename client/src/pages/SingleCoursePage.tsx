@@ -564,7 +564,7 @@ export default function SingleCoursePage() {
           </Accordion>
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              <Typography variant="h6">Quizzes</Typography>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>Quizzes</Typography>
             </AccordionSummary>
 
             <AccordionDetails>
@@ -636,7 +636,17 @@ export default function SingleCoursePage() {
 
                       <List>
                         {quiz?.questions?.map((question) => (
-                          <Box key={question?.questionId} sx={{ mb: 1 }}>
+                          <Box
+                            key={question?.questionId}
+                            sx={{
+                              mb: 2,
+                              border: '1px solid',
+                              p: 2,
+                              borderRadius: 4,
+                              bgcolor: theme.palette.background.paper,
+                              borderColor: theme.palette.divider,
+                            }}
+                          >
                             <Stack
                               direction="row"
                               spacing={2}
@@ -648,13 +658,15 @@ export default function SingleCoursePage() {
                               }}
                             >
                               <FormControl>
-                                <FormLabel id={`${question?.questionId}`}>
+                                <FormLabel sx={{ fontWeight: 600 }} id={`${question?.questionId}`}>
                                   {question?.questionText}
                                 </FormLabel>
-                                <RadioGroup name={`${question?.questionId}`}>
+
+                                <RadioGroup name={`${question?.questionId}`} row={true}>
                                   {question?.options?.map((option) => (
                                     <FormControlLabel
                                       key={option?.optionId}
+
                                       value={option?.optionId}
                                       control={<Radio />}
                                       label={option?.optionText}
