@@ -33,7 +33,7 @@ import {
   createAQuestionForQuiz,
   submitQuizAnswers,
   deleteQuizWithID,
-  deleteQuestionWithID
+  deleteQuestionWithID,
 } from '../controllers/quiz.controller.js';
 import { fetchStudentDetails } from '../controllers/student.controller.js';
 import {
@@ -190,17 +190,25 @@ export const resolvers = {
 
       return await submitQuizAnswers(args, context);
     },
-    deleteQuiz: async(_parents: unknown, args: {quizId:string}, context: Context)=>{
-       if (context.user?.role !== UserRoles.STUDENT)
+    deleteQuiz: async (_parents: unknown, args: { quizId: string }, context: Context) => {
+      if (context.user?.role !== UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
-       return await deleteQuizWithID(args.quizId,context.user.user_id);
+      return await deleteQuizWithID(args.quizId, context.user.user_id);
     },
-    deleteQuestion:async(_parents: unknown, args: {questionId:string,quizId:string}, context: Context)=>{
-       if (context.user?.role !== UserRoles.STUDENT)
+    deleteQuestion: async (
+      _parents: unknown,
+      args: { questionId: string; quizId: string },
+      context: Context
+    ) => {
+      if (context.user?.role !== UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
-       return await deleteQuestionWithID({questionId:args.questionId,quizId:args.quizId,userId:context.user.user_id});
+      return await deleteQuestionWithID({
+        questionId: args.questionId,
+        quizId: args.quizId,
+        userId: context.user.user_id,
+      });
     },
   },
 };

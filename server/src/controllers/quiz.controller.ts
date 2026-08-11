@@ -252,4 +252,10 @@ async function deleteQuestionWithID(input: { questionId: string; quizId: string;
     throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
   }
 }
-export { createAQuizForCourse, createAQuestionForQuiz, submitQuizAnswers, deleteQuizWithID,deleteQuestionWithID};
+export {
+  createAQuizForCourse,
+  createAQuestionForQuiz,
+  submitQuizAnswers,
+  deleteQuizWithID,
+  deleteQuestionWithID,
+};

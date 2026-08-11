@@ -18,7 +18,7 @@ export class Quizzes {
   quizId!: string;
 
   @ManyToOne(() => Courses, (course) => course.quizzes, {
-    onDelete:'CASCADE'
+    onDelete: 'CASCADE',
   })
   @JoinColumn({
     name: 'course_id',
@@ -48,8 +48,8 @@ export class Quizzes {
   })
   updatedAt!: Date;
 
-  @OneToMany(() => Questions, (question) => question.quiz,{
-    onDelete:'CASCADE'
+  @OneToMany(() => Questions, (question) => question.quiz, {
+    onDelete: 'CASCADE',
   })
   questions!: Questions[];
 

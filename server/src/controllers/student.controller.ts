@@ -32,7 +32,7 @@ async function fetchStudentDetails(args: { courseId?: string }) {
     });
     return filteredStudents;
   } catch (err) {
-     if (err instanceof GraphQLError) {
+    if (err instanceof GraphQLError) {
       throw err;
     }
     throw new GraphQLError(ERROR_MESSAGES.STUDENTS_NOT_FOUND);

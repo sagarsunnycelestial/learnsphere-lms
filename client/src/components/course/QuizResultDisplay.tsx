@@ -10,9 +10,9 @@ export default function QuizResultDisplay() {
   if (!quizResult) {
     return <Typography>No quiz result to show yet.</Typography>;
   }
-  const handleDownload =async()=>{
-    await downloadResultPDF(quizResult)
-  }
+  const handleDownload = async () => {
+    await downloadResultPDF(quizResult);
+  };
 
   return (
     <Box
@@ -74,7 +74,12 @@ export default function QuizResultDisplay() {
           {quizResult.courseDetail?.courseName}
         </Typography>
       </Typography>
-      <Button onClick={handleDownload} startIcon={<CloudDownloadIcon />} variant="outlined" size="small">
+      <Button
+        onClick={handleDownload}
+        startIcon={<CloudDownloadIcon />}
+        variant="outlined"
+        size="small"
+      >
         Download result
       </Button>
     </Box>
