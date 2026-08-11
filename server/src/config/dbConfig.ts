@@ -5,7 +5,7 @@ import { Users,Lessons,Questions,Quizzes,Results,Roles,Courses,Options,Enrollmen
 
 export const AppDataSource = new DataSource({
   type:envSchema.DB_TYPE,
-   url:envSchema.SUPABASE_DB_URL,
+  url:envSchema.SUPABASE_DB_URL,
     entities:[Users,Roles,Courses,Lessons,Quizzes,Questions,Options,Results,Enrollments],
     synchronize: false,
     migrations: ['src/migrations/*.ts'],
