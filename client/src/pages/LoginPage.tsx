@@ -1,55 +1,55 @@
-import { Card, Box, Typography, TextField, Button } from "@mui/material";
-import auth from '../assets/auth.webp'
-import LMSLogo from '../assets/LMSlogo.png'
-import {z} from 'zod'
-import { useState } from "react";
-import { useAppDispatch } from "../store/hooks";
-import { loginThunk } from "../store/thunks/loginThunk";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import { Card, Box, Typography, TextField, Button } from '@mui/material';
+import auth from '../assets/auth.webp';
+import LMSLogo from '../assets/LMSlogo.png';
+import { z } from 'zod';
+import { useState } from 'react';
+import { useAppDispatch } from '../store/hooks';
+import { loginThunk } from '../store/thunks/loginThunk';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   // console.log(auth);
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const handleLogin = async () => {
-if (!email || !password) {
-    toast.error("Please enter both email and password");
-    return;
-  }
-const loginSchema = z.object({
-  email: z.email("Pleaser enter a valid email"),
-  password: z.string().min(1,"Password is required")
-});
-const result = loginSchema.safeParse({email,password});
-if(!result.success){
-  toast.error(result.error.issues[0].message);
-  return
-}
-  try {
-    setLoading(true);
-    await dispatch(loginThunk({ email, password }))
-    navigate("/dashboard");
-  } catch(err) {
-    toast.error(err as string)
-  } finally {
-    setLoading(false);
-  }
+    if (!email || !password) {
+      toast.error('Please enter both email and password');
+      return;
+    }
+    const loginSchema = z.object({
+      email: z.email('Pleaser enter a valid email'),
+      password: z.string().min(1, 'Password is required'),
+    });
+    const result = loginSchema.safeParse({ email, password });
+    if (!result.success) {
+      toast.error(result.error.issues[0].message);
+      return;
+    }
+    try {
+      setLoading(true);
+      await dispatch(loginThunk({ email, password }));
+      navigate('/dashboard');
+    } catch (err) {
+      toast.error(err as string);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <Box
       sx={{
         backgroundImage: `url(${auth})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        width: "100vw",
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        width: '100vw',
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         p: 2,
       }}
     >
@@ -59,16 +59,16 @@ if(!result.success){
           width: 450,
           borderRadius: 4,
           p: 4,
-          bgcolor: "background.paper",
+          bgcolor: 'background.paper',
           border: 1,
-          borderColor: "divider",
+          borderColor: 'divider',
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             gap: 3,
           }}
         >
@@ -78,21 +78,17 @@ if(!result.success){
             alt="Company Logo"
             sx={{
               width: 160,
-              objectFit: "contain",
+              objectFit: 'contain',
             }}
           />
 
-          <Box sx={{ textAlign: "center" }}>
-            <Typography
-              variant="h4"
-            >
-              Welcome Back
-            </Typography>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h4">Welcome Back</Typography>
 
             <Typography
               sx={{
                 mt: 1,
-                color: "text.secondary",
+                color: 'text.secondary',
                 fontSize: 15,
               }}
             >
@@ -101,9 +97,9 @@ if(!result.success){
           </Box>
           <Box
             sx={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
               gap: 2,
             }}
           >
@@ -129,12 +125,10 @@ if(!result.success){
               mt: 1,
               py: 1.2,
               borderRadius: 2,
-              
             }}
           >
-            {loading? 'Signing In...' : 'Login'}
+            {loading ? 'Signing In...' : 'Login'}
           </Button>
-
         </Box>
         <Typography
           sx={{

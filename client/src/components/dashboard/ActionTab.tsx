@@ -1,13 +1,13 @@
-import { Button, Typography, Box, Dialog, Paper, Stack, Avatar } from "@mui/material";
-import { useAppDispatch } from "../../store/hooks";
-import { addCourseFormControl, userAddFormControl } from "../../store/slices/formSlice";
-import { useTheme } from "@mui/material";
-import { hasPermission } from "../../permissions/auth";
-import { useAppSelector } from "../../store/hooks";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import AddUserForm from "../forms/AddUserForm";
+import { Button, Typography, Box, Dialog, Paper, Stack, Avatar } from '@mui/material';
+import { useAppDispatch } from '../../store/hooks';
+import { addCourseFormControl, userAddFormControl } from '../../store/slices/formSlice';
+import { useTheme } from '@mui/material';
+import { hasPermission } from '../../permissions/auth';
+import { useAppSelector } from '../../store/hooks';
+import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import AddUserForm from '../forms/AddUserForm';
 
 export default function ActionTab() {
   const theme = useTheme();
@@ -19,10 +19,10 @@ export default function ActionTab() {
   function handleOpen() {
     dispatch(
       userAddFormControl({
-        mode: "add",
+        mode: 'add',
         isUserAddFormOpen: true,
         selectedUser: null,
-      }),
+      })
     );
   }
 
@@ -30,21 +30,20 @@ export default function ActionTab() {
     <Paper
       elevation={0}
       sx={{
-        border: "1px solid",
+        border: '1px solid',
         borderColor: theme.palette.divider,
         borderRadius: 4,
         px: 3,
         py: 2.5,
         mb: 4,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        flexWrap: "wrap",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
         gap: 2,
-       
       }}
     >
-      <Stack direction="row" spacing={2} sx={{alignItems:'center'}}>
+      <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
         <Avatar
           sx={{
             bgcolor: theme.palette.primary.main,
@@ -63,14 +62,14 @@ export default function ActionTab() {
           >
             {user.role} Controls
           </Typography>
-          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             Manage users and courses
           </Typography>
         </Box>
       </Stack>
 
       <Stack direction="row" spacing={1.5}>
-        {hasPermission(user, "create:user") && (
+        {hasPermission(user, 'create:user') && (
           <Button
             variant="contained"
             startIcon={<PersonAddAlt1Icon />}
@@ -79,36 +78,36 @@ export default function ActionTab() {
               px: 3,
               py: 1.25,
               borderRadius: 3,
-              textTransform: "none",
+              textTransform: 'none',
               fontWeight: 600,
-              fontSize: "0.95rem",
-              boxShadow: "none",
+              fontSize: '0.95rem',
+              boxShadow: 'none',
             }}
           >
             Add User
           </Button>
         )}
 
-        {hasPermission(user, "create:course") && (
+        {hasPermission(user, 'create:course') && (
           <Button
             variant="outlined"
             startIcon={<MenuBookIcon />}
             onClick={() =>
               dispatch(
                 addCourseFormControl({
-                  mode: "add",
+                  mode: 'add',
                   isAddCourseFormOpen: true,
                   selectedcourse: null,
-                }),
+                })
               )
             }
             sx={{
               px: 3,
               py: 1.25,
               borderRadius: 3,
-              textTransform: "none",
+              textTransform: 'none',
               fontWeight: 600,
-              fontSize: "0.95rem",
+              fontSize: '0.95rem',
             }}
           >
             Add Course
@@ -116,7 +115,7 @@ export default function ActionTab() {
         )}
       </Stack>
 
-      {mode === "add" && (
+      {mode === 'add' && (
         <Dialog open={isOpen}>
           <AddUserForm />
         </Dialog>

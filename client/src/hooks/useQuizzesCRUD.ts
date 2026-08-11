@@ -1,50 +1,56 @@
-import { useMutation } from "@tanstack/react-query";
-import { apolloClient } from "../graphql/apolloClient";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "react-toastify";
-import { CreateAQuestionDocument, CreateAQuestionMutationVariables, CreateAQuizDocument, CreateAQuizMutationVariables, SubmitQuizDocument, SubmitQuizMutationVariables } from "../generated/graphql";
-import { useParams } from "react-router";
+import { useMutation } from '@tanstack/react-query';
+import { apolloClient } from '../graphql/apolloClient';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import {
+  CreateAQuestionDocument,
+  CreateAQuestionMutationVariables,
+  CreateAQuizDocument,
+  CreateAQuizMutationVariables,
+  SubmitQuizDocument,
+  SubmitQuizMutationVariables,
+} from '../generated/graphql';
+import { useParams } from 'react-router';
 export default function useQuizzesRUD() {
-  const {id} = useParams()
+  const { id } = useParams();
   const queryClient = useQueryClient();
   const { mutateAsync: addNewQuiz } = useMutation({
     mutationFn: async (input: CreateAQuizMutationVariables) => {
       const { data } = await apolloClient.mutate({
         mutation: CreateAQuizDocument,
         variables: input,
-        fetchPolicy: "network-only",
+        fetchPolicy: 'network-only',
       });
       if (!data) {
-        throw new Error("No response from server");
+        throw new Error('No response from server');
       }
       return data.createAQuiz;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["course", id],
-        
+        queryKey: ['course', id],
       });
     },
     onError: () => {
-      toast.error("Creating a quiz failed");
+      toast.error('Creating a quiz failed');
     },
   });
-  const { mutateAsync: createAQuestion} = useMutation({
+  const { mutateAsync: createAQuestion } = useMutation({
     mutationFn: async (input: CreateAQuestionMutationVariables) => {
       const { data } = await apolloClient.mutate({
         mutation: CreateAQuestionDocument,
         variables: input,
-        fetchPolicy: "network-only",
+        fetchPolicy: 'network-only',
       });
       return data?.createAQuestion;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["course",id],
+        queryKey: ['course', id],
       });
     },
     onError: () => {
-      toast.error("Adding question failed");
+      toast.error('Adding question failed');
     },
   });
   const { mutateAsync: submitQuizAnswers } = useMutation({
@@ -52,19 +58,19 @@ export default function useQuizzesRUD() {
       const { data } = await apolloClient.mutate({
         mutation: SubmitQuizDocument,
         variables: input,
-        fetchPolicy: "network-only",
+        fetchPolicy: 'network-only',
       });
       return data?.submitQuiz;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["course", id],
+        queryKey: ['course', id],
       });
     },
     onError: () => {
-      toast.error("Submitting Quiz failed");
+      toast.error('Submitting Quiz failed');
     },
   });
 
-  return {createAQuestion,addNewQuiz,submitQuizAnswers};
+  return { createAQuestion, addNewQuiz, submitQuizAnswers };
 }

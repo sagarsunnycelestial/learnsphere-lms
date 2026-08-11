@@ -7,8 +7,8 @@ import {
   TableHead,
   TableContainer,
   Chip,
-} from "@mui/material";
-import useFetchProfile from "../../hooks/useFetchProfile";
+} from '@mui/material';
+import useFetchProfile from '../../hooks/useFetchProfile';
 export default function QuizResults() {
   const { data: profile } = useFetchProfile();
   const results = profile?.results;
@@ -28,14 +28,12 @@ export default function QuizResults() {
           <TableBody>
             {results?.map((result) => (
               <TableRow key={result?.resultId}>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  {result?.quiz?.quizName}
-                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{result?.quiz?.quizName}</TableCell>
                 <TableCell>{result?.quiz?.quizId}</TableCell>
                 <TableCell>
                   <Chip
                     size="small"
-                    color={result?.score ?? 0 >= 50 ? "success" : "error"}
+                    color={(result?.score ?? 0 >= 50) ? 'success' : 'error'}
                     label={result?.score ?? '-'}
                   />
                 </TableCell>

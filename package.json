@@ -1,0 +1,28 @@
+{
+  "name": "learnsphere-lms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+      "format": "prettier --write \"client/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.{js,ts,json,md}\"",
+    "format:check": "prettier --check \"client/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.{js,ts,json,md}\"",
+    "lint": "eslint client server"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sagarsunnycelestial/learnsphere-lms.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/sagarsunnycelestial/learnsphere-lms/issues"
+  },
+  "homepage": "https://github.com/sagarsunnycelestial/learnsphere-lms#readme",
+  "devDependencies": {
+    "eslint": "^10.8.1",
+    "prettier": "^3.9.6"
+  }
+}

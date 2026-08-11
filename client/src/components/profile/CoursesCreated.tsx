@@ -7,8 +7,8 @@ import {
   TableHead,
   TableContainer,
   Chip,
-} from "@mui/material";
-import useFetchProfile from "../../hooks/useFetchProfile";
+} from '@mui/material';
+import useFetchProfile from '../../hooks/useFetchProfile';
 export default function CoursesCreated() {
   const { data: profile } = useFetchProfile();
   const courses = profile?.courses;
@@ -28,15 +28,13 @@ export default function CoursesCreated() {
           <TableBody>
             {courses?.map((course) => (
               <TableRow key={course?.courseId}>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  {course?.courseName}
-                </TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>{course?.courseName}</TableCell>
                 <TableCell>{course?.courseId}</TableCell>
                 <TableCell>
                   <Chip
                     size="small"
-                    color={course?.isActive ? "success" : "default"}
-                    label={course?.isActive ? "Active" : "Completed"}
+                    color={course?.isActive ? 'success' : 'default'}
+                    label={course?.isActive ? 'Active' : 'Completed'}
                   />
                 </TableCell>
               </TableRow>

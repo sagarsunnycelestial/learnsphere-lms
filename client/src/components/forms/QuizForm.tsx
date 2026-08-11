@@ -1,25 +1,25 @@
-import { Box, Button, TextField, Typography, CircularProgress } from "@mui/material";
-import { quizFormControl } from "../../store/slices/formSlice";
+import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
+import { quizFormControl } from '../../store/slices/formSlice';
 
-import { useState } from "react";
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
-import { toast } from "react-toastify";
+import { useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { toast } from 'react-toastify';
 
-import { useParams } from "react-router";
-import useQuizzesCRUD from "../../hooks/useQuizzesCRUD";
+import { useParams } from 'react-router';
+import useQuizzesCRUD from '../../hooks/useQuizzesCRUD';
 
 export default function QuizForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = useParams();
   const selectedQuiz = useAppSelector((state) => state.form.quizzes.selectedQuiz);
   const mode = useAppSelector((state) => state.form.quizzes.mode);
-  const isEditing = mode === "edit";
+  const isEditing = mode === 'edit';
   const courseId = selectedQuiz?.courseId ?? id;
 
-  const [quizName, setQuizName] = useState(selectedQuiz?.quizName ?? "");
+  const [quizName, setQuizName] = useState(selectedQuiz?.quizName ?? '');
 
   const dispatch = useAppDispatch();
-  const { addNewQuiz} = useQuizzesCRUD();
+  const { addNewQuiz } = useQuizzesCRUD();
 
   async function handleSubmit() {
     setIsSubmitting(true);
@@ -27,7 +27,7 @@ export default function QuizForm() {
       try {
         const input = {
           quizName,
-          courseId: courseId ?? "",
+          courseId: courseId ?? '',
         };
         const res = await addNewQuiz({ input });
         if (res?.message) toast.success(res.message);
@@ -56,31 +56,29 @@ export default function QuizForm() {
   }
 
   return (
-    <Box sx={{ width: 600, display: "flex", flexDirection: "column", gap: 2, p: 3 }}>
+    <Box sx={{ width: 600, display: 'flex', flexDirection: 'column', gap: 2, p: 3 }}>
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           mb: 1,
         }}
       >
         <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
-          {isEditing ? "Edit Quiz" : "Add A Quiz"}
+          {isEditing ? 'Edit Quiz' : 'Add A Quiz'}
         </Typography>
 
         <Button
-          onClick={() =>
-            dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))
-          }
+          onClick={() => dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))}
           variant="outlined"
-          sx={{ textTransform: "none" }}
+          sx={{ textTransform: 'none' }}
         >
           Close
         </Button>
       </Box>
 
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <TextField
           label="Quiz Name"
           value={quizName}
@@ -96,14 +94,14 @@ export default function QuizForm() {
         size="large"
         disabled={isSubmitting}
         onClick={handleSubmit}
-        sx={{ textTransform: "none", fontSize: 15, fontWeight: 600 }}
+        sx={{ textTransform: 'none', fontSize: 15, fontWeight: 600 }}
       >
         {isSubmitting ? (
           <CircularProgress size={22} color="inherit" />
         ) : isEditing ? (
-          "Confirm Edit"
+          'Confirm Edit'
         ) : (
-          "Submit"
+          'Submit'
         )}
       </Button>
     </Box>

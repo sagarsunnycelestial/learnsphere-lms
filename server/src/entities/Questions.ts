@@ -8,24 +8,24 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-} from "typeorm";
-import { Quizzes } from "./Quizzes.js";
-import { Options } from "./Options.js";
+} from 'typeorm';
+import { Quizzes } from './Quizzes.js';
+import { Options } from './Options.js';
 
-@Entity("questions")
+@Entity('questions')
 export class Questions {
-  @PrimaryGeneratedColumn("uuid",{name:'question_id'})
+  @PrimaryGeneratedColumn('uuid', { name: 'question_id' })
   questionId!: string;
 
   @ManyToOne(() => Quizzes, (quiz) => quiz.questions)
   @JoinColumn({
-    name: "quiz_id",
+    name: 'quiz_id',
   })
   quiz!: Quizzes;
 
   @Column({
-    name: "question_text",
-    type: "text",
+    name: 'question_text',
+    type: 'text',
   })
   questionText!: string;
 
@@ -33,17 +33,17 @@ export class Questions {
     nullable: true,
   })
   @JoinColumn({
-    name: "correct_option_id",
+    name: 'correct_option_id',
   })
   correctOption?: Options;
 
   @CreateDateColumn({
-    name: "created_at",
+    name: 'created_at',
   })
   createdAt!: Date;
 
   @UpdateDateColumn({
-    name: "updated_at",
+    name: 'updated_at',
   })
   updatedAt!: Date;
 
