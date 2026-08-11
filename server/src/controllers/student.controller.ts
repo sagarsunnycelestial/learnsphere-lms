@@ -1,11 +1,9 @@
 import { GraphQLError } from 'graphql';
 import { UserRoles } from '../../types/types.js';
-import { AppDataSource } from '../config/dbConfig.js';
-import { Users } from '../entities/Users.js';
+import { userRepo } from '../entities/repos.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 
 async function fetchStudentDetails(args: { courseId?: string }) {
-  const userRepo = AppDataSource.getRepository(Users);
   try {
     const students = await userRepo.find({
       where: {

@@ -8,16 +8,15 @@ import {
 import crypto from 'crypto';
 import { Response } from 'express';
 import { AppDataSource } from '../config/dbConfig.js';
-import { Roles, Users } from '../entities/index.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { envSchema } from '../config/env.js';
 import { GraphQLError } from 'graphql';
 import { ERROR_MESSAGES } from '../constants/messages.js';
+import { userRepo, rolesRepo } from '../entities/repos.js';
 const loginUser = async (args: LoginArgs, res: Response) => {
   try {
     const { email, password }: LoginUserBody = args.input;
-    const userRepo = AppDataSource.getRepository(Users);
     const user = await userRepo.findOne({
       where: {
         email: email,
@@ -68,8 +67,6 @@ const loginUser = async (args: LoginArgs, res: Response) => {
   }
 };
 const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
-  const userRepo = AppDataSource.getRepository(Users);
-  const rolesRepo = AppDataSource.getRepository(Roles);
   try {
     const { username, email, role, collegeName } = args.input;
 
@@ -117,8 +114,6 @@ const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
 };
 
 async function fetchUserByRefreshToken(refreshToken: string) {
-  const userRepo = AppDataSource.getRepository(Users);
-
   const hashedRefreshToken = crypto
     .createHmac('sha256', envSchema.REFRESH_TOKEN_SECRET)
     .update(refreshToken, 'utf8')
@@ -162,7 +157,6 @@ async function fetchUserByRefreshToken(refreshToken: string) {
 }
 
 async function removeRefreshToken(userId: string) {
-  const userRepo = AppDataSource.getRepository(Users);
   try {
     const user = await userRepo.findOne({
       where: {

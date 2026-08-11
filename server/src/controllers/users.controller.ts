@@ -1,11 +1,9 @@
 import { GraphQLError } from 'graphql';
 import { AuthPayload, UpdateArgs } from '../../types/types.js';
-import { AppDataSource } from '../config/dbConfig.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
-import { Users } from '../entities/Users.js';
 import bcrypt from 'bcrypt';
+import { userRepo } from '../entities/repos.js';
 async function updateUserDetails(args: UpdateArgs, user: AuthPayload) {
-  const userRepo = AppDataSource.getRepository(Users);
   try {
     const { username, email, password, profile_image_path, collegeName } = args.input;
     const updateUser = await userRepo.findOne({
@@ -52,7 +50,6 @@ async function updateUserDetails(args: UpdateArgs, user: AuthPayload) {
 }
 
 async function fetchUserProfile(userId: string) {
-  const userRepo = AppDataSource.getRepository(Users);
   const userProfile = userRepo.findOne({
     where: {
       userId: userId,

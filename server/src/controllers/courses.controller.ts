@@ -6,15 +6,10 @@ import {
   AuthPayload,
   EnrollCourseArgs,
 } from '../../types/types.js';
-import { AppDataSource } from '../config/dbConfig.js';
-import { Courses } from '../entities/Courses.js';
-import { Users } from '../entities/Users.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
-import { Enrollments } from '../entities/Enrollments.js';
+import { userRepo, courseRepo, enrollmentRepo } from '../entities/repos.js';
 
 async function createACourse(args: CourseUpdateArgs, context: Context) {
-  const courseRepo = AppDataSource.getRepository(Courses);
-  const userRepo = AppDataSource.getRepository(Users);
   const { courseName, description, thumbnail_image_path } = args.input;
   if (context.user?.user_id) {
     const creatingUser = await userRepo.findOne({
@@ -44,7 +39,6 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
   }
 }
 async function fetchAllCourses(userId: string, userRole: string) {
-  const courseRepo = AppDataSource.getRepository(Courses);
   try {
     const courses = await courseRepo.find({
       relations: {
@@ -72,7 +66,6 @@ async function fetchAllCourses(userId: string, userRole: string) {
 }
 
 async function editCourseDetails(args: CourseUpdateArgs) {
-  const courseRepo = AppDataSource.getRepository(Courses);
   const { courseName, courseId, description, thumbnail_image_path, isActive } = args.input;
   try {
     if (!courseId) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
@@ -108,7 +101,6 @@ async function editCourseDetails(args: CourseUpdateArgs) {
 }
 
 async function deleteCourseFromDB(courseId: string) {
-  const courseRepo = AppDataSource.getRepository(Courses);
   try {
     const deletedCourse = await courseRepo.findOne({
       where: {
@@ -126,7 +118,6 @@ async function deleteCourseFromDB(courseId: string) {
   }
 }
 async function fetchASingleCourse(courseId: string, user: AuthPayload) {
-  const courseRepo = AppDataSource.getRepository(Courses);
   try {
     const course = await courseRepo.findOne({
       where: {
@@ -191,9 +182,6 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
   }
 }
 async function enrollAStudent(args: EnrollCourseArgs, context: Context) {
-  const courseRepo = AppDataSource.getRepository(Courses);
-  const userRepo = AppDataSource.getRepository(Users);
-  const enrollmentRepo = AppDataSource.getRepository(Enrollments);
   const userId = args.input.userId ?? context.user?.user_id;
   try {
     const course = await courseRepo.findOne({

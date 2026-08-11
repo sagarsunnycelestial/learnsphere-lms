@@ -1,14 +1,16 @@
 import { GraphQLError } from 'graphql';
 import { Context, QuestionArgs, SubmitQuizArgs } from '../../types/types.js';
 import { UserRoles } from '../../types/types.js';
-import { AppDataSource } from '../config/dbConfig.js';
-import { Courses } from '../entities/Courses.js';
-import { Quizzes } from '../entities/Quizzes.js';
+import {
+  userRepo,
+  courseRepo,
+  questionRepo,
+  quizRepo,
+  resultRepo,
+  optionRepo,
+} from '../entities/repos.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
-import { Questions } from '../entities/Questions.js';
-import { Options } from '../entities/Options.js';
-import { Results } from '../entities/Results.js';
-import { Users } from '../entities/Users.js';
+
 async function createAQuizForCourse(
   args: {
     input: {
@@ -18,8 +20,6 @@ async function createAQuizForCourse(
   },
   context: Context
 ) {
-  const courseRepo = AppDataSource.getRepository(Courses);
-  const quizRepo = AppDataSource.getRepository(Quizzes);
   if (!context.user?.user_id || !args.input.courseId)
     throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
   try {
@@ -47,9 +47,6 @@ async function createAQuizForCourse(
   }
 }
 async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
-  const quizRepo = AppDataSource.getRepository(Quizzes);
-  const questionRepo = AppDataSource.getRepository(Questions);
-  const optionRepo = AppDataSource.getRepository(Options);
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
   const { optionTwo, optionFour, optionThree, correctOption, questionText } = args.input;
@@ -108,9 +105,6 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
 }
 
 async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
-  const quizRepo = AppDataSource.getRepository(Quizzes);
-  const resultRepo = AppDataSource.getRepository(Results);
-  const userRepo = AppDataSource.getRepository(Users);
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
 
@@ -203,7 +197,6 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
 }
 
 async function deleteQuizWithID(quizId: string, context: Context) {
-  const quizRepo = AppDataSource.getRepository(Quizzes);
   let quizToDelete = null;
   try {
     if (context.user) {
@@ -228,7 +221,6 @@ async function deleteQuizWithID(quizId: string, context: Context) {
 }
 
 async function deleteQuestionWithID(input: { questionId: string; quizId: string; userId: string }) {
-  const questionRepo = AppDataSource.getRepository(Questions);
   try {
     const questionToDelete = await questionRepo.findOne({
       where: {

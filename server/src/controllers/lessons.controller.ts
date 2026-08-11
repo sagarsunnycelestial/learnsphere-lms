@@ -1,15 +1,9 @@
 import { DeleteLessonArgs, LessonUpdateArgs, UserRoles } from '../../types/types.js';
-import { AppDataSource } from '../config/dbConfig.js';
-import { Courses } from '../entities/Courses.js';
-import { Lessons } from '../entities/Lessons.js';
 import { GraphQLError } from 'graphql';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import { Context } from '../../types/types.js';
-
+import { lessonRepo, courseRepo } from '../entities/repos.js';
 async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
-  const courseRepo = AppDataSource.getRepository(Courses);
-  const lessonRepo = AppDataSource.getRepository(Lessons);
-
   const { lessonName, description, videoLink, courseId } = args.input;
   if (!courseId || !lessonName) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
 
@@ -60,8 +54,6 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
 }
 
 async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
-  const lessonRepo = AppDataSource.getRepository(Lessons);
-
   const { lessonName, lessonId, description, videoLink, courseId, sortOrder } = args.input;
   if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
   try {
@@ -106,8 +98,6 @@ async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
   }
 }
 async function deleteLessonInCourse(args: DeleteLessonArgs, context: Context) {
-  const lessonRepo = AppDataSource.getRepository(Lessons);
-
   const { lessonId, courseId } = args.input;
   if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
   try {
