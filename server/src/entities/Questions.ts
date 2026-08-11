@@ -17,7 +17,9 @@ export class Questions {
   @PrimaryGeneratedColumn('uuid', { name: 'question_id' })
   questionId!: string;
 
-  @ManyToOne(() => Quizzes, (quiz) => quiz.questions)
+  @ManyToOne(() => Quizzes, (quiz) => quiz.questions,{
+    onDelete:'CASCADE'
+  })
   @JoinColumn({
     name: 'quiz_id',
   })

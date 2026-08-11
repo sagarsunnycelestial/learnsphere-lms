@@ -17,7 +17,9 @@ export class Quizzes {
   @PrimaryGeneratedColumn('uuid', { name: 'quiz_id' })
   quizId!: string;
 
-  @ManyToOne(() => Courses, (course) => course.quizzes)
+  @ManyToOne(() => Courses, (course) => course.quizzes, {
+    onDelete:'CASCADE'
+  })
   @JoinColumn({
     name: 'course_id',
   })
@@ -46,7 +48,9 @@ export class Quizzes {
   })
   updatedAt!: Date;
 
-  @OneToMany(() => Questions, (question) => question.quiz)
+  @OneToMany(() => Questions, (question) => question.quiz,{
+    onDelete:'CASCADE'
+  })
   questions!: Questions[];
 
   @OneToMany(() => Results, (result) => result.quiz)

@@ -14,7 +14,9 @@ export class Options {
   @PrimaryGeneratedColumn('uuid', { name: 'option_id' })
   optionId!: string;
 
-  @ManyToOne(() => Questions, (question) => question.options)
+  @ManyToOne(() => Questions, (question) => question.options,{
+    onDelete:'CASCADE'
+  })
   @JoinColumn({
     name: 'question_id',
   })
