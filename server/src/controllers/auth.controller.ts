@@ -5,6 +5,7 @@ import {
   RegisterArgs,
   UserRoles,
 } from '../../types/types.js';
+import crypto from 'crypto';
 import { Response } from 'express';
 import { AppDataSource } from '../config/dbConfig.js';
 import { Roles, Users } from '../entities/index.js';
@@ -37,16 +38,18 @@ const loginUser = async (args: LoginArgs, res: Response) => {
           role: user.role.roleName,
         };
         const accessToken = jwt.sign(payload, envSchema.ACCESS_TOKEN_SECRET, {
-          expiresIn: '1d',
+          expiresIn: '15min',
         });
-        const refreshToken = jwt.sign(payload, envSchema.REFRESH_TOKEN_SECRET, {
-          expiresIn: '7d',
-        });
-        user.refreshToken = refreshToken;
+        const refreshToken = crypto.randomBytes(64).toString('hex');
+        const refreshToken_hash = crypto
+          .createHmac('sha256', envSchema.REFRESH_TOKEN_SECRET)
+          .update(refreshToken, 'utf8')
+          .digest('hex');
+        user.refreshToken = refreshToken_hash;
         user.isActive = true;
-        user.lastLoginAt = new Date();
+        user.rtokenGeneratedAt = new Date();
         await userRepo.save(user);
-        res.cookie('jwt', refreshToken, {
+        res.cookie('refresh_token', refreshToken, {
           httpOnly: true,
           sameSite: 'lax',
           secure: true,
@@ -116,19 +119,14 @@ const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
 async function fetchUserByRefreshToken(refreshToken: string, res: Response) {
   const userRepo = AppDataSource.getRepository(Users);
 
-  let decoded: AuthPayload;
-
-  try {
-    decoded = jwt.verify(refreshToken, envSchema.REFRESH_TOKEN_SECRET) as AuthPayload;
-  } catch {
-    throw new GraphQLError('Invalid refresh token');
-  }
-  const userfound = await userRepo.findOneBy({ refreshToken: refreshToken });
-  if (!userfound) throw new GraphQLError(ERROR_MESSAGES.INVALID_REFRESH_TOKEN);
+  const hashedRefreshToken = crypto
+    .createHmac('sha256', envSchema.REFRESH_TOKEN_SECRET)
+    .update(refreshToken, 'utf8')
+    .digest('hex');
 
   const user = await userRepo.findOne({
     where: {
-      userId: decoded.user_id,
+      refreshToken: hashedRefreshToken,
     },
     relations: {
       role: true,
@@ -137,30 +135,29 @@ async function fetchUserByRefreshToken(refreshToken: string, res: Response) {
   if (!user) {
     throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
   } else {
-    const payload = {
-      user_id: user.userId,
-      role: user.role.roleName,
-    };
-    const accessToken = jwt.sign(payload, envSchema.ACCESS_TOKEN_SECRET, {
-      expiresIn: '1d',
-    });
-    const refreshToken = jwt.sign(payload, envSchema.REFRESH_TOKEN_SECRET, {
-      expiresIn: '7d',
-    });
-    user.refreshToken = refreshToken;
-    await userRepo.save(user);
-    res.cookie('jwt', refreshToken, {
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      maxAge: 604800000,
-    });
-
-    return {
-      accessToken: accessToken,
-      role: user.role.roleName,
-      profile_image_path: user.profile_image_path,
-    };
+    if (user.rtokenGeneratedAt) {
+      const now = new Date();
+      const lasLoginAt = new Date(user.rtokenGeneratedAt);
+      const sevenDaysInMs = envSchema.REFRESH_TOKEN_EXPIRY_TIME;
+      if (now.getTime() - lasLoginAt.getTime() > sevenDaysInMs) {
+        throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
+      } else {
+        const payload = {
+          user_id: user.userId,
+          role: user.role.roleName,
+        };
+        const accessToken = jwt.sign(payload, envSchema.ACCESS_TOKEN_SECRET, {
+          expiresIn: '15min',
+        });
+        return {
+          accessToken: accessToken,
+          role: user.role.roleName,
+          profile_image_path: user.profile_image_path,
+        };
+      }
+    } else {
+      throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
+    }
   }
 }
 
@@ -175,7 +172,6 @@ async function removeRefreshToken(userId: string) {
     if (!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
 
     user.refreshToken = '';
-    user.lastLoginAt = new Date();
     await userRepo.save(user);
     return { message: 'User logged out successfully' };
   } catch (err) {

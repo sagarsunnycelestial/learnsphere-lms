@@ -27,4 +27,5 @@ export const ERROR_MESSAGES = {
   QUIZ_HAS_DUPLICATES: 'Submitted question has duplicates',
   QUIZ_NOT_DELETE: 'Quiz could not be deleted',
   QUESTION_NOT_DELETE: 'Question could not be deleted',
+  REFRESH_TOKEN_INVALID: "Refresh token is invalid"
 } as const;

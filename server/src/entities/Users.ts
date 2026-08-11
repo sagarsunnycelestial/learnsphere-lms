@@ -61,7 +61,7 @@ export class Users {
     type: 'timestamp',
     nullable: true,
   })
-  lastLoginAt?: Date;
+  rtokenGeneratedAt?: Date;
 
   @Column({
     type: 'boolean',

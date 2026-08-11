@@ -59,12 +59,12 @@ export const resolvers = {
       { req, res }: { req: Request; res: Response }
     ) => {
       const cookies = req.cookies;
-      if (!cookies?.jwt)
-        throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED, {
+      if (!cookies?.refresh_token)
+        throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID, {
           extensions: { code: 'FORBIDDEN' },
         });
 
-      const refreshToken = cookies.jwt;
+      const refreshToken = cookies.refresh_token;
       const foundUser = await fetchUserByRefreshToken(refreshToken, res);
       return foundUser;
     },
