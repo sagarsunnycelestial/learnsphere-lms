@@ -202,4 +202,54 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
   }
 }
 
-export { createAQuizForCourse, createAQuestionForQuiz, submitQuizAnswers };
+async function deleteQuizWithID(quizId: string, userId: string) {
+  const quizRepo = AppDataSource.getRepository(Quizzes);
+  try {
+    const quizToDelete = await quizRepo.findOne({
+      where: {
+        quizId: quizId,
+        course: {
+          createdBy: {
+            userId: userId,
+          },
+        },
+      },
+    });
+    if (!quizToDelete) throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_FOUND);
+
+    await quizRepo.remove(quizToDelete);
+    return { message: 'Quiz deleted successfully' };
+  } catch (err) {
+    if (err instanceof GraphQLError) throw err.message;
+    throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_DELETE);
+  }
+}
+
+async function deleteQuestionWithID(input: { questionId: string; quizId: string; userId: string }) {
+  const questionRepo = AppDataSource.getRepository(Questions);
+  try {
+    const questionToDelete = await questionRepo.findOne({
+      where: {
+        questionId: input.questionId,
+        quiz: {
+          quizId: input.quizId,
+          course: {
+            createdBy: {
+              userId: input.userId,
+            },
+          },
+        },
+      },
+    });
+    if (!questionToDelete) throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
+
+    await questionRepo.remove(questionToDelete);
+    return {
+      message: 'Question deleted successfully',
+    };
+  } catch (err) {
+    if (err instanceof GraphQLError) throw err.message;
+    throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
+  }
+}
+export { createAQuizForCourse, createAQuestionForQuiz, submitQuizAnswers, deleteQuizWithID,deleteQuestionWithID};

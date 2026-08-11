@@ -25,4 +25,6 @@ export const ERROR_MESSAGES = {
   QUIZ_ID_INVALID: 'Failed to fetch the Quiz',
   QUIZ_SUBMIT_FAILED: 'Failed to submit answers',
   QUIZ_HAS_DUPLICATES: 'Submitted question has duplicates',
+  QUIZ_NOT_DELETE: 'Quiz could not be deleted',
+  QUESTION_NOT_DELETE: 'Question could not be deleted'
 } as const;

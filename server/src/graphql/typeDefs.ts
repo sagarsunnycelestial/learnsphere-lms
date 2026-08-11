@@ -221,11 +221,10 @@ input QuizDetails {
   userId:String
   username:String
   profile_image_path:String
-resultId:String
-quizId:String
-quizName:String
-score:Float
-
+  resultId:String
+  quizId:String
+  quizName:String
+  score:Float
   }
 
 type Mutation {
@@ -243,5 +242,7 @@ type Mutation {
   createAQuiz(input:QuizDetails):Response!
   createAQuestion(input:QuestionDetails):Response!
   submitQuiz(input:QuizAnswerDetails): QuizResultResponse!
+  deleteQuiz(quizId:String!): Response!
+  deleteQuestion(questionId:String!,quizId:String!): Response!
 }
 `;
