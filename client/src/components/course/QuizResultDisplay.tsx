@@ -2,12 +2,16 @@ import { Box, Typography, Divider, Chip, Avatar, Stack, Button } from '@mui/mate
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { resultDisplay } from '../../store/slices/formSlice';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import { downloadResultPDF } from '../../pdf-lib/pdfHandler';
 export default function QuizResultDisplay() {
   const dispatch = useAppDispatch();
   const quizResult = useAppSelector((state) => state.form.results.quizResult);
 
   if (!quizResult) {
     return <Typography>No quiz result to show yet.</Typography>;
+  }
+  const handleDownload =async()=>{
+    await downloadResultPDF(quizResult)
   }
 
   return (
@@ -70,7 +74,7 @@ export default function QuizResultDisplay() {
           {quizResult.courseDetail?.courseName}
         </Typography>
       </Typography>
-      <Button startIcon={<CloudDownloadIcon />} variant="outlined" size="small">
+      <Button onClick={handleDownload} startIcon={<CloudDownloadIcon />} variant="outlined" size="small">
         Download result
       </Button>
     </Box>
