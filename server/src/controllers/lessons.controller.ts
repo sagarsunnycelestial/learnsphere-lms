@@ -10,7 +10,7 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
   const courseRepo = AppDataSource.getRepository(Courses);
   const lessonRepo = AppDataSource.getRepository(Lessons);
 
-  const { lessonName, description, videoLink, courseId, sortOrder } = args.input;
+  const { lessonName, description, videoLink, courseId } = args.input;
   if (!courseId || !lessonName) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
 
   let course;

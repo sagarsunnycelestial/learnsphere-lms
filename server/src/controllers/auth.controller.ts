@@ -1,6 +1,5 @@
 import {
   AuthPayload,
-  Context,
   LoginArgs,
   LoginUserBody,
   RegisterArgs,

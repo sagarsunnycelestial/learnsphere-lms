@@ -30,6 +30,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bcrypt": "^6.0.0",
     "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
@@ -37,6 +38,9 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.1.2",
     "cors": "^2.8.6",
-    "typescript": "^7.0.2"
+    "eslint": "^10.8.1",
+    "globals": "^17.9.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.67.0"
   }
 }

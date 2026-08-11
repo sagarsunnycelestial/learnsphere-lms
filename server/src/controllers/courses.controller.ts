@@ -2,7 +2,6 @@ import { GraphQLError } from 'graphql/error/GraphQLError.js';
 import {
   CourseUpdateArgs,
   Context,
-  UpdateArgs,
   UserRoles,
   AuthPayload,
   EnrollCourseArgs,
@@ -39,7 +38,9 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
       if (!newCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_CREATE_COURSE);
       await courseRepo.save(newCourse);
       return { message: 'Course created successfully' };
-    } catch (err) {}
+    } catch{
+      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_CREATE_COURSE)
+    }
   }
 }
 async function fetchAllCourses(userId: string, userRole: string) {
@@ -62,7 +63,10 @@ async function fetchAllCourses(userId: string, userRole: string) {
       return { ...course, isEnrolled: isEnrolled, canModify: canModify };
     });
     return filteredcourses;
-  } catch (err) {
+  } catch(err)  {
+     if (err instanceof GraphQLError) {
+      throw err;
+    }
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }
@@ -95,7 +99,10 @@ async function editCourseDetails(args: CourseUpdateArgs) {
 
     await courseRepo.save(updatedCourse);
     return { message: 'Course edited successfully' };
-  } catch (err) {
+  } catch(err) {
+     if (err instanceof GraphQLError) {
+      throw err;
+    }
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }
@@ -111,7 +118,10 @@ async function deleteCourseFromDB(courseId: string) {
     if (!deletedCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_DELETE_COURSE);
     await courseRepo.remove(deletedCourse);
     return { message: 'Course deleted successfully' };
-  } catch (err) {
+  } catch(err) {
+     if (err instanceof GraphQLError) {
+      throw err;
+    }
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }
@@ -173,7 +183,10 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
       canModify: false,
       isEnrolled: true,
     };
-  } catch (error) {
+  } catch (err) {
+     if (err instanceof GraphQLError) {
+      throw err;
+    }
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }

@@ -7,5 +7,6 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
   } else {
     res.status(500).json({ error: error });
   }
+  next();
 };
 export default errorHandler;

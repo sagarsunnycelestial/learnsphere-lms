@@ -1,7 +1,6 @@
 import { GraphQLError } from 'graphql';
 import { UserRoles } from '../../types/types.js';
 import { AppDataSource } from '../config/dbConfig.js';
-import { Roles } from '../entities/Roles.js';
 import { Users } from '../entities/Users.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 
@@ -33,6 +32,9 @@ async function fetchStudentDetails(args: { courseId?: string }) {
     });
     return filteredStudents;
   } catch (err) {
+     if (err instanceof GraphQLError) {
+      throw err;
+    }
     throw new GraphQLError(ERROR_MESSAGES.STUDENTS_NOT_FOUND);
   }
 }

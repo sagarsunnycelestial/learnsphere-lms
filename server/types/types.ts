@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-namespace */
 import type { Request, Response } from 'express';
 
 export enum UserRoles {
@@ -30,10 +31,6 @@ export type LoginUserBody = {
 declare global {
   namespace Express {
     interface Request {
-      /** Parsed cookies that have not been signed */
-      cookies: Record<string, any>;
-      /** Parsed cookies that have been signed */
-      signedCookies: Record<string, any>;
       user: {
         user_id?: string | null;
         role?: UserRoles | null;
