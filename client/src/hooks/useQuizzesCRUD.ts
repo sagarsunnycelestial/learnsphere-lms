@@ -7,6 +7,10 @@ import {
   CreateAQuestionMutationVariables,
   CreateAQuizDocument,
   CreateAQuizMutationVariables,
+  DeleteQuestionDocument,
+  DeleteQuestionMutationVariables,
+  DeleteQuizDocument,
+  DeleteQuizMutationVariables,
   SubmitQuizDocument,
   SubmitQuizMutationVariables,
 } from '../generated/graphql';
@@ -71,6 +75,41 @@ export default function useQuizzesRUD() {
       toast.error('Submitting Quiz failed');
     },
   });
-
-  return { createAQuestion, addNewQuiz, submitQuizAnswers };
+const { mutateAsync: deleteQuiz } = useMutation({
+    mutationFn: async (input: DeleteQuizMutationVariables) => {
+      const { data } = await apolloClient.mutate({
+        mutation: DeleteQuizDocument,
+        variables: input,
+        fetchPolicy: 'network-only',
+      });
+      return data?.deleteQuiz;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['course', id],
+      });
+    },
+    onError: () => {
+      toast.error('Deleting Quiz failed');
+    },
+  });
+  const { mutateAsync: deleteQuestion } = useMutation({
+    mutationFn: async (input: DeleteQuestionMutationVariables) => {
+      const { data } = await apolloClient.mutate({
+        mutation: DeleteQuestionDocument,
+        variables: input,
+        fetchPolicy: 'network-only',
+      });
+      return data?.deleteQuestion;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['course', id],
+      });
+    },
+    onError: () => {
+      toast.error('Deleting Question failed');
+    },
+  });
+  return { createAQuestion, addNewQuiz, submitQuizAnswers,deleteQuiz ,deleteQuestion};
 }

@@ -69,7 +69,7 @@ export default function SingleCoursePage() {
   const lessons = course?.lessons ?? [];
   const quizzes = course?.quizzes ?? [];
   const dispatch = useAppDispatch();
-  const { submitQuizAnswers } = useQuizzesRUD();
+  const { submitQuizAnswers, deleteQuestion, deleteQuiz } = useQuizzesRUD();
   const isOpen = useAppSelector((state) => state.form.courses.isAddCourseFormOpen);
   const lessonForm = useAppSelector((state) => state.form.lessons.isLessonFormOpen);
   const submitted = useAppSelector((state) => state.form.results.submitted);
@@ -125,6 +125,23 @@ export default function SingleCoursePage() {
       }
     }
   };
+  async function handleQuizDelete(quizId: string) {
+    try {
+      const res = await deleteQuiz({ quizId });
+      if (res?.message) toast.success(res.message);
+    } catch {
+      toast.error('Failed to delete quiz');
+    }
+  }
+
+  async function handleQuestionDelete(quizId: string, questionId: string) {
+    try {
+      const res = await deleteQuestion({ quizId, questionId });
+      if (res?.message) toast.success(res.message);
+    } catch {
+      toast.error('Failed to delete quiz');
+    }
+  }
   const canModify = course?.canModify;
   async function handleQuizSubmit(e: React.SubmitEvent<HTMLFormElement>, quizId?: string) {
     e.preventDefault();
@@ -609,6 +626,7 @@ export default function SingleCoursePage() {
                               variant="contained"
                               color="error"
                               size="small"
+                              onClick={() => handleQuizDelete(quiz?.quizId as string)}
                             >
                               Delete Quiz
                             </Button>
@@ -652,6 +670,12 @@ export default function SingleCoursePage() {
                                   variant="outlined"
                                   color="error"
                                   size="small"
+                                  onClick={() =>
+                                    handleQuestionDelete(
+                                      quiz.quizId as string,
+                                      question?.questionId as string
+                                    )
+                                  }
                                 >
                                   Delete Question
                                 </Button>
