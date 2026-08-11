@@ -25,12 +25,12 @@ export default function CourseForm() {
   const [courseName, setCourseName] = useState(selectedCourse?.courseName ?? '');
   const [thumbnailImg, setThumbnailImg] = useState<File | null>(null);
   const [description, setDescription] = useState(selectedCourse?.description ?? '');
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   const [isActive, setIsActive] = useState(selectedCourse?.isActive ?? true);
   const dispatch = useAppDispatch();
   const { addNewCourse, updateCourse } = useCoursesCRUD();
   async function handleSubmit() {
-    setLoading(true)
+    setLoading(true);
     if (thumbnailImg) {
       publicUrl.current = await uploadImage(thumbnailImg);
     }
@@ -52,8 +52,8 @@ export default function CourseForm() {
         );
       } catch (err) {
         toast.error(err as string);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     } else {
       try {
@@ -74,8 +74,8 @@ export default function CourseForm() {
         );
       } catch (err) {
         toast.error(err as string);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
   }
@@ -196,13 +196,13 @@ export default function CourseForm() {
           fontWeight: 600,
         }}
       >
-       {loading ? (
-                 <CircularProgress size={22} color="inherit" />
-               ) : isEditing ? (
-                 'Confirm Edit'
-               ) : (
-                 'Submit'
-               )}
+        {loading ? (
+          <CircularProgress size={22} color="inherit" />
+        ) : isEditing ? (
+          'Confirm Edit'
+        ) : (
+          'Submit'
+        )}
       </Button>
     </Box>
   );

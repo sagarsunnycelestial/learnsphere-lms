@@ -26,7 +26,7 @@ export default function AddUserForm() {
   const publicUrl = useRef<string | null>(null);
   const isEditing = mode === 'edit';
   const [email, setEmail] = useState(selectedUser?.email ?? '');
-  const [loading,setLoading] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(false);
   const [password, setPassword] = useState('');
   const [profileImg, setProfileImg] = useState<File | null>(null);
   const [username, setUsername] = useState(selectedUser?.userName ?? '');
@@ -37,7 +37,7 @@ export default function AddUserForm() {
   const { data } = useQuery(FETCH_ROLES);
   const roles = data?.fetchRoles ?? [];
   async function handleSubmit() {
-    setLoading(true)
+    setLoading(true);
     let input;
     if (!isEditing) {
       input = {
@@ -76,8 +76,8 @@ export default function AddUserForm() {
               ? err
               : 'Failed to create user';
         toast.error(message);
-      } finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     } else {
       try {
@@ -110,8 +110,8 @@ export default function AddUserForm() {
         );
       } catch (err) {
         toast.error(err as string);
-      }finally{
-        setLoading(false)
+      } finally {
+        setLoading(false);
       }
     }
   }
@@ -251,12 +251,12 @@ export default function AddUserForm() {
         }}
       >
         {loading ? (
-                        <CircularProgress size={22} color="inherit" />
-                      ) : isEditing ? (
-                        'Confirm Edit'
-                      ) : (
-                        'Submit'
-                      )}
+          <CircularProgress size={22} color="inherit" />
+        ) : isEditing ? (
+          'Confirm Edit'
+        ) : (
+          'Submit'
+        )}
       </Button>
     </Box>
   );
