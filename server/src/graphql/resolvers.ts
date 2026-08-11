@@ -65,7 +65,7 @@ export const resolvers = {
         });
 
       const refreshToken = cookies.refresh_token;
-      const foundUser = await fetchUserByRefreshToken(refreshToken, res);
+      const foundUser = await fetchUserByRefreshToken(refreshToken);
       return foundUser;
     },
     fetchCourses: async (_parents: unknown, _args: unknown, context: Context) => {
