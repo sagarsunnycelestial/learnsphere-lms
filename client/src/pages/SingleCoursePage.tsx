@@ -407,7 +407,7 @@ export default function SingleCoursePage() {
                       >
                         Add a Quiz
                       </Button>
-                      <Button
+                      {course.enrollments?.length !==0 && (  <Button
                         startIcon={<PeopleIcon />}
                         onClick={() => setEnrolled(!enrolled)}
                         color={!enrolled ? 'info' : 'warning'}
@@ -420,7 +420,8 @@ export default function SingleCoursePage() {
                         }}
                       >
                         {enrolled ? 'Close List' : 'View Enrolled Students'}
-                      </Button>
+                      </Button>)}
+                    
                     </Stack>
                   </Paper>{' '}
                 </Stack>

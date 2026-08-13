@@ -20,6 +20,11 @@ export default function LessonForm() {
   const courseId = selectedLesson?.courseId ?? id;
   const [errors, setErrors] = useState<{ lessonName?: string; description?: string }>({});
   const [lessonName, setLessonName] = useState(selectedLesson?.lessonName ?? '');
+const existingVideoFileName = selectedLesson?.videoLink
+  ? decodeURIComponent(
+      selectedLesson.videoLink.split('/').pop()?.split('?')[0] || ''
+    )
+  : '';
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [description, setDescription] = useState(selectedLesson?.description ?? '');
   const dispatch = useAppDispatch();
@@ -186,7 +191,12 @@ export default function LessonForm() {
             justifyContent: 'flex-start',
           }}
         >
-          {videoFile ? videoFile.name : 'Upload Lesson Video'}
+        
+  {videoFile
+    ? videoFile.name
+    : isEditing && existingVideoFileName
+      ? existingVideoFileName
+      : 'Upload Lesson Video'}
           <input hidden type="file" name="videoLink" onChange={handleVideoChange} />
         </Button>
       </Box>

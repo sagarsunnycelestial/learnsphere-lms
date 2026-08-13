@@ -1,34 +1,80 @@
 import { Button, Box, Card, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
-// import MyLogo from "../assets/HR-logo.webp";
+import { useNavigate,useLocation } from 'react-router';
 import { useAppDispatch } from '../store/hooks';
 import { apolloClient } from '../graphql/apolloClient';
 import { refreshUser } from '../store/slices/authSlice';
 import { REFRESH_QUERY } from '../graphql/queries/RefreshQuery';
+import { useState } from 'react';
 import LMSlogo from '../assets/LMSlogo.png';
+import CircularProgress from '@mui/material/CircularProgress';
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const location = useLocation()
+const [checkingAuth, setCheckingAuth] = useState(true);
+const [refreshFailed, setRefreshFailed] = useState(false);
+  const from = location.state?.from
   useEffect(() => {
-    async function refreshToken() {
-      try {
-        const response = await apolloClient.query({
-          query: REFRESH_QUERY,
-          fetchPolicy: 'network-only',
-        });
-        if (!response.data?.refreshEndpoint) return;
-        console.log(response?.data?.refreshEndpoint);
-        const { accessToken, role, profile_image_path } = response.data.refreshEndpoint;
-        dispatch(refreshUser({ accessToken, role, isAuthenticated: true, profile_image_path }));
-        navigate('/dashboard');
-      } catch (error) {
-        console.error('Refresh failed:', error);
-      }
-    }
+  async function refreshToken() {
+    try {
+      const response = await apolloClient.query({
+        query: REFRESH_QUERY,
+        fetchPolicy: 'network-only',
+      });
 
-    refreshToken();
-  }, [dispatch, navigate]);
+      if (!response.data?.refreshEndpoint) {
+        setRefreshFailed(true);
+        return;
+      }
+
+      const {
+        accessToken,
+        role,
+        profile_image_path,
+      } = response.data.refreshEndpoint;
+
+      dispatch(
+        refreshUser({
+          accessToken,
+          role,
+          isAuthenticated: true,
+          profile_image_path,
+        })
+      );
+
+      if (from) {
+        navigate(
+          from.pathname + from.search + from.hash,
+          { replace: true }
+        );
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    } catch (error) {
+      console.error('Refresh failed:', error);
+      setRefreshFailed(true);
+    } finally {
+      setCheckingAuth(false);
+    }
+  }
+
+  refreshToken();
+}, [dispatch, navigate, from]);
+if (checkingAuth && !refreshFailed) {
+  return (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+          }}
+        >
+          <CircularProgress color="inherit" aria-label="Loading…" />
+        </Box>
+      );
+}
 
   return (
     <Box
