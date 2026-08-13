@@ -21,7 +21,7 @@ export default function QuizResults() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 700 }}>Quiz Name</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Quiz Id</TableCell>
+        
               <TableCell sx={{ fontWeight: 700 }}>Score</TableCell>
             </TableRow>
           </TableHead>
@@ -29,7 +29,6 @@ export default function QuizResults() {
             {results?.map((result) => (
               <TableRow key={result?.resultId}>
                 <TableCell sx={{ fontWeight: 600 }}>{result?.quiz?.quizName}</TableCell>
-                <TableCell>{result?.quiz?.quizId}</TableCell>
                 <TableCell>
                   <Chip
                     size="small"

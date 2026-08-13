@@ -908,34 +908,27 @@ export default function SingleCoursePage() {
         </Dialog>
         <Dialog
           open={isOpen}
-          onClose={() => dispatch(addCourseFormControl({ isAddCourseFormOpen: false }))}
         >
           <CourseForm />
         </Dialog>
         <Dialog
           open={lessonForm}
-          onClose={() => {
-            setSelectedLesson(null);
-            dispatch(lessonFormControl({ isLessonFormOpen: false }));
-          }}
         >
           <LessonForm />
         </Dialog>
         <Dialog
           open={quizForm}
-          onClose={() => dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))}
+      
         >
           <QuizForm />
         </Dialog>
         <Dialog
           open={questionForm}
-          onClose={() => dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))}
         >
           <QuestionForm />
         </Dialog>
         <Dialog
           open={submitted}
-          onClose={() => dispatch(resultDisplay({ submitted: false, quizResult: null }))}
         >
           <QuizResultDisplay />
         </Dialog>

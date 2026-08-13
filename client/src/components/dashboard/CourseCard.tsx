@@ -42,7 +42,7 @@ export default function CourseCard({ course }: CourseCardProps) {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data: students } = useFetchStudents(course.courseId);
+  const { data: students } = useFetchStudents(course.courseId, enrollBox);
   const { deleteCourse } = useCoursesCRUD();
   const { enrollStudent } = useUserCRUD();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -123,9 +123,7 @@ export default function CourseCard({ course }: CourseCardProps) {
               </MenuItem>
 
               <MenuItem onClick={() => setConfirm(true)} disableRipple>
-                <DeleteForeverIcon
-                 
-                />
+                <DeleteForeverIcon />
                 Delete
               </MenuItem>
             </Menu>
@@ -230,39 +228,17 @@ export default function CourseCard({ course }: CourseCardProps) {
                 {course.createdBy?.username}
               </Typography>
             </Stack>
-            {canManualEnroll ? (
-              <Button
-                color="warning"
-                startIcon={<PersonAddIcon />}
-                onClick={() => setEnrollBox(true)}
-                variant="contained"
-                size="small"
-                sx={{
-                  ml: 'auto',
-                  borderRadius: 1,
-                  textTransform: 'none',
-                  fontWeight: 600,
-                  px: 2.5,
-                  transition: '0.2s ease',
-                  '&:hover': {
-                    transform: 'translateY(-1px)',
-                  },
-                }}
-              >
-                Manual Enroll
-              </Button>
-            ) : canEnroll ? (
-              course.isEnrolled === true ? (
-                <Chip label="ENROLLED" sx={{ borderRadius: 0 }} />
-              ) : (
+            {course.isActive &&
+              (canManualEnroll ? (
                 <Button
-                  variant="contained"
-                  onClick={handleSelfEnroll}
+                  color="warning"
                   startIcon={<PersonAddIcon />}
+                  onClick={() => setEnrollBox(true)}
+                  variant="contained"
                   size="small"
                   sx={{
                     ml: 'auto',
-                    borderRadius: 2,
+                    borderRadius: 1,
                     textTransform: 'none',
                     fontWeight: 600,
                     px: 2.5,
@@ -272,10 +248,33 @@ export default function CourseCard({ course }: CourseCardProps) {
                     },
                   }}
                 >
-                  Enroll
+                  Manual Enroll
                 </Button>
-              )
-            ) : null}
+              ) : canEnroll ? (
+                course.isEnrolled === true ? (
+                  <Chip label="ENROLLED" sx={{ borderRadius: 0 }} />
+                ) : (
+                  <Button
+                    variant="contained"
+                    onClick={handleSelfEnroll}
+                    startIcon={<PersonAddIcon />}
+                    size="small"
+                    sx={{
+                      ml: 'auto',
+                      borderRadius: 2,
+                      textTransform: 'none',
+                      fontWeight: 600,
+                      px: 2.5,
+                      transition: '0.2s ease',
+                      '&:hover': {
+                        transform: 'translateY(-1px)',
+                      },
+                    }}
+                  >
+                    Enroll
+                  </Button>
+                )
+              ) : null)}
           </Stack>
         </Stack>
       </Stack>

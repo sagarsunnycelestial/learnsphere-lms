@@ -53,7 +53,7 @@ export default function ProfileBar() {
 
           <TabPanel value="1">
             {role === 'Student' && <CoursesEnrolled />}
-            {role === 'Instructor' && <CoursesCreated />}
+            {(role === 'Instructor' || role ==='Admin') && <CoursesCreated />}
           </TabPanel>
 
           {role === 'Student' && (

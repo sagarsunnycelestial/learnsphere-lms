@@ -104,16 +104,21 @@ export default function AddUserForm() {
           })
         );
       } catch (err) {
-        const message =
-          err instanceof Error
-            ? err.message
-            : typeof err === 'string'
-              ? err
-              : 'Failed to create user';
-        toast.error(message);
-      } finally {
-        setLoading(false);
-      }
+  const message =
+    err instanceof Error
+      ? err.message
+      : typeof err === 'string'
+        ? err
+        : 'Failed to create user';
+
+  if (message.toLowerCase().includes('duplicate')) {
+    toast.error('User with similar credentials exists. Please use a different value.');
+  } else {
+    toast.error(message);
+  }
+} finally {
+  setLoading(false);
+}
     } else {
       try {
         if (password) {
