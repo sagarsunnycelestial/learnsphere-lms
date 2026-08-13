@@ -549,161 +549,180 @@ export default function SingleCoursePage() {
             </AccordionSummary>
 
             <AccordionDetails>
-              {isEnrolled || canModify ? (
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <List>
-                    {[...lessons]
-                      .sort((a, b) => (a?.sortOrder ?? 0) - (b?.sortOrder ?? 0))
-                      .map((lesson, index) => (
-                        <Paper
-                          key={lesson?.lessonId}
-                          elevation={0}
+              {!isEnrolled && !canModify ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    textAlign: 'center',
+                    py: 4,
+                  }}
+                >
+                  Enroll to view lessons
+                </Typography>
+              ) : lessons.length === 0 ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    textAlign: 'center',
+                    py: 4,
+                  }}
+                >
+                  No lessons to show
+                </Typography>
+              ) : (
+                <List>
+                  {[...lessons]
+                    .sort((a, b) => (a?.sortOrder ?? 0) - (b?.sortOrder ?? 0))
+                    .map((lesson, index) => (
+                      <Paper
+                        key={lesson?.lessonId}
+                        elevation={0}
+                        sx={{
+                          mb: 2,
+                          overflow: 'hidden',
+                          borderRadius: 3,
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          bgcolor: theme.palette.primary.light,
+                          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.06)',
+                          transition: 'all 0.2s ease',
+                          '&:hover': {
+                            boxShadow: '0 6px 20px rgba(0, 0, 0, 0.10)',
+                            borderColor: 'primary.light',
+                          },
+                        }}
+                      >
+                        <Box
                           sx={{
-                            mb: 2,
-                            overflow: 'hidden',
-                            borderRadius: 3,
-                            border: '1px solid',
+                            px: 2.5,
+                            py: 2,
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'space-between',
+                            gap: 2,
+                            borderBottom: '1px solid',
                             borderColor: 'divider',
-                            bgcolor: theme.palette.primary.light,
-                            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.06)',
-                            transition: 'all 0.2s ease',
-                            '&:hover': {
-                              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.10)',
-                              borderColor: 'primary.light',
-                            },
                           }}
                         >
-                          <Box
+                          <Typography
+                            variant="subtitle1"
                             sx={{
-                              px: 2.5,
-                              py: 2,
-                              display: 'flex',
-                              alignItems: 'flex-start',
-                              justifyContent: 'space-between',
-                              gap: 2,
-                              borderBottom: '1px solid',
-                              borderColor: 'divider',
+                              fontWeight: 600,
+                              color: 'text.primary',
                             }}
                           >
-                            <Box sx={{ minWidth: 0 }}>
-                              <Typography
-                                variant="subtitle1"
+                            {index + 1}. {lesson?.lessonName}
+                          </Typography>
 
+                          {(hasPermission(user, 'modify:lessons') || canModify) && (
+                            <>
+                              <IconButton
+                                size="small"
+                                onClick={(e) => handleClick(e, lesson as Lesson)}
                                 sx={{
-                                  fontWeight: 600,
-                                  color: 'text.primary',
-                                  mb: 0.5,
+                                  flexShrink: 0,
+                                  bgcolor: 'action.hover',
+                                  '&:hover': {
+                                    bgcolor: 'action.selected',
+                                  },
                                 }}
                               >
-                                {index + 1}. {lesson?.lessonName}
-                              </Typography>
-                            </Box>
+                                <MoreHorizIcon />
+                              </IconButton>
 
-                            {(hasPermission(user, 'modify:lessons') || canModify) && (
-                              <>
-                                <IconButton
-                                  size="small"
-                                  onClick={(e) => handleClick(e, lesson as Lesson)}
-                                  sx={{
-                                    flexShrink: 0,
-                                    bgcolor: 'action.hover',
-                                    '&:hover': {
-                                      bgcolor: 'action.selected',
+                              <Menu
+                                anchorEl={anchorEl}
+                                open={
+                                  Boolean(anchorEl) && selectedLesson?.lessonId === lesson?.lessonId
+                                }
+                                onClose={handleClose}
+                                slotProps={{
+                                  paper: {
+                                    sx: {
+                                      borderRadius: 2,
+                                      minWidth: 140,
+                                      mt: 1,
                                     },
-                                  }}
-                                >
-                                  <MoreHorizIcon />
-                                </IconButton>
-                                <Menu
-                                  anchorEl={anchorEl}
-                                  open={
-                                    Boolean(anchorEl) &&
-                                    selectedLesson?.lessonId === lesson?.lessonId
-                                  }
-                                  onClose={handleClose}
-                                  slotProps={{
-                                    paper: {
-                                      sx: {
-                                        borderRadius: 2,
-                                        minWidth: 140,
-                                        mt: 1,
-                                      },
-                                    },
-                                  }}
-                                >
-                                  <MenuItem onClick={() => handleLessonDialog(lesson as Lesson)}>
-                                    <DeleteForeverIcon
-                                      sx={{
-                                        mr: 1,
-                                        color: 'error.main',
-                                      }}
-                                    />
-                                    Delete
-                                  </MenuItem>
-
-                                  <MenuItem onClick={() => handleLessonEdit()}>
-                                    <EditIcon sx={{ mr: 1 }} />
-                                    Edit
-                                  </MenuItem>
-                                </Menu>
-                              </>
-                            )}
-                          </Box>
-
-                          <Box
-                            sx={{
-                              p: { xs: 1.5, sm: 2 },
-                              bgcolor: 'grey.50',
-                              display: 'flex',
-                              alignItems: 'flex-start',
-                            }}
-                          >
-                            {lesson?.description && (
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                sx={{
-                                  lineHeight: 1.5,
-                                  flexGrow: 1,
+                                  },
                                 }}
                               >
-                                {lesson.description}
-                              </Typography>
-                            )}
-                            <Box
+                                <MenuItem onClick={() => handleLessonDialog(lesson as Lesson)}>
+                                  <DeleteForeverIcon
+                                    sx={{
+                                      mr: 1,
+                                      color: 'error.main',
+                                    }}
+                                  />
+                                  Delete
+                                </MenuItem>
+
+                                <MenuItem onClick={handleLessonEdit}>
+                                  <EditIcon sx={{ mr: 1 }} />
+                                  Edit
+                                </MenuItem>
+                              </Menu>
+                            </>
+                          )}
+                        </Box>
+                        <Box
+                          sx={{
+                            p: { xs: 1.5, sm: 2 },
+                            bgcolor: 'grey.50',
+                          }}
+                        >
+                          {lesson?.description && (
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
                               sx={{
-                                width: '100%',
-                                maxWidth: 700,
-                                mx: 'auto',
-                                overflow: 'hidden',
-                                borderRadius: 2,
-                                bgcolor: 'common.black',
-                                aspectRatio: '16 / 9',
+                                lineHeight: 1.5,
+                                mb: 2,
                               }}
                             >
-                              <CardMedia
-                                component="video"
-                                controls
-                                muted
-                                src={`${lesson?.videoLink}`}
-                                sx={{
-                                  width: '100%',
-                                  height: '100%',
-                                  objectFit: 'cover',
-                                }}
-                              />
-                            </Box>
+                              {lesson.description}
+                            </Typography>
+                          )}
+
+                          <Box
+                            sx={{
+                              width: '100%',
+                              maxWidth: 700,
+                              mx: 'auto',
+                              overflow: 'hidden',
+                              borderRadius: 2,
+                              bgcolor: 'common.black',
+                              aspectRatio: '16 / 9',
+                            }}
+                          >
+                            <CardMedia
+                              component="video"
+                              controls
+                              muted
+                              src={`${lesson?.videoLink}`}
+                              sx={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                              }}
+                            />
                           </Box>
-                        </Paper>
-                      ))}
-                  </List>
-                </Box>
-              ) : (
-                <Typography>Enroll to view lessons</Typography>
+                        </Box>
+                      </Paper>
+                    ))}
+                </List>
               )}
             </AccordionDetails>
           </Accordion>
-          <Accordion>
+          <Accordion
+            sx={{
+              borderRadius: 4,
+              border: '1px solid',
+              borderColor: theme.palette.divider,
+              boxShadow: 'none',
+            }}
+          >
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="h6" sx={{ fontWeight: 700 }}>
                 Quizzes
@@ -711,10 +730,35 @@ export default function SingleCoursePage() {
             </AccordionSummary>
 
             <AccordionDetails>
-              {isEnrolled || canModify ? (
+              {!isEnrolled && !canModify ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    textAlign: 'center',
+                    py: 4,
+                  }}
+                >
+                  Enroll to view quizzes
+                </Typography>
+              ) : quizzes.length === 0 ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    textAlign: 'center',
+                    py: 4,
+                  }}
+                >
+                  No quizzes to show
+                </Typography>
+              ) : (
                 <List>
                   {quizzes.map((quiz) => (
                     <Box
+                      key={quiz?.quizId}
+                      component="form"
+                      onSubmit={(e) => handleQuizSubmit(e, quiz?.quizId as string)}
                       sx={{
                         bgcolor: 'primary.light',
                         color: 'text.main',
@@ -722,9 +766,6 @@ export default function SingleCoursePage() {
                         p: 2,
                         mb: 2,
                       }}
-                      component="form"
-                      key={quiz?.quizId}
-                      onSubmit={(e) => handleQuizSubmit(e, quiz?.quizId as string)}
                     >
                       <input type="hidden" name="quizId" value={quiz?.quizId ?? ''} />
 
@@ -736,15 +777,15 @@ export default function SingleCoursePage() {
                           flexWrap: 'wrap',
                           justifyContent: 'space-between',
                           gap: 2,
-                          mb: 1,
+                          mb: 2,
                         }}
                       >
-                        <Box>
-                          <Typography>{quiz?.quizName}</Typography>
-                        </Box>
+                        <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                          {quiz?.quizName}
+                        </Typography>
 
                         {(hasPermission(user, 'modify:quizzes') || canModify) && (
-                          <Stack direction="row" spacing={2}>
+                          <Stack direction="row" spacing={1}>
                             <Button
                               type="button"
                               startIcon={<AddIcon />}
@@ -762,6 +803,7 @@ export default function SingleCoursePage() {
                             >
                               Add Question
                             </Button>
+
                             <Button
                               type="button"
                               startIcon={<DeleteForeverIcon />}
@@ -776,79 +818,92 @@ export default function SingleCoursePage() {
                         )}
                       </Stack>
 
-                      <List>
-                        {quiz?.questions?.map((question) => (
-                          <Box
-                            key={question?.questionId}
-                            sx={{
-                              mb: 2,
-                              border: '1px solid',
-                              p: 2,
-                              borderRadius: 4,
-                              bgcolor: theme.palette.background.paper,
-                              borderColor: theme.palette.divider,
-                            }}
-                          >
-                            <Stack
-                              direction="row"
-                              spacing={2}
+                      {quiz?.questions?.length === 0 ? (
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{
+                            textAlign: 'center',
+                            py: 3,
+                          }}
+                        >
+                          No questions in this quiz
+                        </Typography>
+                      ) : (
+                        <List>
+                          {quiz?.questions?.map((question) => (
+                            <Box
+                              key={question?.questionId}
                               sx={{
-                                alignItems: 'flex-start',
-                                flexWrap: 'wrap',
-                                justifyContent: 'space-between',
-                                gap: 2,
+                                mb: 2,
+                                border: '1px solid',
+                                p: 2,
+                                borderRadius: 4,
+                                bgcolor: theme.palette.background.paper,
+                                borderColor: theme.palette.divider,
                               }}
                             >
-                              <FormControl>
-                                <FormLabel sx={{ fontWeight: 600 }} id={`${question?.questionId}`}>
-                                  {question?.questionText}
-                                </FormLabel>
+                              <Stack
+                                direction="row"
+                                spacing={2}
+                                sx={{
+                                  alignItems: 'flex-start',
+                                  flexWrap: 'wrap',
+                                  justifyContent: 'space-between',
+                                  gap: 2,
+                                }}
+                              >
+                                <FormControl>
+                                  <FormLabel
+                                    sx={{ fontWeight: 600 }}
+                                    id={`${question?.questionId}`}
+                                  >
+                                    {question?.questionText}
+                                  </FormLabel>
 
-                                <RadioGroup name={`${question?.questionId}`} row={false}>
-                                  {question?.options?.map((option) => (
-                                    <FormControlLabel
-                                      key={option?.optionId}
+                                  <RadioGroup name={`${question?.questionId}`}>
+                                    {question?.options?.map((option) => (
+                                      <FormControlLabel
+                                        key={option?.optionId}
+                                        value={option?.optionId}
+                                        control={<Radio />}
+                                        label={option?.optionText}
+                                      />
+                                    ))}
+                                  </RadioGroup>
+                                </FormControl>
 
-                                      value={option?.optionId}
-                                      control={<Radio />}
-                                      label={option?.optionText}
-                                    />
-                                  ))}
-                                </RadioGroup>
-                              </FormControl>
+                                {(hasPermission(user, 'modify:quizzes') || canModify) && (
+                                  <Button
+                                    type="button"
+                                    startIcon={<DeleteForeverIcon />}
+                                    variant="outlined"
+                                    color="error"
+                                    size="small"
+                                    onClick={() =>
+                                      handleQuestionDelete(
+                                        quiz.quizId as string,
+                                        question?.questionId as string
+                                      )
+                                    }
+                                  >
+                                    Delete Question
+                                  </Button>
+                                )}
+                              </Stack>
+                            </Box>
+                          ))}
+                        </List>
+                      )}
 
-                              {(hasPermission(user, 'modify:quizzes') || canModify) && (
-                                <Button
-                                  type="button"
-                                  startIcon={<DeleteForeverIcon />}
-                                  variant="outlined"
-                                  color="error"
-                                  size="small"
-                                  onClick={() =>
-                                    handleQuestionDelete(
-                                      quiz.quizId as string,
-                                      question?.questionId as string
-                                    )
-                                  }
-                                >
-                                  Delete Question
-                                </Button>
-                              )}
-                            </Stack>
-                          </Box>
-                        ))}
-                      </List>
-
-                      <Button variant="contained" type="submit" disabled={!isEnrolled}>
-                        Submit Answers
-                      </Button>
+                      {(quiz?.questions?.length ?? -1) > 0 && (
+                        <Button variant="contained" type="submit" disabled={!isEnrolled}>
+                          Submit Answers
+                        </Button>
+                      )}
                     </Box>
                   ))}
                 </List>
-              ) : quizzes.length == 0 ? (
-                <Typography>No Quizzes to Show</Typography>
-              ) : (
-                <Typography>Enroll to view Quizzes</Typography>
               )}
             </AccordionDetails>
           </Accordion>

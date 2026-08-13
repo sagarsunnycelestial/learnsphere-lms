@@ -88,7 +88,6 @@ export default function CoursesPage() {
           mb: 3,
         }}
       >
-        {/* Search */}
         <TextField
           size="small"
           value={search}
