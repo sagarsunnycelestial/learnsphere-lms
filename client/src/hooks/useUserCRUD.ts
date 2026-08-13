@@ -9,6 +9,8 @@ import {
   UpdateProfileMutationVariables,
   EnrollCourseDocument,
   EnrollCourseMutationVariables,
+  UnenrollStudentMutationVariables,
+  UnenrollStudentDocument,
 } from '../generated/graphql';
 import { toast } from 'react-toastify';
 
@@ -74,5 +76,29 @@ export default function useUserCRUD() {
       toast.error('Update Failed');
     },
   });
-  return { addNewUser, updateProfile, enrollStudent };
+    const { mutateAsync: unEnrollStudent } = useMutation({
+    mutationFn: async (input: UnenrollStudentMutationVariables)=> {
+      const { data } = await apolloClient.mutate({
+        mutation: UnenrollStudentDocument,
+        variables: input,
+        fetchPolicy: 'network-only',
+      });
+      return data?.unenrollStudent;
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ['student-profile', variables?.input?.courseId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['course'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['course', variables?.input?.courseId],
+      });
+    },
+    onError: () => {
+      toast.error('Update Failed');
+    },
+  });
+  return { addNewUser, updateProfile, enrollStudent,unEnrollStudent };
 }

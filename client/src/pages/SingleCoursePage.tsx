@@ -60,6 +60,7 @@ import useQuizzesRUD from '../hooks/useQuizzesCRUD';
 import QuizForm from '../components/forms/QuizForm';
 import QuestionForm from '../components/forms/QuestionForm';
 import QuizResultDisplay from '../components/course/QuizResultDisplay';
+import useUserCRUD from '../hooks/useUserCRUD';
 export default function SingleCoursePage() {
   const { deleteLesson } = useLessonsCRUD();
   const { id } = useParams();
@@ -69,6 +70,7 @@ export default function SingleCoursePage() {
   const lessons = course?.lessons ?? [];
   const quizzes = course?.quizzes ?? [];
   const dispatch = useAppDispatch();
+  const { unEnrollStudent } = useUserCRUD();
   const { submitQuizAnswers, deleteQuestion, deleteQuiz } = useQuizzesRUD();
   const isOpen = useAppSelector((state) => state.form.courses.isAddCourseFormOpen);
   const lessonForm = useAppSelector((state) => state.form.lessons.isLessonFormOpen);
@@ -154,7 +156,15 @@ export default function SingleCoursePage() {
       })
     );
   };
-
+  const handleUnEnroll = async (userId: string) => {
+    if (!course?.courseId) throw new Error('Course not found');
+    try {
+      const res = await unEnrollStudent({ input: { userId: userId, courseId: course?.courseId } });
+      toast.success(res?.message);
+    } catch {
+      toast.error('Failed to unenroll student');
+    }
+  };
   async function handleQuizDelete(quizId: string) {
     try {
       const res = await deleteQuiz({ quizId });
@@ -178,9 +188,6 @@ export default function SingleCoursePage() {
     const formData = new FormData(e.currentTarget);
     console.log(formData);
 
-    // const answerList = data.reduce((acc,q)=>{
-    //   acc.push({questionId:q.key,selectionOption:q.value})
-    // },[])
     const answerList = Array.from(formData.entries(), ([questionId, selectionOption]) => ({
       questionId,
       selectionOption: selectionOption as string,
@@ -407,21 +414,22 @@ export default function SingleCoursePage() {
                       >
                         Add a Quiz
                       </Button>
-                      {course.enrollments?.length !==0 && (  <Button
-                        startIcon={<PeopleIcon />}
-                        onClick={() => setEnrolled(!enrolled)}
-                        color={!enrolled ? 'info' : 'warning'}
-                        variant={enrolled ? 'contained' : 'outlined'}
-                        size="small"
-                        sx={{
-                          borderRadius: 2,
-                          textTransform: 'none',
-                          width: 220,
-                        }}
-                      >
-                        {enrolled ? 'Close List' : 'View Enrolled Students'}
-                      </Button>)}
-                    
+                      {course.enrollments?.length !== 0 && (
+                        <Button
+                          startIcon={<PeopleIcon />}
+                          onClick={() => setEnrolled(!enrolled)}
+                          color={!enrolled ? 'info' : 'warning'}
+                          variant={enrolled ? 'contained' : 'outlined'}
+                          size="small"
+                          sx={{
+                            borderRadius: 2,
+                            textTransform: 'none',
+                            width: 220,
+                          }}
+                        >
+                          {enrolled ? 'Close List' : 'View Enrolled Students'}
+                        </Button>
+                      )}
                     </Stack>
                   </Paper>{' '}
                 </Stack>
@@ -447,7 +455,6 @@ export default function SingleCoursePage() {
                     timeout={500 + index * 100}
                   >
                     <Paper
-                      key={student?.enrollmentId}
                       elevation={0}
                       sx={{
                         px: 2,
@@ -459,6 +466,7 @@ export default function SingleCoursePage() {
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
+                        gap: 2,
                       }}
                     >
                       <Stack
@@ -494,11 +502,30 @@ export default function SingleCoursePage() {
                         </Box>
                       </Stack>
 
-                      <Chip
-                        color={student?.isActive ? 'success' : 'default'}
-                        label={student?.isActive ? 'Active' : 'Completed'}
-                        size="small"
-                      />
+                      <Stack
+                        direction="row"
+                        sx={{
+                          alignItems: 'center',
+                          gap: 1,
+                        }}
+                      >
+                        <Chip
+                          color={student?.isActive ? 'success' : 'default'}
+                          label={student?.isActive ? 'Active' : 'Completed'}
+                          size="small"
+                        />
+
+                        {student?.isActive && (
+                          <Button
+                            size="small"
+                            variant="contained"
+                            color="error"
+                            onClick={() => handleUnEnroll(student?.user?.userId as string)}
+                          >
+                            Unenroll
+                          </Button>
+                        )}
+                      </Stack>
                     </Paper>
                   </Slide>
                 ))}
@@ -907,30 +934,19 @@ export default function SingleCoursePage() {
             </Box>
           </Paper>
         </Dialog>
-        <Dialog
-          open={isOpen}
-        >
+        <Dialog open={isOpen}>
           <CourseForm />
         </Dialog>
-        <Dialog
-          open={lessonForm}
-        >
+        <Dialog open={lessonForm}>
           <LessonForm />
         </Dialog>
-        <Dialog
-          open={quizForm}
-      
-        >
+        <Dialog open={quizForm}>
           <QuizForm />
         </Dialog>
-        <Dialog
-          open={questionForm}
-        >
+        <Dialog open={questionForm}>
           <QuestionForm />
         </Dialog>
-        <Dialog
-          open={submitted}
-        >
+        <Dialog open={submitted}>
           <QuizResultDisplay />
         </Dialog>
       </Paper>

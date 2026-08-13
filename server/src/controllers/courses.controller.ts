@@ -38,11 +38,16 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
     }
   }
 }
-async function fetchAllCourses(userId: string, userRole: string) {
+async function fetchAllCourses(
+  filter: { status?: string },
+  userId: string,
+  userRole: string
+) {
   try {
     const courses = await courseRepo.find({
-      order:{
-        isActive:'DESC'
+      order: {
+        isActive: 'DESC',
+        courseName: 'ASC',
       },
       relations: {
         createdBy: true,
@@ -53,17 +58,45 @@ async function fetchAllCourses(userId: string, userRole: string) {
         quizzes: true,
       },
     });
-    if (!courses) throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
-    const filteredcourses = courses.map((course) => {
-      const isEnrolled = course.enrollments.some((enrollment) => enrollment.user.userId === userId);
-      const canModify = course.createdBy.userId === userId || userRole === UserRoles.ADMIN;
-      return { ...course, isEnrolled: isEnrolled, canModify: canModify };
-    });
-    return filteredcourses;
+
+    if (!courses) {
+      throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
+    }
+
+    const filteredCourses = courses
+      .filter((course) => {
+        if (filter?.status === 'active') {
+          return course.isActive === true;
+        }
+
+        if (filter?.status === 'inactive') {
+          return course.isActive === false;
+        }
+
+        return true;
+      })
+      .map((course) => {
+        const isEnrolled = course.enrollments.some(
+          (enrollment) => enrollment.user.userId === userId
+        );
+
+        const canModify =
+          course.createdBy.userId === userId ||
+          userRole === UserRoles.ADMIN;
+
+        return {
+          ...course,
+          isEnrolled,
+          canModify,
+        };
+      });
+
+    return filteredCourses;
   } catch (err) {
     if (err instanceof GraphQLError) {
       throw err;
     }
+
     throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
   }
 }
@@ -141,9 +174,10 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
     });
     if (!course) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
 
-    const isEnrolled = course.enrollments.some(
-      (enrollment) => enrollment.user.userId === user.user_id
-    );
+const isEnrolled = course.enrollments.some(
+  (enrollment) =>
+    enrollment.user.userId === user.user_id && enrollment.isActive === true
+);
     const canModify = course.createdBy.userId === user.user_id || user.role === UserRoles.ADMIN;
     console.log(canModify);
     if (!isEnrolled && !canModify) {
@@ -157,10 +191,6 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
       };
       return filteredcourse;
     }
-    // if(!canModify || isEnrolled){
-    //    const filteredcourse =
-    //   return filteredcourse
-    // }
     if (canModify) {
       const filteredcourse = {
         ...course,
@@ -186,27 +216,123 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
 }
 async function enrollAStudent(args: EnrollCourseArgs, context: Context) {
   const userId = args.input.userId ?? context.user?.user_id;
+  const courseId = args.input.courseId;
+
   try {
+    if (!userId || !courseId) {
+      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER);
+    }
+
     const course = await courseRepo.findOne({
       where: {
-        courseId: args.input.courseId,
+        courseId,
       },
     });
+
     const enrollingUser = await userRepo.findOne({
       where: {
-        userId: userId!,
+        userId,
       },
     });
-    if (!course || !enrollingUser) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER);
+
+    if (!course || !enrollingUser) {
+      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER);
+    }
+
+    const existingEnrollment = await enrollmentRepo.findOne({
+      where: {
+        user: {
+          userId,
+        },
+        course: {
+          courseId,
+        },
+      },
+    });
+
+    if (existingEnrollment) {
+      if (existingEnrollment.isActive) {
+        throw new GraphQLError('User is already enrolled in this course');
+      }
+
+      existingEnrollment.isActive = true;
+      await enrollmentRepo.save(existingEnrollment);
+
+      return {
+        message: `${enrollingUser.username} enrolled successfully`,
+      };
+    }
 
     const newEnrollment = enrollmentRepo.create({
       user: enrollingUser,
-      course: course,
+      course,
+      isActive: true,
     });
+
     await enrollmentRepo.save(newEnrollment);
-    return { message: `${enrollingUser.username} enrolled successfully` };
+
+    return {
+      message: `${enrollingUser.username} enrolled successfully`,
+    };
   } catch (err) {
-    return { message: err };
+    if (err instanceof GraphQLError) {
+      throw err;
+    }
+
+    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER);
+  }
+}
+
+async function unEnrollFromCourse(
+  args: EnrollCourseArgs,
+  context: Context
+) {
+  const userId = args.input.userId ?? context.user?.user_id;
+  const courseId = args.input.courseId;
+
+  try {
+    if (!userId || !courseId) {
+      throw new GraphQLError(
+        ERROR_MESSAGES.FAILED_TO_UNENROLL_USER
+      );
+    }
+
+    const existingEnrollment = await enrollmentRepo.findOne({
+      where: {
+        user: {
+          userId,
+        },
+        course: {
+          courseId,
+        },
+        isActive: true,
+      },
+      relations: {
+        user: true,
+      },
+    });
+
+    if (!existingEnrollment) {
+      throw new GraphQLError(
+        ERROR_MESSAGES.FAILED_TO_UNENROLL_USER
+      );
+    }
+
+    existingEnrollment.isActive = false;
+
+    await enrollmentRepo.save(existingEnrollment);
+
+    return {
+      message: `${existingEnrollment.user.username} unenrolled successfully`,
+    };
+  } catch (err) {
+    if (err instanceof GraphQLError) {
+      throw err;
+    }
+
+    throw new GraphQLError(
+      ERROR_MESSAGES.FAILED_TO_UNENROLL_USER
+    );
   }
 }
 
@@ -217,4 +343,5 @@ export {
   deleteCourseFromDB,
   fetchASingleCourse,
   enrollAStudent,
+  unEnrollFromCourse
 };

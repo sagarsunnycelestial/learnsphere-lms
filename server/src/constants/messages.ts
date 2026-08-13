@@ -28,4 +28,5 @@ export const ERROR_MESSAGES = {
   QUIZ_NOT_DELETE: 'Quiz could not be deleted',
   QUESTION_NOT_DELETE: 'Question could not be deleted',
   REFRESH_TOKEN_INVALID: 'Refresh token is invalid',
+  FAILED_TO_UNENROLL_USER:'Failed to unenroll the learner'
 } as const;

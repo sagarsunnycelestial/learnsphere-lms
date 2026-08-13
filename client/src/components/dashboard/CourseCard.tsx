@@ -317,24 +317,37 @@ export default function CourseCard({ course }: CourseCardProps) {
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 1 }}>
             Select a user to enroll
           </Typography>
-          <List sx={{ mb: 2, gap: 2 }}>
-            {students?.map((c) => (
-              <ListItemButton
-                sx={{ ml: -2 }}
-                key={c?.userId}
-                selected={enrollUserId === c?.userId}
-                disabled={c?.isEnrolled === true}
-                onClick={() => setEnrollUserId(c?.userId as string)}
-              >
-                <Avatar
-                  src={`${c?.profile_image_path}`}
-                  alt={c?.username ?? 'A'}
-                  sx={{ width: 45, height: 45, mr: 2 }}
-                />
-                <ListItemText primary={c?.username} />
-                {c?.isEnrolled && <Chip size="small" label="Already Enrolled" />}
-              </ListItemButton>
-            ))}
+          <List sx={{ mb: 2 }}>
+            {students?.map((student) => {
+              const isEnrolled = student?.isEnrolled === true;
+
+              return (
+                <ListItemButton
+                  key={student?.userId}
+                  sx={{
+                    borderRadius: 2,
+                    mb: 1,
+                  }}
+                  selected={enrollUserId === student?.userId}
+                  disabled={isEnrolled}
+                  onClick={() => setEnrollUserId(student?.userId as string)}
+                >
+                  <Avatar
+                    src={`${student?.profile_image_path}`}
+                    alt={student?.username ?? 'A'}
+                    sx={{
+                      width: 45,
+                      height: 45,
+                      mr: 2,
+                    }}
+                  />
+
+                  <ListItemText primary={student?.username} secondary={student?.collegeName} />
+
+                  {isEnrolled && <Chip size="small" color="success" label="Already Enrolled" />}
+                </ListItemButton>
+              );
+            })}
           </List>
 
           <Box

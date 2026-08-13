@@ -101,6 +101,7 @@ type RoleResponse {
   sortOrder:Int
   }
   type EnrollmentUser {
+  userId:String!
 username:String!
 email:String!
 profile_image_path:String
@@ -143,11 +144,14 @@ totalEnrolled: Int
 totalLessons: Int
 }
 
+input CoursesFilter {
+status:String
+}
 type Query {
 refreshEndpoint:LoginResponse
 fetchRoles:[RoleResponse]
 fetchProfile:UserResponse
-fetchCourses:[Courses]
+fetchCourses(filter:CoursesFilter!):[Courses]
 fetchCourseById(courseId:String!):SingleCourse!
 fetchStudents(courseId:String):[StudentResponse]
 
@@ -243,5 +247,6 @@ type Mutation {
   submitQuiz(input:QuizAnswerDetails): QuizResultResponse!
   deleteQuiz(quizId:String!): Response!
   deleteQuestion(questionId:String!,quizId:String!): Response!
+  unenrollStudent(input:EnrollDetails):Response!
 }
 `;

@@ -51,8 +51,7 @@ const [refreshFailed, setRefreshFailed] = useState(false);
       } else {
         navigate('/dashboard', { replace: true });
       }
-    } catch (error) {
-      console.error('Refresh failed:', error);
+    } catch {
       setRefreshFailed(true);
     } finally {
       setCheckingAuth(false);

@@ -43,7 +43,6 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.error = (action.payload as { message: string }) ?? null;
-        console.log(state.error);
         toast.error(state.error.message);
       });
   },

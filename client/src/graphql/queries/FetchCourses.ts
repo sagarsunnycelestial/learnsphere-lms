@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const FETCH_COURSES = gql`
-  query FetchCourses {
-    fetchCourses {
+ query FetchCourses($filter: CoursesFilter!) {
+  fetchCourses(filter: $filter) {
       courseId
       courseName
       description

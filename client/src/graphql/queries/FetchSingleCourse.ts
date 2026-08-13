@@ -17,6 +17,7 @@ export const FETCH_SINGLE_COURSE = gql`
         enrollmentId
         isActive
         user {
+          userId
           collegeName
           email
           profile_image_path
