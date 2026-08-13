@@ -1,8 +1,7 @@
 import { supabase } from './supabaseClient';
 
 export async function uploadVideo(file: File): Promise<string> {
-  const fileExt = file.name.split('.')[1];
-  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const fileName = file.name
 
   const { error } = await supabase.storage
     .from('lessons-lms')

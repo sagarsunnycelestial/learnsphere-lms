@@ -54,7 +54,7 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
 }
 
 async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
-  const { lessonName, lessonId, description, videoLink, courseId, sortOrder } = args.input;
+  const { lessonName, lessonId, description, videoLink, courseId } = args.input;
   if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
   try {
     if (!context.user) {
@@ -77,9 +77,6 @@ async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
     updatingLesson.lessonName = lessonName;
     if (description) {
       updatingLesson.description = description;
-    }
-    if (sortOrder !== undefined) {
-      updatingLesson.sortOrder = sortOrder;
     }
     if (videoLink) {
       updatingLesson.videoLink = videoLink;

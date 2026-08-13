@@ -15,10 +15,11 @@ import { userAddFormControl, storeInfo } from '../../store/slices/formSlice';
 import { useRef, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { uploadImage } from '../../supabase/uploadImage';
-import { FETCH_ROLES } from '../../graphql/queries/FETCH_ROLES';
+import { FETCH_ROLES } from '../../graphql/queries/FetchRoles';
 import { toast } from 'react-toastify';
 import { newUserInfoToPDF } from '../../pdf-lib/pdfHandler';
 import CircularProgress from '@mui/material/CircularProgress';
+import { userSchema } from '../../validation/userSchema';
 export default function AddUserForm() {
   const selectedUser = useAppSelector((state) => state.form.users.selectedUser);
   console.log('selected user:', selectedUser);
@@ -27,6 +28,12 @@ export default function AddUserForm() {
   const isEditing = mode === 'edit';
   const [email, setEmail] = useState(selectedUser?.email ?? '');
   const [loading, setLoading] = useState<boolean>(false);
+  const [errors, setErrors] = useState<{
+    username?: string;
+    collegeName?: string;
+    email?: string;
+    password?: string;
+  }>({});
   const [password, setPassword] = useState('');
   const [profileImg, setProfileImg] = useState<File | null>(null);
   const [username, setUsername] = useState(selectedUser?.userName ?? '');
@@ -37,6 +44,34 @@ export default function AddUserForm() {
   const { data } = useQuery(FETCH_ROLES);
   const roles = data?.fetchRoles ?? [];
   async function handleSubmit() {
+      const data = isEditing
+    ? {
+        username,
+        collegeName,
+        password,
+        email,
+      }
+    : {
+        username,
+        collegeName,
+        email,
+      };
+
+    const result = userSchema.safeParse(data)
+    if(!result.success){
+      const fieldErrors:{
+    username?: string;
+    collegeName?: string;
+    email?: string;
+    password?: string;
+  } = {}
+    result.error.issues.forEach((issue)=>{
+      const field = issue.path[0] as 'username' | 'email' | 'password' | 'collegeName'
+      fieldErrors[field] = issue.message
+    })
+    setErrors(fieldErrors)
+    return
+    }
     setLoading(true);
     let input;
     if (!isEditing) {
@@ -119,6 +154,11 @@ export default function AddUserForm() {
     if (!e.target.files || e.target.files.length === 0) {
       return;
     }
+    const file = e.target.files[0];
+    if (!['jpg', 'jpeg', 'webp', 'png'].includes(file.name.split('.')[1].toLowerCase())) {
+      toast.error('Only Image files allowed');
+      return;
+    }
     setProfileImg(e.target.files[0]);
   }
   return (
@@ -174,9 +214,12 @@ export default function AddUserForm() {
       >
         <TextField
           label="Username"
-          helperText="User name must be unique"
+          helperText={errors.username || 'Username must be unique'}
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          error={!!errors.username}
+          onChange={(e) => {
+            setErrors((prev)=>({...prev,username:''}))
+            setUsername(e.target.value)}}
           required
           fullWidth
         />
@@ -184,7 +227,11 @@ export default function AddUserForm() {
         <TextField
           label="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          helperText={errors.email}
+          error= {!!errors.email}
+          onChange={(e) => {
+            setErrors((prev)=>({...prev,email:''}))
+            setEmail(e.target.value)}}
           required
           fullWidth
         />
@@ -194,14 +241,22 @@ export default function AddUserForm() {
             type="password"
             label=" New Password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password}
+            onChange={(e) => {
+              setErrors((prev)=>({...prev,password:''}))
+              setPassword(e.target.value)}}
           />
         )}
 
         <TextField
           label="College Name"
           value={collegeName}
-          onChange={(e) => setCollegeName(e.target.value)}
+          error={!!errors.collegeName}
+          helperText={errors.collegeName}
+          onChange={(e) => {
+            setErrors((prev)=>({...prev,collegeName:''}))
+            setCollegeName(e.target.value)}}
           required
           fullWidth
         />
@@ -234,7 +289,7 @@ export default function AddUserForm() {
               justifyContent: 'flex-start',
             }}
           >
-            Upload Image
+            {profileImg ? profileImg.name : 'Upload Profile Image'}
             <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
           </Button>
         )}
@@ -243,6 +298,7 @@ export default function AddUserForm() {
         type="submit"
         variant="contained"
         size="large"
+        disabled={loading}
         onClick={handleSubmit}
         sx={{
           textTransform: 'none',

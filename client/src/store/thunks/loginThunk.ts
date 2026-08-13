@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { LoginInputs } from '../../types/types';
-import { LOGIN_MUTATION } from '../../graphql/mutations/LOGIN_MUTATION';
+import { LOGIN_MUTATION } from '../../graphql/mutations/LoginMutation';
 import { apolloClient } from '../../graphql/apolloClient';
 
 export const loginThunk = createAsyncThunk(

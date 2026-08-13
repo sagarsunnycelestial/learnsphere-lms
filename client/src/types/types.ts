@@ -76,7 +76,6 @@ export type FormInitialState = {
       lessonName: string;
       description?: string;
       videoLink?: string;
-      sortOrder?: number;
     } | null;
   };
   quizzes: {
@@ -121,7 +120,6 @@ export interface Lesson {
   lessonName: string;
   description?: string;
   videoLink: string;
-  sortOrder: number;
 }
 export interface RegisterResponse {
   registerUser: {

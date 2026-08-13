@@ -6,7 +6,6 @@ import {
   AccordionSummary,
   AccordionDetails,
   List,
-  ListItemText,
   Card,
   CardContent,
   Button,
@@ -18,10 +17,15 @@ import {
   Paper,
   useTheme,
   Slide,
+  IconButton,
+  Menu,
+  MenuItem,
 } from '@mui/material';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PlayLessonIcon from '@mui/icons-material/PlayLesson';
 import { hasPermission } from '../permissions/auth';
+
 import PeopleIcon from '@mui/icons-material/People';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -57,9 +61,6 @@ import QuizForm from '../components/forms/QuizForm';
 import QuestionForm from '../components/forms/QuestionForm';
 import QuizResultDisplay from '../components/course/QuizResultDisplay';
 export default function SingleCoursePage() {
-  const [lessonToDelete, setLessonToDelete] = useState<Lesson | null>();
-  const lessonDialog = Boolean(lessonToDelete);
-  const [enrolled, setEnrolled] = useState(false);
   const { deleteLesson } = useLessonsCRUD();
   const { id } = useParams();
   const user = useAppSelector((state) => state.auth.user);
@@ -79,6 +80,65 @@ export default function SingleCoursePage() {
   const [confirm, setConfirm] = useState<boolean>(false);
   console.log(quizzes);
   const isEnrolled = course?.isEnrolled;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+  const [lessonDialog, setLessonDialog] = useState(false);
+  const [enrolled, setEnrolled] = useState(false);
+
+  const handleClick = (event: React.MouseEvent<HTMLElement>, lesson: Lesson) => {
+    setAnchorEl(event.currentTarget);
+    setSelectedLesson(lesson);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+    setSelectedLesson(null);
+  };
+
+  const handleLessonEdit = () => {
+    if (!selectedLesson) return;
+
+    dispatch(
+      lessonFormControl({
+        mode: 'edit',
+        isLessonFormOpen: true,
+        selectedLesson: {
+          ...selectedLesson,
+          courseId: course?.courseId,
+        },
+      })
+    );
+
+    handleClose();
+  };
+
+  const handleLessonDialog = (lesson: Lesson) => {
+    setSelectedLesson(lesson);
+    setAnchorEl(null);
+    setLessonDialog(true);
+  };
+
+  const handleLessonDelete = async () => {
+    if (!course?.courseId || !selectedLesson?.lessonId) {
+      return;
+    }
+
+    try {
+      const res = await deleteLesson({
+        input: {
+          courseId: course.courseId,
+          lessonId: selectedLesson.lessonId,
+        },
+      });
+
+      toast.success(res?.message);
+    } catch {
+      toast.error('Failed to delete lesson');
+    } finally {
+      setLessonDialog(false);
+      setSelectedLesson(null);
+    }
+  };
   const handleDelete = async () => {
     if (course?.courseId) {
       const res = await deleteCourse({ courseId: course.courseId });
@@ -94,36 +154,7 @@ export default function SingleCoursePage() {
       })
     );
   };
-  const handleLessonEdit = (lesson: Lesson) => {
-    console.log(lesson.lessonId);
-    dispatch(
-      lessonFormControl({
-        mode: 'edit',
-        isLessonFormOpen: true,
-        selectedLesson: { ...lesson, courseId: course?.courseId },
-      })
-    );
-  };
-  const handleLessonDialog = (lesson: Lesson) => {
-    setLessonToDelete(lesson);
-  };
-  const handleLessonDelete = async () => {
-    if (course?.courseId) {
-      try {
-        const res = await deleteLesson({
-          input: {
-            courseId: course.courseId,
-            lessonId: lessonToDelete?.lessonId,
-          },
-        });
-        toast.success(res?.message);
-        setLessonToDelete(null);
-      } catch {
-        toast.error('Failed to delete lesson');
-        setLessonToDelete(null);
-      }
-    }
-  };
+
   async function handleQuizDelete(quizId: string) {
     try {
       const res = await deleteQuiz({ quizId });
@@ -218,7 +249,10 @@ export default function SingleCoursePage() {
           <Divider />
 
           <CardContent>
-            <Typography variant="h4" sx={{ fontWeight: 600 }}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: 600, overflowWrap: 'anywhere', wordBreak: 'break-word' }}
+            >
               {course.courseName}
             </Typography>
 
@@ -277,6 +311,7 @@ export default function SingleCoursePage() {
                       justifyContent: 'space-between',
                       flexWrap: 'wrap',
                       gap: 2,
+                      flexGrow: 1,
                     }}
                   >
                     <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
@@ -347,10 +382,10 @@ export default function SingleCoursePage() {
                             })
                           )
                         }
-                        color="primary"
+
                         variant="contained"
                         size="small"
-                        sx={{ borderRadius: 2, width: 220 }}
+                        sx={{ borderRadius: 2, width: 220, textTransform: 'none' }}
                       >
                         Add a Lesson
                       </Button>
@@ -368,7 +403,7 @@ export default function SingleCoursePage() {
                         color="primary"
                         variant="contained"
                         size="small"
-                        sx={{ borderRadius: 2, width: 220 }}
+                        sx={{ borderRadius: 2, width: 220, textTransform: 'none' }}
                       >
                         Add a Quiz
                       </Button>
@@ -496,62 +531,141 @@ export default function SingleCoursePage() {
                           key={lesson?.lessonId}
                           elevation={0}
                           sx={{
-                            m: 1,
-                            p: 2,
-                            borderRadius: 2,
+                            mb: 2,
+                            overflow: 'hidden',
+                            borderRadius: 3,
                             border: '1px solid',
-                            borderColor: theme.palette.divider,
-                            bgcolor: theme.palette.background.default,
+                            borderColor: 'divider',
+                            bgcolor: theme.palette.primary.light,
+                            boxShadow: '0 2px 10px rgba(0, 0, 0, 0.06)',
+                            transition: 'all 0.2s ease',
+                            '&:hover': {
+                              boxShadow: '0 6px 20px rgba(0, 0, 0, 0.10)',
+                              borderColor: 'primary.light',
+                            },
                           }}
                         >
-                          <Stack
-                            direction="row"
-                            spacing={2}
+                          <Box
                             sx={{
-                              alignItems: 'center',
-                              flexWrap: 'wrap',
+                              px: 2.5,
+                              py: 2,
+                              display: 'flex',
+                              alignItems: 'flex-start',
                               justifyContent: 'space-between',
                               gap: 2,
+                              borderBottom: '1px solid',
+                              borderColor: 'divider',
                             }}
                           >
-                            <ListItemText
-                              sx={{ flex: ' 1 1 auto', minWidth: 200 }}
-                              primary={`${index + 1}. ${lesson?.lessonName}`}
-                              secondary={lesson?.description}
-                            />
-                            <Box sx={{ width: { xs: '100%', sm: 300, md: 400 } }}>
+                            <Box sx={{ minWidth: 0 }}>
+                              <Typography
+                                variant="subtitle1"
+
+                                sx={{
+                                  fontWeight: 600,
+                                  color: 'text.primary',
+                                  mb: 0.5,
+                                }}
+                              >
+                                {index + 1}. {lesson?.lessonName}
+                              </Typography>
+                            </Box>
+
+                            {(hasPermission(user, 'modify:lessons') || canModify) && (
+                              <>
+                                <IconButton
+                                  size="small"
+                                  onClick={(e) => handleClick(e, lesson as Lesson)}
+                                  sx={{
+                                    flexShrink: 0,
+                                    bgcolor: 'action.hover',
+                                    '&:hover': {
+                                      bgcolor: 'action.selected',
+                                    },
+                                  }}
+                                >
+                                  <MoreHorizIcon />
+                                </IconButton>
+                                <Menu
+                                  anchorEl={anchorEl}
+                                  open={
+                                    Boolean(anchorEl) &&
+                                    selectedLesson?.lessonId === lesson?.lessonId
+                                  }
+                                  onClose={handleClose}
+                                  slotProps={{
+                                    paper: {
+                                      sx: {
+                                        borderRadius: 2,
+                                        minWidth: 140,
+                                        mt: 1,
+                                      },
+                                    },
+                                  }}
+                                >
+                                  <MenuItem onClick={() => handleLessonDialog(lesson as Lesson)}>
+                                    <DeleteForeverIcon
+                                      sx={{
+                                        mr: 1,
+                                        color: 'error.main',
+                                      }}
+                                    />
+                                    Delete
+                                  </MenuItem>
+
+                                  <MenuItem onClick={() => handleLessonEdit()}>
+                                    <EditIcon sx={{ mr: 1 }} />
+                                    Edit
+                                  </MenuItem>
+                                </Menu>
+                              </>
+                            )}
+                          </Box>
+
+                          <Box
+                            sx={{
+                              p: { xs: 1.5, sm: 2 },
+                              bgcolor: 'grey.50',
+                              display: 'flex',
+                              alignItems: 'flex-start',
+                            }}
+                          >
+                            {lesson?.description && (
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                  lineHeight: 1.5,
+                                  flexGrow: 1,
+                                }}
+                              >
+                                {lesson.description}
+                              </Typography>
+                            )}
+                            <Box
+                              sx={{
+                                width: '100%',
+                                maxWidth: 700,
+                                mx: 'auto',
+                                overflow: 'hidden',
+                                borderRadius: 2,
+                                bgcolor: 'common.black',
+                                aspectRatio: '16 / 9',
+                              }}
+                            >
                               <CardMedia
                                 component="video"
                                 controls
                                 muted
                                 src={`${lesson?.videoLink}`}
-                                sx={{ borderRadius: 1 }}
+                                sx={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                }}
                               />
                             </Box>
-                            {(hasPermission(user, 'modify:lessons') || canModify) && (
-                              <Stack direction="row" spacing={2}>
-                                <Button
-                                  startIcon={<EditIcon />}
-                                  onClick={() => handleLessonEdit(lesson as Lesson)}
-                                  variant="outlined"
-                                  size="small"
-                                  sx={{ ml: 2 }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  startIcon={<DeleteForeverIcon />}
-                                  onClick={() => handleLessonDialog(lesson as Lesson)}
-                                  variant="contained"
-                                  color="error"
-                                  size="small"
-                                  sx={{ ml: 1 }}
-                                >
-                                  Delete
-                                </Button>
-                              </Stack>
-                            )}
-                          </Stack>
+                          </Box>
                         </Paper>
                       ))}
                   </List>
@@ -571,7 +685,7 @@ export default function SingleCoursePage() {
             <AccordionDetails>
               {isEnrolled || canModify ? (
                 <List>
-                  {quizzes.map((quiz, index) => (
+                  {quizzes.map((quiz) => (
                     <Box
                       sx={{
                         bgcolor: 'primary.light',
@@ -598,7 +712,6 @@ export default function SingleCoursePage() {
                         }}
                       >
                         <Box>
-                          <Typography>Quiz Number {index + 1}</Typography>
                           <Typography>{quiz?.quizName}</Typography>
                         </Box>
 
@@ -663,7 +776,7 @@ export default function SingleCoursePage() {
                                   {question?.questionText}
                                 </FormLabel>
 
-                                <RadioGroup name={`${question?.questionId}`} row={true}>
+                                <RadioGroup name={`${question?.questionId}`} row={false}>
                                   {question?.options?.map((option) => (
                                     <FormControlLabel
                                       key={option?.optionId}
@@ -704,8 +817,10 @@ export default function SingleCoursePage() {
                     </Box>
                   ))}
                 </List>
+              ) : quizzes.length == 0 ? (
+                <Typography>No Quizzes to Show</Typography>
               ) : (
-                <Typography>Enroll to view lessons</Typography>
+                <Typography>Enroll to view Quizzes</Typography>
               )}
             </AccordionDetails>
           </Accordion>
@@ -744,8 +859,13 @@ export default function SingleCoursePage() {
             </Box>
           </Paper>
         </Dialog>
-        <Dialog open={lessonDialog} onClose={() => setLessonToDelete(null)}>
-          o
+        <Dialog
+          open={lessonDialog}
+          onClose={() => {
+            setSelectedLesson(null);
+            setLessonDialog(false);
+          }}
+        >
           <Paper sx={{ p: 3, minWidth: 320 }}>
             <Typography variant="h6" gutterBottom>
               Delete this Lesson?
@@ -754,7 +874,7 @@ export default function SingleCoursePage() {
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Are you sure you want to delete the{' '}
               <Typography component="span" sx={{ fontWeight: 600 }}>
-                {lessonToDelete?.lessonName}{' '}
+                {selectedLesson?.lessonName}{' '}
               </Typography>{' '}
               lesson? This action cannot be undone.
             </Typography>
@@ -766,7 +886,14 @@ export default function SingleCoursePage() {
                 gap: 1,
               }}
             >
-              <Button onClick={() => setLessonToDelete(null)}>Cancel</Button>
+              <Button
+                onClick={() => {
+                  setLessonDialog(false);
+                  setSelectedLesson(null);
+                }}
+              >
+                Cancel
+              </Button>
 
               <Button
                 variant="contained"
@@ -788,7 +915,7 @@ export default function SingleCoursePage() {
         <Dialog
           open={lessonForm}
           onClose={() => {
-            setLessonToDelete(null);
+            setSelectedLesson(null);
             dispatch(lessonFormControl({ isLessonFormOpen: false }));
           }}
         >

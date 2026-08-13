@@ -198,13 +198,12 @@ input QuizDetails {
   courseId:String!
 }
 
+
   input QuestionDetails {
     quizId:String
     questionText:String
     correctOption:String
-    optionTwo:String
-    optionThree:String
-    optionFour:String
+    options:[String]
   }
 
    input AnswerInput {

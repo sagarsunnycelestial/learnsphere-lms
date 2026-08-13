@@ -81,7 +81,6 @@ export type LessonDetails = {
   lessonName: string;
   description?: string;
   videoLink?: string;
-  sortOrder: number;
 };
 export type LessonUpdateArgs = {
   input: LessonDetails;
@@ -92,13 +91,12 @@ export type DeleteLessonArgs = {
     lessonId: string;
   };
 };
+
 export interface QuestionDetails {
   quizId?: string;
   questionText?: string;
   correctOption?: string;
-  optionTwo?: string;
-  optionThree?: string;
-  optionFour?: string;
+ options:string[]
 }
 export type QuestionArgs = {
   input: QuestionDetails;

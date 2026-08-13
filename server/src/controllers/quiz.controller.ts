@@ -49,9 +49,9 @@ async function createAQuizForCourse(
 async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
-  const { optionTwo, optionFour, optionThree, correctOption, questionText } = args.input;
+  const { options, correctOption, questionText } = args.input;
   try {
-    if (!questionText || !correctOption || !optionTwo || !optionThree || !optionFour)
+    if (!questionText || !correctOption)
       throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
 
     const quiz = await quizRepo.findOne({
@@ -72,26 +72,21 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
       optionText: correctOption,
       question: question,
     });
+      const optionEntities = options.map((option) =>
+      optionRepo.create({
+        optionText: option,
+        question,
+      })
+    );
+    await optionRepo.save([
+      ...optionEntities,
+      correctAnswer
+    ])
+     
 
-    const option2 = optionRepo.create({
-      optionText: optionTwo,
-      question: question,
-    });
-    const option3 = optionRepo.create({
-      optionText: optionThree,
-      question: question,
-    });
-
-    const option4 = optionRepo.create({
-      optionText: optionFour,
-      question: question,
-    });
-    await Promise.all([
       optionRepo.save(correctAnswer),
-      optionRepo.save(option2),
-      optionRepo.save(option3),
-      optionRepo.save(option4),
-    ]);
+  
+
 
     question.correctOption = correctAnswer;
     await questionRepo.save(question);

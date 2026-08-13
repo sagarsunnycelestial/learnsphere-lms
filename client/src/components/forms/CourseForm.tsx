@@ -16,6 +16,7 @@ import { uploadImage } from '../../supabase/uploadImage';
 import { toast } from 'react-toastify';
 import useCoursesCRUD from '../../hooks/useCoursesCRUD';
 import CircularProgress from '@mui/material/CircularProgress';
+import { courseSchema } from '../../validation/courseSchema';
 export default function CourseForm() {
   const selectedCourse = useAppSelector((state) => state.form.courses.selectedcourse);
   console.log('selected course', selectedCourse);
@@ -27,9 +28,27 @@ export default function CourseForm() {
   const [description, setDescription] = useState(selectedCourse?.description ?? '');
   const [loading, setLoading] = useState<boolean>(false);
   const [isActive, setIsActive] = useState(selectedCourse?.isActive ?? true);
+  const [errors, setErrors] = useState<{ courseName?: string; description?: string }>({});
   const dispatch = useAppDispatch();
   const { addNewCourse, updateCourse } = useCoursesCRUD();
   async function handleSubmit() {
+    const result = courseSchema.safeParse({ courseName, description });
+    console.log(result);
+    if (!result.success) {
+      const fieldErrors: {
+        courseName?: string;
+        description?: string;
+      } = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as 'courseName' | 'description';
+        fieldErrors[field] = issue.message;
+      });
+
+      console.log(fieldErrors);
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({});
     setLoading(true);
     if (thumbnailImg) {
       publicUrl.current = await uploadImage(thumbnailImg);
@@ -81,6 +100,11 @@ export default function CourseForm() {
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
+    const file = e.target.files[0];
+    if (!['jpg', 'jpeg', 'webp', 'png'].includes(file.name.split('.')[1].toLowerCase())) {
+      toast.error('Only Image files allowed');
       return;
     }
     setThumbnailImg(e.target.files[0]);
@@ -139,7 +163,12 @@ export default function CourseForm() {
         <TextField
           label="Course Name"
           value={courseName}
-          onChange={(e) => setCourseName(e.target.value)}
+          error={!!errors.courseName}
+          helperText={errors.courseName || `${courseName.trim().length}/50`}
+          onChange={(e) => {
+            setCourseName(e.target.value);
+            setErrors((prev) => ({ ...prev, courseName: '' }));
+          }}
           required
           fullWidth
         />
@@ -147,7 +176,12 @@ export default function CourseForm() {
         <TextField
           label="Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description || `${description.trim().length}/1000`}
+          onChange={(e) => {
+            setErrors((prev) => ({ ...prev, description: '' }));
+            setDescription(e.target.value);
+          }}
           required
           fullWidth
         />
@@ -180,7 +214,7 @@ export default function CourseForm() {
             justifyContent: 'flex-start',
           }}
         >
-          Upload Image
+          {thumbnailImg ? thumbnailImg.name : 'Upload Course Thumbnail'}
           <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
         </Button>
       </Box>

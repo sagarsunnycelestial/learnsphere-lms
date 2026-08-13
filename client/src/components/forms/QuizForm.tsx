@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 
 import { useParams } from 'react-router';
 import useQuizzesCRUD from '../../hooks/useQuizzesCRUD';
+import { quizSchema } from '../../validation/quizSchema';
 
 export default function QuizForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,11 +18,33 @@ export default function QuizForm() {
   const courseId = selectedQuiz?.courseId ?? id;
 
   const [quizName, setQuizName] = useState(selectedQuiz?.quizName ?? '');
+    const [errors, setErrors] = useState<{
+    quizName?: string;
+  }>({});
+
 
   const dispatch = useAppDispatch();
   const { addNewQuiz } = useQuizzesCRUD();
 
   async function handleSubmit() {
+    setIsSubmitting(true);
+    const result = quizSchema.safeParse({quizSchema})
+       if (!result.success) {
+      const fieldErrors: {
+        quizName?: string;
+      } = {};
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as 'quizName';
+
+        fieldErrors[field] = issue.message;
+      });
+
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setErrors({});
     setIsSubmitting(true);
     if (!isEditing) {
       try {
@@ -82,7 +105,16 @@ export default function QuizForm() {
         <TextField
           label="Quiz Name"
           value={quizName}
-          onChange={(e) => setQuizName(e.target.value)}
+          onChange={(e) => {
+            setQuizName(e.target.value);
+
+            setErrors((prev) => ({
+              ...prev,
+              quizName: '',
+            }));
+          }}
+          error={!!errors.quizName}
+          helperText={errors.quizName || `${quizName.trim().length}/50`}
           required
           fullWidth
         />

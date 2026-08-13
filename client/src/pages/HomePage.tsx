@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../store/hooks';
 import { apolloClient } from '../graphql/apolloClient';
 import { refreshUser } from '../store/slices/authSlice';
-import { REFRESH_QUERY } from '../graphql/queries/REFRESH_QUERY';
+import { REFRESH_QUERY } from '../graphql/queries/RefreshQuery';
 import LMSlogo from '../assets/LMSlogo.png';
 const HomePage = () => {
   const navigate = useNavigate();

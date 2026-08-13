@@ -41,9 +41,7 @@ export type LoginCredentials = {
 
 export type QuestionDetails = {
   correctOption?: string | null | undefined;
-  optionFour?: string | null | undefined;
-  optionThree?: string | null | undefined;
-  optionTwo?: string | null | undefined;
+  options?: Array<string | null | undefined> | null | undefined;
   questionText?: string | null | undefined;
   quizId?: string | null | undefined;
 };

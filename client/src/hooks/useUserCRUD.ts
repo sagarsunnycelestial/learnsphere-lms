@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { apolloClient } from '../graphql/apolloClient';
-import { ADD_USER_MUTATION } from '../graphql/mutations/ADD_USER_MUTATION';
+import { ADD_USER_MUTATION } from '../graphql/mutations/AddUserMutation';
 import type { RegisterMutationInput } from '../types/types';
 import { useQueryClient } from '@tanstack/react-query';
 

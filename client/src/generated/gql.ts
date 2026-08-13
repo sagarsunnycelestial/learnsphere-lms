@@ -21,8 +21,8 @@ type Documents = {
     "\n  mutation RegisterUser($input: UserDetails!) {\n    registerUser(input: $input) {\n      email\n      message\n      temp_password\n    }\n  }\n": typeof types.RegisterUserDocument,
     "\n  mutation DeleteCourse($courseId: String!) {\n    deleteCourse(courseId: $courseId) {\n      message\n    }\n  }\n": typeof types.DeleteCourseDocument,
     "\n  mutation DeleteALesson($input: DeleteLessonDetails!) {\n    deleteALesson(input: $input) {\n      message\n    }\n  }\n": typeof types.DeleteALessonDocument,
-    "mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n  deleteQuestion(questionId: $questionId, quizId: $quizId) {\n    message\n  }\n}": typeof types.DeleteQuestionDocument,
-    "mutation DeleteQuiz($quizId: String!) {\n  deleteQuiz(quizId: $quizId) {\n    message\n  }\n}": typeof types.DeleteQuizDocument,
+    "\n  mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n    deleteQuestion(questionId: $questionId, quizId: $quizId) {\n      message\n    }\n  }\n": typeof types.DeleteQuestionDocument,
+    "\n  mutation DeleteQuiz($quizId: String!) {\n    deleteQuiz(quizId: $quizId) {\n      message\n    }\n  }\n": typeof types.DeleteQuizDocument,
     "\n  mutation EditCourse($input: UpdateCourseDetails) {\n    editCourse(input: $input) {\n      message\n    }\n  }\n": typeof types.EditCourseDocument,
     "\n  mutation EditALesson($input: LessonDetails) {\n    editALesson(input: $input) {\n      message\n    }\n  }\n": typeof types.EditALessonDocument,
     "\n  mutation EnrollCourse($input: EnrollDetails) {\n    enrollCourse(input: $input) {\n      message\n    }\n  }\n": typeof types.EnrollCourseDocument,
@@ -45,8 +45,8 @@ const documents: Documents = {
     "\n  mutation RegisterUser($input: UserDetails!) {\n    registerUser(input: $input) {\n      email\n      message\n      temp_password\n    }\n  }\n": types.RegisterUserDocument,
     "\n  mutation DeleteCourse($courseId: String!) {\n    deleteCourse(courseId: $courseId) {\n      message\n    }\n  }\n": types.DeleteCourseDocument,
     "\n  mutation DeleteALesson($input: DeleteLessonDetails!) {\n    deleteALesson(input: $input) {\n      message\n    }\n  }\n": types.DeleteALessonDocument,
-    "mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n  deleteQuestion(questionId: $questionId, quizId: $quizId) {\n    message\n  }\n}": types.DeleteQuestionDocument,
-    "mutation DeleteQuiz($quizId: String!) {\n  deleteQuiz(quizId: $quizId) {\n    message\n  }\n}": types.DeleteQuizDocument,
+    "\n  mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n    deleteQuestion(questionId: $questionId, quizId: $quizId) {\n      message\n    }\n  }\n": types.DeleteQuestionDocument,
+    "\n  mutation DeleteQuiz($quizId: String!) {\n    deleteQuiz(quizId: $quizId) {\n      message\n    }\n  }\n": types.DeleteQuizDocument,
     "\n  mutation EditCourse($input: UpdateCourseDetails) {\n    editCourse(input: $input) {\n      message\n    }\n  }\n": types.EditCourseDocument,
     "\n  mutation EditALesson($input: LessonDetails) {\n    editALesson(input: $input) {\n      message\n    }\n  }\n": types.EditALessonDocument,
     "\n  mutation EnrollCourse($input: EnrollDetails) {\n    enrollCourse(input: $input) {\n      message\n    }\n  }\n": types.EnrollCourseDocument,
@@ -107,11 +107,11 @@ export function graphql(source: "\n  mutation DeleteALesson($input: DeleteLesson
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n  deleteQuestion(questionId: $questionId, quizId: $quizId) {\n    message\n  }\n}"): (typeof documents)["mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n  deleteQuestion(questionId: $questionId, quizId: $quizId) {\n    message\n  }\n}"];
+export function graphql(source: "\n  mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n    deleteQuestion(questionId: $questionId, quizId: $quizId) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteQuestion($questionId: String!, $quizId: String!) {\n    deleteQuestion(questionId: $questionId, quizId: $quizId) {\n      message\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "mutation DeleteQuiz($quizId: String!) {\n  deleteQuiz(quizId: $quizId) {\n    message\n  }\n}"): (typeof documents)["mutation DeleteQuiz($quizId: String!) {\n  deleteQuiz(quizId: $quizId) {\n    message\n  }\n}"];
+export function graphql(source: "\n  mutation DeleteQuiz($quizId: String!) {\n    deleteQuiz(quizId: $quizId) {\n      message\n    }\n  }\n"): (typeof documents)["\n  mutation DeleteQuiz($quizId: String!) {\n    deleteQuiz(quizId: $quizId) {\n      message\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -41,6 +41,9 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
 async function fetchAllCourses(userId: string, userRole: string) {
   try {
     const courses = await courseRepo.find({
+      order:{
+        isActive:'DESC'
+      },
       relations: {
         createdBy: true,
         lessons: true,

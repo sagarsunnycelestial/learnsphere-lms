@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { useParams } from 'react-router';
 import { uploadVideo } from '../../supabase/uploadVideo';
 import useLessonsCRUD from '../../hooks/useLessonsCRUD';
+import { lessonSchema } from '../../validation/lessonSchema';
 export default function LessonForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = useParams();
@@ -17,15 +18,27 @@ export default function LessonForm() {
   const publicUrl = useRef<string | null>(selectedLesson?.videoLink ?? null);
   const isEditing = mode === 'edit';
   const courseId = selectedLesson?.courseId ?? id;
-
+  const [errors, setErrors] = useState<{ lessonName?: string; description?: string }>({});
   const [lessonName, setLessonName] = useState(selectedLesson?.lessonName ?? '');
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [description, setDescription] = useState(selectedLesson?.description ?? '');
-  const [sortOrder, setSortOrder] = useState(selectedLesson?.sortOrder ?? null);
   const dispatch = useAppDispatch();
   const { addNewLesson, updateLesson } = useLessonsCRUD();
 
   async function handleSubmit() {
+    const result = lessonSchema.safeParse({ lessonName, description });
+    if (!result.success) {
+      const fieldErrors: {
+        lessonName?: string;
+        description?: string;
+      } = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as 'lessonName' | 'description';
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
     setIsSubmitting(true);
     if (videoFile) {
       publicUrl.current = await uploadVideo(videoFile);
@@ -58,7 +71,6 @@ export default function LessonForm() {
           lessonName: lessonName,
           description: description,
           videoLink: publicUrl.current,
-          sortOrder: sortOrder,
         };
         const res = await updateLesson({ input });
         if (res?.message) toast.success(res?.message);
@@ -75,8 +87,16 @@ export default function LessonForm() {
       }
     }
   }
+
   function handleVideoChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
+    const file = e.target.files[0];
+
+    if (file?.name.split('.')[1].toLowerCase() !== 'mp4') {
+      toast.error('Upload files of type mp4 only');
+      e.target.value = ''
       return;
     }
     setVideoFile(e.target.files[0]);
@@ -135,7 +155,12 @@ export default function LessonForm() {
         <TextField
           label="Lesson Name"
           value={lessonName}
-          onChange={(e) => setLessonName(e.target.value)}
+          onChange={(e) => {
+            setErrors((prev) => ({ ...prev, lessonName: '' }));
+            setLessonName(e.target.value);
+          }}
+          error={!!errors.lessonName}
+          helperText={errors.lessonName || `${lessonName.trim().length}/50`}
           required
           fullWidth
         />
@@ -143,29 +168,15 @@ export default function LessonForm() {
         <TextField
           label="Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+           error={!!errors.description}
+          helperText={errors.description || `${description.trim().length}/1000`}
+          onChange={(e) => {
+            setErrors((prev) => ({ ...prev, description: '' }));
+            setDescription(e.target.value);
+          }}
           required
           fullWidth
         />
-
-        {isEditing && (
-          <TextField
-            label="Sort Order"
-            type="number"
-            value={sortOrder ?? ''}
-            onChange={(e) => {
-              const value = e.target.value;
-
-              setSortOrder(value === '' ? null : Number(value));
-            }}
-            fullWidth
-            slotProps={{
-              htmlInput: {
-                min: 1,
-              },
-            }}
-          />
-        )}
 
         <Button
           variant="outlined"

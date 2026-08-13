@@ -124,10 +124,7 @@ export default function CourseCard({ course }: CourseCardProps) {
 
               <MenuItem onClick={() => setConfirm(true)} disableRipple>
                 <DeleteForeverIcon
-                  sx={{
-                    mr: 1,
-                    color: 'error.main',
-                  }}
+                 
                 />
                 Delete
               </MenuItem>
