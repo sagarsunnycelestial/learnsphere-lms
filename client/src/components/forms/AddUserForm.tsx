@@ -44,33 +44,33 @@ export default function AddUserForm() {
   const { data } = useQuery(FETCH_ROLES);
   const roles = data?.fetchRoles ?? [];
   async function handleSubmit() {
-      const data = isEditing
-    ? {
-        username,
-        collegeName,
-        password,
-        email,
-      }
-    : {
-        username,
-        collegeName,
-        email,
-      };
+    const data = isEditing
+      ? {
+          username,
+          collegeName,
+          password,
+          email,
+        }
+      : {
+          username,
+          collegeName,
+          email,
+        };
 
-    const result = userSchema.safeParse(data)
-    if(!result.success){
-      const fieldErrors:{
-    username?: string;
-    collegeName?: string;
-    email?: string;
-    password?: string;
-  } = {}
-    result.error.issues.forEach((issue)=>{
-      const field = issue.path[0] as 'username' | 'email' | 'password' | 'collegeName'
-      fieldErrors[field] = issue.message
-    })
-    setErrors(fieldErrors)
-    return
+    const result = userSchema.safeParse(data);
+    if (!result.success) {
+      const fieldErrors: {
+        username?: string;
+        collegeName?: string;
+        email?: string;
+        password?: string;
+      } = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as 'username' | 'email' | 'password' | 'collegeName';
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return;
     }
     setLoading(true);
     let input;
@@ -104,21 +104,21 @@ export default function AddUserForm() {
           })
         );
       } catch (err) {
-  const message =
-    err instanceof Error
-      ? err.message
-      : typeof err === 'string'
-        ? err
-        : 'Failed to create user';
+        const message =
+          err instanceof Error
+            ? err.message
+            : typeof err === 'string'
+              ? err
+              : 'Failed to create user';
 
-  if (message.toLowerCase().includes('duplicate')) {
-    toast.error('User with similar credentials exists. Please use a different value.');
-  } else {
-    toast.error(message);
-  }
-} finally {
-  setLoading(false);
-}
+        if (message.toLowerCase().includes('duplicate')) {
+          toast.error('User with similar credentials exists. Please use a different value.');
+        } else {
+          toast.error(message);
+        }
+      } finally {
+        setLoading(false);
+      }
     } else {
       try {
         if (password) {
@@ -223,8 +223,9 @@ export default function AddUserForm() {
           value={username}
           error={!!errors.username}
           onChange={(e) => {
-            setErrors((prev)=>({...prev,username:''}))
-            setUsername(e.target.value)}}
+            setErrors((prev) => ({ ...prev, username: '' }));
+            setUsername(e.target.value);
+          }}
           required
           fullWidth
         />
@@ -233,10 +234,11 @@ export default function AddUserForm() {
           label="Email"
           value={email}
           helperText={errors.email}
-          error= {!!errors.email}
+          error={!!errors.email}
           onChange={(e) => {
-            setErrors((prev)=>({...prev,email:''}))
-            setEmail(e.target.value)}}
+            setErrors((prev) => ({ ...prev, email: '' }));
+            setEmail(e.target.value);
+          }}
           required
           fullWidth
         />
@@ -249,8 +251,9 @@ export default function AddUserForm() {
             error={!!errors.password}
             helperText={errors.password}
             onChange={(e) => {
-              setErrors((prev)=>({...prev,password:''}))
-              setPassword(e.target.value)}}
+              setErrors((prev) => ({ ...prev, password: '' }));
+              setPassword(e.target.value);
+            }}
           />
         )}
 
@@ -260,8 +263,9 @@ export default function AddUserForm() {
           error={!!errors.collegeName}
           helperText={errors.collegeName}
           onChange={(e) => {
-            setErrors((prev)=>({...prev,collegeName:''}))
-            setCollegeName(e.target.value)}}
+            setErrors((prev) => ({ ...prev, collegeName: '' }));
+            setCollegeName(e.target.value);
+          }}
           required
           fullWidth
         />

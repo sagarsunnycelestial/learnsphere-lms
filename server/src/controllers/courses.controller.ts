@@ -38,11 +38,7 @@ async function createACourse(args: CourseUpdateArgs, context: Context) {
     }
   }
 }
-async function fetchAllCourses(
-  filter: { status?: string },
-  userId: string,
-  userRole: string
-) {
+async function fetchAllCourses(filter: { status?: string }, userId: string, userRole: string) {
   try {
     const courses = await courseRepo.find({
       order: {
@@ -80,9 +76,7 @@ async function fetchAllCourses(
           (enrollment) => enrollment.user.userId === userId
         );
 
-        const canModify =
-          course.createdBy.userId === userId ||
-          userRole === UserRoles.ADMIN;
+        const canModify = course.createdBy.userId === userId || userRole === UserRoles.ADMIN;
 
         return {
           ...course,
@@ -174,12 +168,10 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
     });
     if (!course) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
 
-const isEnrolled = course.enrollments.some(
-  (enrollment) =>
-    enrollment.user.userId === user.user_id && enrollment.isActive === true
-);
+    const isEnrolled = course.enrollments.some(
+      (enrollment) => enrollment.user.userId === user.user_id && enrollment.isActive === true
+    );
     const canModify = course.createdBy.userId === user.user_id || user.role === UserRoles.ADMIN;
-    console.log(canModify);
     if (!isEnrolled && !canModify) {
       const filteredcourse = {
         ...course,
@@ -283,18 +275,13 @@ async function enrollAStudent(args: EnrollCourseArgs, context: Context) {
   }
 }
 
-async function unEnrollFromCourse(
-  args: EnrollCourseArgs,
-  context: Context
-) {
+async function unEnrollFromCourse(args: EnrollCourseArgs, context: Context) {
   const userId = args.input.userId ?? context.user?.user_id;
   const courseId = args.input.courseId;
 
   try {
     if (!userId || !courseId) {
-      throw new GraphQLError(
-        ERROR_MESSAGES.FAILED_TO_UNENROLL_USER
-      );
+      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_UNENROLL_USER);
     }
 
     const existingEnrollment = await enrollmentRepo.findOne({
@@ -313,9 +300,7 @@ async function unEnrollFromCourse(
     });
 
     if (!existingEnrollment) {
-      throw new GraphQLError(
-        ERROR_MESSAGES.FAILED_TO_UNENROLL_USER
-      );
+      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_UNENROLL_USER);
     }
 
     existingEnrollment.isActive = false;
@@ -330,9 +315,7 @@ async function unEnrollFromCourse(
       throw err;
     }
 
-    throw new GraphQLError(
-      ERROR_MESSAGES.FAILED_TO_UNENROLL_USER
-    );
+    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_UNENROLL_USER);
   }
 }
 
@@ -343,5 +326,5 @@ export {
   deleteCourseFromDB,
   fetchASingleCourse,
   enrollAStudent,
-  unEnrollFromCourse
+  unEnrollFromCourse,
 };

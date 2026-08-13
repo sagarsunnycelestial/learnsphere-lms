@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, CircularProgress} from '@mui/material';
+import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
 import { questionFormControl } from '../../store/slices/formSlice';
 
 import { useState } from 'react';
@@ -14,7 +14,7 @@ type QuestionErrors = {
   options?: string[];
 };
 
-const MAX_OPTIONS = 3
+const MAX_OPTIONS = 3;
 export default function QuestionForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const quizId = useAppSelector((state) => state.form.questions.quizId);
@@ -28,14 +28,14 @@ export default function QuestionForm() {
 
   async function handleSubmit() {
     setIsSubmitting(true);
-    const filteredOptions = options.filter((option)=>option!=='')
-       const result = questionSchema.safeParse({
+    const filteredOptions = options.filter((option) => option !== '');
+    const result = questionSchema.safeParse({
       quizId: quizId ?? '',
       questionText,
       correctOption,
       options: filteredOptions,
     });
-if (!result.success) {
+    if (!result.success) {
       const fieldErrors: QuestionErrors = {};
 
       result.error.issues.forEach((issue) => {
@@ -55,7 +55,6 @@ if (!result.success) {
 
             fieldErrors.options[optionIndex] = issue.message;
           } else {
-    
             fieldErrors.options = [issue.message];
           }
         }
@@ -72,7 +71,7 @@ if (!result.success) {
         quizId: quizId ?? '',
         questionText,
         correctOption,
-        options:filteredOptions,
+        options: filteredOptions,
       };
       const res = await createAQuestion({ input });
       if (res?.message) toast.success(res.message);
@@ -84,9 +83,9 @@ if (!result.success) {
     }
   }
   function handleOptionAdd() {
-    if(options.length >= MAX_OPTIONS){
-      toast.info(`You can only have ${MAX_OPTIONS + 1} options.`)
-      return
+    if (options.length >= MAX_OPTIONS) {
+      toast.info(`You can only have ${MAX_OPTIONS + 1} options.`);
+      return;
     }
     setOptions((prev) => [...prev, '']);
   }
@@ -112,7 +111,7 @@ if (!result.success) {
       </Box>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
+        <TextField
           label="Question Text"
           value={questionText}
           onChange={(e) => {
@@ -151,9 +150,7 @@ if (!result.success) {
             placeholder={`Enter option ${index + 2}`}
             value={option}
             onChange={(e) => {
-              setOptions((prev) =>
-                prev.with(index, e.target.value)
-              );
+              setOptions((prev) => prev.with(index, e.target.value));
 
               setErrors((prev) => ({
                 ...prev,
@@ -168,17 +165,16 @@ if (!result.success) {
             fullWidth
           />
         ))}
-  
+
         <Button
           startIcon={<AddIcon />}
-          sx={{ bgcolor: 'forestgreen',width:150 ,alignSelf:'flex-end'}}
+          sx={{ bgcolor: 'forestgreen', width: 150, alignSelf: 'flex-end' }}
           size="small"
           variant="contained"
           onClick={handleOptionAdd}
         >
           Add option
         </Button>
-
       </Box>
 
       <Button

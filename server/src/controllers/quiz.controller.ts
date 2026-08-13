@@ -72,23 +72,15 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
       optionText: correctOption,
       question: question,
     });
-      const optionEntities = options.map((option) =>
+    const optionEntities = options.map((option) =>
       optionRepo.create({
         optionText: option,
         question,
       })
     );
-    await optionRepo.save([
-      ...optionEntities,
-      correctAnswer
-    ])
-     
+    await optionRepo.save([...optionEntities, correctAnswer]);
 
-      optionRepo.save(correctAnswer),
-  
-
-
-    question.correctOption = correctAnswer;
+    (optionRepo.save(correctAnswer), (question.correctOption = correctAnswer));
     await questionRepo.save(question);
     return { message: 'Question and options created successfully' };
   } catch (err) {

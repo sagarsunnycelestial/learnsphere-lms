@@ -13,7 +13,7 @@ export default defineConfig([
 
     languageOptions: {
       globals: globals.node,
-    }, 
+    },
     rules: {
       'no-console': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',

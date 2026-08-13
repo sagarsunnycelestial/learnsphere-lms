@@ -7,13 +7,13 @@ import {
 } from '../../types/types.js';
 import crypto from 'crypto';
 import { Response } from 'express';
-import { AppDataSource } from '../config/dbConfig.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { envSchema } from '../config/env.js';
 import { GraphQLError } from 'graphql';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import { userRepo, rolesRepo } from '../entities/repos.js';
+import { sendWelcomeEmail } from '../services/mail.service.js';
 const loginUser = async (args: LoginArgs, res: Response) => {
   try {
     const { email, password }: LoginUserBody = args.input;
@@ -102,7 +102,9 @@ const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
       isActive: true,
     });
     await userRepo.save(newUser);
+    await userRepo.save(newUser);
 
+    await sendWelcomeEmail(newUser.email, newUser.username, temp_password);
     return {
       message: `${newUser.role.roleName} created successfully`,
       email: newUser.email,

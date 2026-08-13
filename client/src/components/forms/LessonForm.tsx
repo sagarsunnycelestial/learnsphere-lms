@@ -20,11 +20,9 @@ export default function LessonForm() {
   const courseId = selectedLesson?.courseId ?? id;
   const [errors, setErrors] = useState<{ lessonName?: string; description?: string }>({});
   const [lessonName, setLessonName] = useState(selectedLesson?.lessonName ?? '');
-const existingVideoFileName = selectedLesson?.videoLink
-  ? decodeURIComponent(
-      selectedLesson.videoLink.split('/').pop()?.split('?')[0] || ''
-    )
-  : '';
+  const existingVideoFileName = selectedLesson?.videoLink
+    ? decodeURIComponent(selectedLesson.videoLink.split('/').pop()?.split('?')[0] || '')
+    : '';
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [description, setDescription] = useState(selectedLesson?.description ?? '');
   const dispatch = useAppDispatch();
@@ -101,7 +99,7 @@ const existingVideoFileName = selectedLesson?.videoLink
 
     if (file?.name.split('.')[1].toLowerCase() !== 'mp4') {
       toast.error('Upload files of type mp4 only');
-      e.target.value = ''
+      e.target.value = '';
       return;
     }
     setVideoFile(e.target.files[0]);
@@ -173,7 +171,7 @@ const existingVideoFileName = selectedLesson?.videoLink
         <TextField
           label="Description"
           value={description}
-           error={!!errors.description}
+          error={!!errors.description}
           helperText={errors.description || `${description.trim().length}/1000`}
           onChange={(e) => {
             setErrors((prev) => ({ ...prev, description: '' }));
@@ -191,12 +189,11 @@ const existingVideoFileName = selectedLesson?.videoLink
             justifyContent: 'flex-start',
           }}
         >
-        
-  {videoFile
-    ? videoFile.name
-    : isEditing && existingVideoFileName
-      ? existingVideoFileName
-      : 'Upload Lesson Video'}
+          {videoFile
+            ? videoFile.name
+            : isEditing && existingVideoFileName
+              ? existingVideoFileName
+              : 'Upload Lesson Video'}
           <input hidden type="file" name="videoLink" onChange={handleVideoChange} />
         </Button>
       </Box>

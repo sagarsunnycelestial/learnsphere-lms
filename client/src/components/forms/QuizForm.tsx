@@ -18,18 +18,17 @@ export default function QuizForm() {
   const courseId = selectedQuiz?.courseId ?? id;
 
   const [quizName, setQuizName] = useState(selectedQuiz?.quizName ?? '');
-    const [errors, setErrors] = useState<{
+  const [errors, setErrors] = useState<{
     quizName?: string;
   }>({});
-
 
   const dispatch = useAppDispatch();
   const { addNewQuiz } = useQuizzesCRUD();
 
   async function handleSubmit() {
     setIsSubmitting(true);
-    const result = quizSchema.safeParse({quizSchema})
-       if (!result.success) {
+    const result = quizSchema.safeParse({ quizSchema });
+    if (!result.success) {
       const fieldErrors: {
         quizName?: string;
       } = {};

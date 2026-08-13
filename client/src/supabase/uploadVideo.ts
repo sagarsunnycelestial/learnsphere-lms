@@ -1,7 +1,7 @@
 import { supabase } from './supabaseClient';
 
 export async function uploadVideo(file: File): Promise<string> {
-  const fileName = file.name
+  const fileName = file.name;
 
   const { error } = await supabase.storage
     .from('lessons-lms')

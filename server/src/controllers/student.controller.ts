@@ -23,11 +23,9 @@ async function fetchStudentDetails(args: { courseId?: string }) {
     if (!args.courseId) return students;
 
     const filteredStudents = students.map((student) => {
-     const isEnrolled = student.enrollments.some(
-  (enrollment) =>
-    enrollment.course.courseId === args.courseId &&
-    enrollment.isActive === true
-);
+      const isEnrolled = student.enrollments.some(
+        (enrollment) => enrollment.course.courseId === args.courseId && enrollment.isActive === true
+      );
       return { ...student, isEnrolled: isEnrolled };
     });
     return filteredStudents;

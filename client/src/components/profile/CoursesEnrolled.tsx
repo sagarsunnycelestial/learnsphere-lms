@@ -22,7 +22,7 @@ export default function CoursesEnrolled() {
             <TableRow>
               <TableCell sx={{ fontWeight: 700 }}>Courses</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Enrolled on</TableCell>
-            
+
               <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -30,12 +30,15 @@ export default function CoursesEnrolled() {
             {enrollments?.map((course) => (
               <TableRow key={course?.enrollmentId}>
                 <TableCell sx={{ fontWeight: 600 }}>{course?.course?.courseName}</TableCell>
-                <TableCell> {new Date(Number(course?.enrolledAt)).toLocaleDateString('en-IN', {
-                              day: '2-digit',
-                              month: 'short',
-                              year: 'numeric',
-                            })}</TableCell>
-             
+                <TableCell>
+                  {' '}
+                  {new Date(Number(course?.enrolledAt)).toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
+                </TableCell>
+
                 <TableCell>
                   <Chip
                     size="small"

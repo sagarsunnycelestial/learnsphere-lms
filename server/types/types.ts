@@ -96,7 +96,7 @@ export interface QuestionDetails {
   quizId?: string;
   questionText?: string;
   correctOption?: string;
- options:string[]
+  options: string[];
 }
 export type QuestionArgs = {
   input: QuestionDetails;

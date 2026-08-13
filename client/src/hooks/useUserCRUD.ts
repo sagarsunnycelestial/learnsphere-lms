@@ -76,8 +76,8 @@ export default function useUserCRUD() {
       toast.error('Update Failed');
     },
   });
-    const { mutateAsync: unEnrollStudent } = useMutation({
-    mutationFn: async (input: UnenrollStudentMutationVariables)=> {
+  const { mutateAsync: unEnrollStudent } = useMutation({
+    mutationFn: async (input: UnenrollStudentMutationVariables) => {
       const { data } = await apolloClient.mutate({
         mutation: UnenrollStudentDocument,
         variables: input,
@@ -100,5 +100,5 @@ export default function useUserCRUD() {
       toast.error('Update Failed');
     },
   });
-  return { addNewUser, updateProfile, enrollStudent,unEnrollStudent };
+  return { addNewUser, updateProfile, enrollStudent, unEnrollStudent };
 }

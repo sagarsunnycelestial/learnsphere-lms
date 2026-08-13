@@ -21,7 +21,7 @@ export default function QuizResults() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 700 }}>Quiz Name</TableCell>
-        
+
               <TableCell sx={{ fontWeight: 700 }}>Score</TableCell>
             </TableRow>
           </TableHead>

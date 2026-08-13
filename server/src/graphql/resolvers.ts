@@ -27,7 +27,7 @@ import {
   deleteCourseFromDB,
   fetchASingleCourse,
   enrollAStudent,
-  unEnrollFromCourse
+  unEnrollFromCourse,
 } from '../controllers/courses.controller.js';
 import {
   createAQuizForCourse,
@@ -69,9 +69,13 @@ export const resolvers = {
       const foundUser = await fetchUserByRefreshToken(refreshToken);
       return foundUser;
     },
-    fetchCourses: async (_parents: unknown, args:{filter:{status:string}}, context: Context) => {
+    fetchCourses: async (
+      _parents: unknown,
+      args: { filter: { status: string } },
+      context: Context
+    ) => {
       if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
-      return await fetchAllCourses(args.filter,context.user.user_id, context.user.role);
+      return await fetchAllCourses(args.filter, context.user.user_id, context.user.role);
     },
     fetchCourseById: async (_parents: unknown, args: { courseId: string }, context: Context) => {
       if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
@@ -211,7 +215,7 @@ export const resolvers = {
         userId: context.user.user_id,
       });
     },
-     unenrollStudent:async (_parents: unknown, args: EnrollCourseArgs, context: Context) => {
+    unenrollStudent: async (_parents: unknown, args: EnrollCourseArgs, context: Context) => {
       if (context.user?.role === UserRoles.INSTRUCTOR)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 

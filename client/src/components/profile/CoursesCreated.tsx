@@ -21,7 +21,7 @@ export default function CoursesCreated() {
           <TableHead>
             <TableRow>
               <TableCell sx={{ fontWeight: 700 }}>Courses</TableCell>
-             
+
               <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
             </TableRow>
           </TableHead>
@@ -29,7 +29,7 @@ export default function CoursesCreated() {
             {courses?.map((course) => (
               <TableRow key={course?.courseId}>
                 <TableCell sx={{ fontWeight: 600 }}>{course?.courseName}</TableCell>
-                
+
                 <TableCell>
                   <Chip
                     size="small"

@@ -1,6 +1,6 @@
 import { Button, Box, Card, Typography } from '@mui/material';
 import { useEffect } from 'react';
-import { useNavigate,useLocation } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { useAppDispatch } from '../store/hooks';
 import { apolloClient } from '../graphql/apolloClient';
 import { refreshUser } from '../store/slices/authSlice';
@@ -11,69 +11,62 @@ import CircularProgress from '@mui/material/CircularProgress';
 const HomePage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const location = useLocation()
-const [checkingAuth, setCheckingAuth] = useState(true);
-const [refreshFailed, setRefreshFailed] = useState(false);
-  const from = location.state?.from
+  const location = useLocation();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [refreshFailed, setRefreshFailed] = useState(false);
+  const from = location.state?.from;
   useEffect(() => {
-  async function refreshToken() {
-    try {
-      const response = await apolloClient.query({
-        query: REFRESH_QUERY,
-        fetchPolicy: 'network-only',
-      });
+    async function refreshToken() {
+      try {
+        const response = await apolloClient.query({
+          query: REFRESH_QUERY,
+          fetchPolicy: 'network-only',
+        });
 
-      if (!response.data?.refreshEndpoint) {
-        setRefreshFailed(true);
-        return;
-      }
+        if (!response.data?.refreshEndpoint) {
+          setRefreshFailed(true);
+          return;
+        }
 
-      const {
-        accessToken,
-        role,
-        profile_image_path,
-      } = response.data.refreshEndpoint;
+        const { accessToken, role, profile_image_path } = response.data.refreshEndpoint;
 
-      dispatch(
-        refreshUser({
-          accessToken,
-          role,
-          isAuthenticated: true,
-          profile_image_path,
-        })
-      );
-
-      if (from) {
-        navigate(
-          from.pathname + from.search + from.hash,
-          { replace: true }
+        dispatch(
+          refreshUser({
+            accessToken,
+            role,
+            isAuthenticated: true,
+            profile_image_path,
+          })
         );
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
-    } catch {
-      setRefreshFailed(true);
-    } finally {
-      setCheckingAuth(false);
-    }
-  }
 
-  refreshToken();
-}, [dispatch, navigate, from]);
-if (checkingAuth && !refreshFailed) {
-  return (
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '60vh',
-          }}
-        >
-          <CircularProgress color="inherit" aria-label="Loading…" />
-        </Box>
-      );
-}
+        if (from) {
+          navigate(from.pathname + from.search + from.hash, { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
+      } catch {
+        setRefreshFailed(true);
+      } finally {
+        setCheckingAuth(false);
+      }
+    }
+
+    refreshToken();
+  }, [dispatch, navigate, from]);
+  if (checkingAuth && !refreshFailed) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '60vh',
+        }}
+      >
+        <CircularProgress color="inherit" aria-label="Loading…" />
+      </Box>
+    );
+  }
 
   return (
     <Box
