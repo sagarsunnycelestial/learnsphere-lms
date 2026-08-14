@@ -25,6 +25,9 @@ export default function CourseForm() {
   const isEditing = mode === 'edit';
   const [courseName, setCourseName] = useState(selectedCourse?.courseName ?? '');
   const [thumbnailImg, setThumbnailImg] = useState<File | null>(null);
+    const existingImageFileName = selectedCourse?.thumbnail_image_path
+    ? decodeURIComponent(selectedCourse.thumbnail_image_path.split('/').pop()?.split('?')[0] || '')
+    : '';
   const [description, setDescription] = useState(selectedCourse?.description ?? '');
   const [loading, setLoading] = useState<boolean>(false);
   const [isActive, setIsActive] = useState(selectedCourse?.isActive ?? true);
@@ -209,12 +212,14 @@ export default function CourseForm() {
         <Button
           variant="outlined"
           component="label"
+          color={existingImageFileName ? 'error': 'primary'}
           sx={{
             textTransform: 'none',
             justifyContent: 'flex-start',
           }}
         >
-          {thumbnailImg ? thumbnailImg.name : 'Upload Course Thumbnail'}
+         
+          {thumbnailImg ? thumbnailImg.name : isEditing && existingImageFileName ? existingImageFileName :'Upload Course Thumbnail'}
           <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
         </Button>
       </Box>

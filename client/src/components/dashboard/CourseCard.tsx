@@ -12,8 +12,10 @@ import {
   List,
   ListItemText,
   ListItemButton,
+  Tooltip,
   Dialog,
 } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useTheme } from '@mui/material';
 import type { FetchCoursesQuery } from '../../generated/graphql';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -188,22 +190,39 @@ export default function CourseCard({ course }: CourseCardProps) {
         <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
           {course.courseName}
         </Typography>
+
         <Typography
+          variant="body2"
+          color="text.secondary"
           sx={{
             flex: 1,
-            overflow: 'hidden',
             minHeight: 40,
+            overflow: 'hidden',
             textOverflow: 'ellipsis',
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',
             WebkitLineClamp: 2,
+            cursor: 'help',
           }}
-
-          variant="body2"
-          color="text.secondary"
         >
-          {course.description}
+          {course.description || 'No description available'}
         </Typography>
+
+        <Tooltip
+          title={course.description || 'No description available'}
+          arrow
+          placement="bottom"
+          sx={{ alignSelf: 'flex-end' }}
+        >
+          <InfoOutlinedIcon
+            sx={{
+              fontSize: 18,
+              color: 'primary.main',
+              cursor: 'help',
+              flexShrink: 0,
+            }}
+          />
+        </Tooltip>
 
         <Stack direction="row" spacing={1} sx={{ pt: 1, alignItems: 'center' }}>
           <Avatar

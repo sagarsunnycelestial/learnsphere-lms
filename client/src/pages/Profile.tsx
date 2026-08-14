@@ -43,11 +43,14 @@ export default function Profile() {
           display: 'grid',
           gridTemplateColumns: {
             xs: '1fr',
-            md: '420px minmax(600px, 1fr)',
+            sm: 'minmax(320px, 400px) minmax(0, 1fr)',
           },
-          gap: 5,
-          alignItems: 'start',
-          p: 2,
+          gap: { xs: 3, sm: 3, md: 5 },
+          alignItems: 'flex-start',
+         justifyItems: { xs: 'center', sm: 'stretch' },
+          p: { xs: 1, sm: 2 },
+          width: '100%',
+          boxSizing: 'border-box',
         }}
       >
         <Card

@@ -81,37 +81,50 @@ const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
         role: true,
       },
     });
-    if (!admin) throw new GraphQLError(ERROR_MESSAGES.ADMIN_NOT_FOUND);
+
+    if (!admin) {
+      throw new GraphQLError(ERROR_MESSAGES.ADMIN_NOT_FOUND);
+    }
 
     const userRole = await rolesRepo.findOne({
       where: {
         roleId: role,
       },
     });
-    if (!userRole) throw new GraphQLError(ERROR_MESSAGES.ROLE_NOT_FOUND);
+
+    if (!userRole) {
+      throw new GraphQLError(ERROR_MESSAGES.ROLE_NOT_FOUND);
+    }
 
     const temp_password =
       username.slice(0, 4) + email.slice(0, 4) + Math.floor(1000 + Math.random() * 9000);
+
     const password_hash = await bcrypt.hash(temp_password, 10);
+
     const newUser = userRepo.create({
-      username: username,
-      email: email,
+      username,
+      email,
       role: userRole,
-      collegeName: collegeName,
+      collegeName,
       passwordHash: password_hash,
       isActive: true,
     });
-    await userRepo.save(newUser);
+
     await userRepo.save(newUser);
 
     await sendWelcomeEmail(newUser.email, newUser.username, temp_password);
+
     return {
       message: `${newUser.role.roleName} created successfully`,
       email: newUser.email,
-      temp_password: temp_password,
+      temp_password,
     };
   } catch (error) {
-    throw new GraphQLError(`${ERROR_MESSAGES.FAILED_TO_CREATE_USER} ${(error as Error).message}`);
+    throw new GraphQLError(
+      `${ERROR_MESSAGES.FAILED_TO_CREATE_USER} ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
   }
 };
 

@@ -1,8 +1,8 @@
 import { supabase } from './supabaseClient';
 
 export async function uploadImage(file: File): Promise<string> {
-  const fileExt = file.name.split('.')[1];
-  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const randomNum = Math.floor(100 + Math.random() * 900);
+const fileName = `${file.name}_${randomNum}`;
 
   const { error } = await supabase.storage
     .from('profiles')

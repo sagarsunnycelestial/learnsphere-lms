@@ -10,6 +10,7 @@ import {
   useTheme,
   ToggleButton,
   ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import CourseForm from '../components/forms/CourseForm';
@@ -133,6 +134,18 @@ export default function CoursesPage() {
           <ToggleButton value="inactive">Inactive</ToggleButton>
         </ToggleButtonGroup>
       </Paper>
+      {(!filteredCourses || filteredCourses.length === 0) && (
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+          }}
+        >
+          <Typography variant="h4">Nothing to show</Typography>
+        </Box>
+      )}
 
       <Box
         sx={{
@@ -140,6 +153,8 @@ export default function CoursesPage() {
           flexWrap: 'wrap',
           overflow: 'auto',
           gap: 3,
+        alignItems: 'flex-start',
+    justifyContent: { xs: 'center', sm: 'flex-start' },
           mt: 3,
         }}
       >

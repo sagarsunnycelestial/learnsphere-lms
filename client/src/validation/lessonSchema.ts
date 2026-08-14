@@ -9,6 +9,6 @@ export const lessonSchema = z.object({
   description: z
     .string()
     .trim()
-    .min(10, 'Description should have minimum 50 characters')
+    .min(20, 'Description should have minimum 20 characters')
     .max(1000, 'Description should not exceed 1000 characters'),
 });

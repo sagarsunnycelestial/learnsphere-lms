@@ -27,7 +27,6 @@ export default function QuestionForm() {
   const [correctOption, setCorrectOption] = useState('');
 
   async function handleSubmit() {
-    setIsSubmitting(true);
     const filteredOptions = options.filter((option) => option !== '');
     const result = questionSchema.safeParse({
       quizId: quizId ?? '',

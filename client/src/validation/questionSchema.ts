@@ -19,6 +19,6 @@ export const questionSchema = z.object({
         .min(3, 'Each option should have at least 3 characters')
         .max(50, 'Each option should not exceed 50 characters')
     )
-    .min(2, 'You must provide at least 2 options')
+    .min(1, 'You must provide at least 2 options')
     .max(4, 'You can have at most 4 options'),
 });

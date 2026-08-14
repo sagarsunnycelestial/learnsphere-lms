@@ -80,7 +80,6 @@ export default function SingleCoursePage() {
   const theme = useTheme();
   const { deleteCourse } = useCoursesCRUD();
   const [confirm, setConfirm] = useState<boolean>(false);
-  console.log(quizzes);
   const isEnrolled = course?.isEnrolled;
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
@@ -186,18 +185,16 @@ export default function SingleCoursePage() {
   async function handleQuizSubmit(e: React.SubmitEvent<HTMLFormElement>, quizId?: string) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    console.log(formData);
 
     const answerList = Array.from(formData.entries(), ([questionId, selectionOption]) => ({
       questionId,
       selectionOption: selectionOption as string,
     }));
-    console.log({ input: { quizId, answerList } });
+
     try {
       const res = await submitQuizAnswers({ input: { quizId, answerList } });
       toast.success(res?.message);
       dispatch(resultDisplay({ submitted: true, quizResult: res }));
-      console.log(res);
     } catch {
       toast.error('Failed to submit answers');
     }
@@ -263,7 +260,7 @@ export default function SingleCoursePage() {
               {course.courseName}
             </Typography>
 
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 2, overflowWrap:'anywhere',wordBreak:'break-word' }}>
               {course.description}
             </Typography>
 
@@ -285,7 +282,7 @@ export default function SingleCoursePage() {
               </Box>
             </Stack>
 
-            <Stack direction="row" spacing={2} sx={{ mt: 3, flexWrap: 'wrap' }}>
+            <Stack direction={{ xs: 'column', sm: 'row' }}spacing={2} sx={{ mt: 3, flexWrap: 'wrap' }}>
               <Chip label={`${course.totalLessons} Lessons`} />
 
               <Chip label={`${course.quizzes?.length} Quizzes`} />
@@ -341,10 +338,11 @@ export default function SingleCoursePage() {
                       </Box>
                     </Stack>
                     <Stack
-                      direction="row"
+                     direction={{ xs: 'column', sm: 'row' }}
                       spacing={1}
                       sx={{
                         flexWrap: 'wrap',
+                         alignItems: { xs: 'center', sm: 'flex-start' },
                       }}
                       useFlexGap
                     >
@@ -352,7 +350,7 @@ export default function SingleCoursePage() {
                         <Button
                           startIcon={<EditIcon />}
                           onClick={handleEdit}
-                          variant="outlined"
+                          variant="contained"
                           size="small"
                           sx={{
                             borderRadius: 2,
@@ -368,7 +366,7 @@ export default function SingleCoursePage() {
                         startIcon={<DeleteForeverIcon />}
                         onClick={() => setConfirm(true)}
                         color="error"
-                        variant="outlined"
+                        variant="contained"
                         size="small"
                         sx={{
                           borderRadius: 2,
@@ -419,7 +417,7 @@ export default function SingleCoursePage() {
                           startIcon={<PeopleIcon />}
                           onClick={() => setEnrolled(!enrolled)}
                           color={!enrolled ? 'info' : 'warning'}
-                          variant={enrolled ? 'contained' : 'outlined'}
+                          variant={enrolled ? 'contained' : 'contained'}
                           size="small"
                           sx={{
                             borderRadius: 2,
@@ -685,7 +683,7 @@ export default function SingleCoursePage() {
                             </Typography>
                           )}
 
-                          <Box
+                          {lesson?.videoLink && (  <Box
                             sx={{
                               width: '100%',
                               maxWidth: 700,
@@ -696,7 +694,7 @@ export default function SingleCoursePage() {
                               aspectRatio: '16 / 9',
                             }}
                           >
-                            <CardMedia
+                           <CardMedia
                               component="video"
                               controls
                               muted
@@ -707,7 +705,8 @@ export default function SingleCoursePage() {
                                 objectFit: 'cover',
                               }}
                             />
-                          </Box>
+                           
+                          </Box>)}
                         </Box>
                       </Paper>
                     ))}
@@ -798,7 +797,7 @@ export default function SingleCoursePage() {
                                   })
                                 )
                               }
-                              variant="outlined"
+                              variant="contained"
                               size="small"
                             >
                               Add Question
@@ -877,7 +876,7 @@ export default function SingleCoursePage() {
                                   <Button
                                     type="button"
                                     startIcon={<DeleteForeverIcon />}
-                                    variant="outlined"
+                                    variant="contained"
                                     color="error"
                                     size="small"
                                     onClick={() =>

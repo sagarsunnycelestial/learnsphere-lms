@@ -26,8 +26,7 @@ export default function QuizForm() {
   const { addNewQuiz } = useQuizzesCRUD();
 
   async function handleSubmit() {
-    setIsSubmitting(true);
-    const result = quizSchema.safeParse({ quizSchema });
+    const result = quizSchema.safeParse({ quizName });
     if (!result.success) {
       const fieldErrors: {
         quizName?: string;
