@@ -17,7 +17,7 @@
     // "types": ["node"],
     // and npm install -D @types/node
 
-   // strict
+    // strict
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
@@ -26,16 +26,14 @@
 
     // output
     "sourceMap": true,
-    "declaration": false, 
+    "declaration": false,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax":false,
-     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-
-
+    "verbatimModuleSyntax": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   }
 }

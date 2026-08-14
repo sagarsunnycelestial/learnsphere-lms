@@ -1,14 +1,16 @@
-import { GraphQLError } from "graphql";
-import { Context, QuestionArgs, SubmitQuizArgs } from "../../types/types.js";
-import { UserRoles } from "../../types/types.js";
-import { AppDataSource } from "../config/dbConfig.js";
-import { Courses } from "../entities/Courses.js";
-import { Quizzes } from "../entities/Quizzes.js";
-import { ERROR_MESSAGES } from "../constants/messages.js";
-import { Questions } from "../entities/Questions.js";
-import { Options } from "../entities/Options.js";
-import { Results } from "../entities/Results.js";
-import { Users } from "../entities/Users.js";
+import { GraphQLError } from 'graphql';
+import { Context, QuestionArgs, SubmitQuizArgs } from '../../types/types.js';
+import { UserRoles } from '../../types/types.js';
+import {
+  userRepo,
+  courseRepo,
+  questionRepo,
+  quizRepo,
+  resultRepo,
+  optionRepo,
+} from '../entities/repos.js';
+import { ERROR_MESSAGES } from '../constants/messages.js';
+
 async function createAQuizForCourse(
   args: {
     input: {
@@ -16,10 +18,8 @@ async function createAQuizForCourse(
       quizName: string;
     };
   },
-  context: Context,
+  context: Context
 ) {
-  const courseRepo = AppDataSource.getRepository(Courses);
-  const quizRepo = AppDataSource.getRepository(Quizzes);
   if (!context.user?.user_id || !args.input.courseId)
     throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
   try {
@@ -38,7 +38,7 @@ async function createAQuizForCourse(
       course: course,
     });
     await quizRepo.save(newQuiz);
-    return { message: "Quiz created successfully" };
+    return { message: 'Quiz created successfully' };
   } catch (err) {
     if (err instanceof GraphQLError) {
       throw err;
@@ -47,28 +47,12 @@ async function createAQuizForCourse(
   }
 }
 async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
-  const quizRepo = AppDataSource.getRepository(Quizzes);
-  const questionRepo = AppDataSource.getRepository(Questions);
-  const optionRepo = AppDataSource.getRepository(Options);
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
-  const {
-    optionTwo,
-    optionFour,
-    optionThree,
-    correctOption,
-    questionText,
-  } = args.input;
+  const { options, correctOption, questionText } = args.input;
   try {
-  if (
-      !questionText ||
-      !correctOption ||
-      !optionTwo ||
-      !optionThree ||
-      !optionFour
-    )
+    if (!questionText || !correctOption)
       throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
-
 
     const quiz = await quizRepo.findOne({
       where: {
@@ -79,7 +63,6 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
       throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
     }
 
-  
     const question = questionRepo.create({
       questionText: questionText,
       quiz: quiz,
@@ -89,30 +72,18 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
       optionText: correctOption,
       question: question,
     });
+    const optionEntities = options.map((option) =>
+      optionRepo.create({
+        optionText: option,
+        question,
+      })
+    );
+    await optionRepo.save([...optionEntities, correctAnswer]);
 
-    const option2 = optionRepo.create({
-      optionText: optionTwo,
-      question: question,
-    });
-    const option3 = optionRepo.create({
-      optionText: optionThree,
-      question: question,
-    });
-
-    const option4 = optionRepo.create({
-      optionText: optionFour,
-      question: question,
-    });
-    await Promise.all([
-      optionRepo.save(correctAnswer),
-      optionRepo.save(option2),
-      optionRepo.save(option3),
-      optionRepo.save(option4),
-    ]);
-
+    await optionRepo.save(correctAnswer);
     question.correctOption = correctAnswer;
     await questionRepo.save(question);
-    return { message: "Question and options created successfully" };
+    return { message: 'Question and options created successfully' };
   } catch (err) {
     if (err instanceof GraphQLError) {
       throw err;
@@ -122,9 +93,6 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
 }
 
 async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
-  const quizRepo = AppDataSource.getRepository(Quizzes);
-  const resultRepo = AppDataSource.getRepository(Results);
-  const userRepo = AppDataSource.getRepository(Users);
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
 
@@ -137,12 +105,10 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
         results: true,
       },
     });
-    if (!args.input.answerList?.length)
-      throw new GraphQLError(ERROR_MESSAGES.QUIZ_SUBMIT_FAILED);
+    if (!args.input.answerList?.length) throw new GraphQLError(ERROR_MESSAGES.QUIZ_SUBMIT_FAILED);
     const questionIds = args.input.answerList.map((a) => a.questionId);
     const hasDuplicates = new Set(questionIds).size !== questionIds.length;
-    if (hasDuplicates)
-      throw new GraphQLError(ERROR_MESSAGES.QUIZ_HAS_DUPLICATES);
+    if (hasDuplicates) throw new GraphQLError(ERROR_MESSAGES.QUIZ_HAS_DUPLICATES);
     if (!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
     const quiz = await quizRepo.findOne({
       where: {
@@ -159,7 +125,7 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
     if (!quiz) throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
 
     const questionsInQuiz = quiz.questions;
-    const total_questions = quiz.questions.length
+    const total_questions = quiz.questions.length;
     const result = args.input.answerList?.reduce(
       (acc, question) => {
         const correctQuestion = questionsInQuiz.find((q) => {
@@ -181,9 +147,9 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
           score: acc.score,
         };
       },
-      { score: 0 },
+      { score: 0 }
     );
- const score = Number(((result.score / total_questions) * 100).toFixed(2));
+    const score = Number(((result.score / total_questions) * 100).toFixed(2));
     const quizResult = resultRepo.create({
       quiz: quiz,
       user: user,
@@ -194,7 +160,7 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
     await userRepo.save(user);
     if (result) {
       return {
-        message:"Submitted quiz answers successfully",
+        message: 'Submitted quiz answers successfully',
         courseDetail: {
           courseId: quiz.course.courseId,
           courseName: quiz.course.courseName,
@@ -218,4 +184,55 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
   }
 }
 
-export { createAQuizForCourse, createAQuestionForQuiz, submitQuizAnswers };
+async function deleteQuizWithID(quizId: string, context: Context) {
+  let quizToDelete = null;
+  try {
+    if (context.user) {
+      quizToDelete = await quizRepo.findOne({
+        where: {
+          quizId: quizId,
+          ...(context.user.role !== UserRoles.ADMIN
+            ? { createdBy: { userId: context.user.user_id } }
+            : {}),
+        },
+      });
+    }
+
+    if (!quizToDelete) throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_FOUND);
+
+    await quizRepo.remove(quizToDelete);
+    return { message: 'Quiz deleted successfully' };
+  } catch (err) {
+    if (err instanceof GraphQLError) throw err;
+    throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_DELETE);
+  }
+}
+
+async function deleteQuestionWithID(input: { questionId: string; quizId: string; userId: string }) {
+  try {
+    const questionToDelete = await questionRepo.findOne({
+      where: {
+        questionId: input.questionId,
+        quiz: {
+          quizId: input.quizId,
+        },
+      },
+    });
+    if (!questionToDelete) throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
+
+    await questionRepo.remove(questionToDelete);
+    return {
+      message: 'Question deleted successfully',
+    };
+  } catch (err) {
+    if (err instanceof GraphQLError) throw err;
+    throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
+  }
+}
+export {
+  createAQuizForCourse,
+  createAQuestionForQuiz,
+  submitQuizAnswers,
+  deleteQuizWithID,
+  deleteQuestionWithID,
+};

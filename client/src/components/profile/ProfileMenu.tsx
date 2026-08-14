@@ -1,17 +1,17 @@
-import * as React from "react";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import { styled } from "@mui/material";
-import { logout } from "../../store/slices/authSlice";
-import {Badge} from "@mui/material";
-import { apolloClient } from "../../graphql/apolloClient";
-import { LogoutDocument } from "../../generated/graphql";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router";
-import { useAppDispatch } from "../../store/hooks";
-import {Box} from "@mui/material";
-import { useQueryClient } from "@tanstack/react-query";
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/material';
+import { logout } from '../../store/slices/authSlice';
+import { Badge } from '@mui/material';
+import { apolloClient } from '../../graphql/apolloClient';
+import { LogoutDocument } from '../../generated/graphql';
+import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
+import { useAppDispatch } from '../../store/hooks';
+import { Box } from '@mui/material';
+import { useQueryClient } from '@tanstack/react-query';
 type ProfileMenuProps = {
   profile_image: string;
 };
@@ -44,9 +44,9 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
   },
 }));
 export default function ProfileMenu({ profile_image }: ProfileMenuProps) {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
   const open = Boolean(anchorEl);
   const queryClient = useQueryClient();
   const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -56,32 +56,29 @@ export default function ProfileMenu({ profile_image }: ProfileMenuProps) {
   const handleClose = () => {
     setAnchorEl(null);
   };
-const handleProfile =() => {
-  handleClose();
-  navigate('/dashboard/profile')
-}
-  const handleLogout = async() => {
+  const handleProfile = () => {
     handleClose();
-    const {data:res} = await apolloClient.mutate({
-      mutation:LogoutDocument
-    })
-    if(res?.logout?.message){
-      
-      toast.success(res.logout.message)
-      
+    navigate('/dashboard/profile');
+  };
+  const handleLogout = async () => {
+    handleClose();
+    const { data: res } = await apolloClient.mutate({
+      mutation: LogoutDocument,
+    });
+    if (res?.logout?.message) {
+      toast.success(res.logout.message);
     }
-    console.log("logout");
-    dispatch(logout())
-    queryClient.clear()
-      navigate('/login')
+    dispatch(logout());
+    queryClient.clear();
+    navigate('/login');
   };
 
   return (
     <>
-      <Box onClick={handleOpen} sx={{ cursor: "pointer" }}>
+      <Box onClick={handleOpen} sx={{ cursor: 'pointer' }}>
         <StyledBadge
           overlap="circular"
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           variant="dot"
         >
           <Avatar src={profile_image} alt="A" />
@@ -93,22 +90,17 @@ const handleProfile =() => {
         open={open}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "right",
+          vertical: 'bottom',
+          horizontal: 'right',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right',
         }}
       >
-        <MenuItem onClick={handleProfile}>
-          Profile
-        </MenuItem>
+        <MenuItem onClick={handleProfile}>Profile</MenuItem>
 
-        <MenuItem
-          onClick={handleLogout}
-          sx={{ color: "red" }}
-        >
+        <MenuItem onClick={handleLogout} sx={{ color: 'red' }}>
           Logout
         </MenuItem>
       </Menu>

@@ -4,52 +4,48 @@ import {
   ManyToOne,
   JoinColumn,
   CreateDateColumn,
-  Column,Unique
-} from "typeorm";
-import { Users } from "./Users.js";
-import { Courses } from "./Courses.js";
+  Column,
+  Unique,
+} from 'typeorm';
+import { Users } from './Users.js';
+import { Courses } from './Courses.js';
 
-@Unique(["user", "course"])
-@Entity("enrollments")
+@Unique(['user', 'course'])
+@Entity('enrollments')
 export class Enrollments {
-
-  @PrimaryGeneratedColumn("uuid", { name: "enrollment_id" })
+  @PrimaryGeneratedColumn('uuid', { name: 'enrollment_id' })
   enrollmentId!: string;
 
   @ManyToOne(() => Users, (user) => user.enrollments, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn({
-    name: "user_id",
+    name: 'user_id',
   })
   user!: Users;
 
-
   @ManyToOne(() => Courses, (course) => course.enrollments, {
-    onDelete: "CASCADE",
+    onDelete: 'CASCADE',
   })
   @JoinColumn({
-    name: "course_id",
+    name: 'course_id',
   })
   course!: Courses;
 
-
   @CreateDateColumn({
-    name: "enrolled_at",
+    name: 'enrolled_at',
   })
   enrolledAt!: Date;
 
-
   @Column({
-    type: "boolean",
+    type: 'boolean',
     default: true,
   })
   isActive!: boolean;
 
-
   @Column({
-    name: "completed_at",
-    type: "timestamp",
+    name: 'completed_at',
+    type: 'timestamp',
     nullable: true,
   })
   completedAt?: Date;

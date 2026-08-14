@@ -1,12 +1,12 @@
-import { supabase } from "./supabaseClient";
+import { supabase } from './supabaseClient';
 
 export async function uploadImage(file: File): Promise<string> {
-  const fileExt = file.name.split(".")[1];
-  const fileName = `${crypto.randomUUID()}.${fileExt}`;
+  const randomNum = Math.floor(100 + Math.random() * 900);
+  const fileName = `${file.name}_${randomNum}`;
 
   const { error } = await supabase.storage
-    .from("profiles")
-    .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    .from('profiles')
+    .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
   if (error) {
     throw error;
@@ -14,8 +14,7 @@ export async function uploadImage(file: File): Promise<string> {
 
   const {
     data: { publicUrl },
-  } = supabase.storage.from("profiles").getPublicUrl(fileName);
-
+  } = supabase.storage.from('profiles').getPublicUrl(fileName);
 
   return publicUrl;
 }

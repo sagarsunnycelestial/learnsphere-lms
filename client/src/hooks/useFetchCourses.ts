@@ -1,17 +1,17 @@
-import { useQuery } from "@tanstack/react-query"
-import { FetchCoursesDocument } from "../generated/graphql"
-import { apolloClient } from "../graphql/apolloClient"
+import { useQuery } from '@tanstack/react-query';
+import { FetchCoursesDocument, FetchCoursesQueryVariables } from '../generated/graphql';
+import { apolloClient } from '../graphql/apolloClient';
 
-export default function useFetchCourses() {
+export default function useFetchCourses(filter: FetchCoursesQueryVariables) {
   return useQuery({
-    queryKey:['course'],
-    queryFn: async()=>{
-      const {data} = await apolloClient.query({
-        query:FetchCoursesDocument,
-        fetchPolicy:'network-only',
-      })
-      return data?.fetchCourses
-    }
-  })
-  
+    queryKey: ['course', filter],
+    queryFn: async () => {
+      const { data } = await apolloClient.query({
+        query: FetchCoursesDocument,
+        fetchPolicy: 'network-only',
+        variables: filter,
+      });
+      return data?.fetchCourses;
+    },
+  });
 }

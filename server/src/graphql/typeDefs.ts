@@ -101,6 +101,7 @@ type RoleResponse {
   sortOrder:Int
   }
   type EnrollmentUser {
+  userId:String!
 username:String!
 email:String!
 profile_image_path:String
@@ -143,11 +144,14 @@ totalEnrolled: Int
 totalLessons: Int
 }
 
+input CoursesFilter {
+status:String
+}
 type Query {
 refreshEndpoint:LoginResponse
 fetchRoles:[RoleResponse]
 fetchProfile:UserResponse
-fetchCourses:[Courses]
+fetchCourses(filter:CoursesFilter!):[Courses]
 fetchCourseById(courseId:String!):SingleCourse!
 fetchStudents(courseId:String):[StudentResponse]
 
@@ -198,13 +202,12 @@ input QuizDetails {
   courseId:String!
 }
 
+
   input QuestionDetails {
     quizId:String
     questionText:String
     correctOption:String
-    optionTwo:String
-    optionThree:String
-    optionFour:String
+    options:[String]
   }
 
    input AnswerInput {
@@ -221,11 +224,10 @@ input QuizDetails {
   userId:String
   username:String
   profile_image_path:String
-resultId:String
-quizId:String
-quizName:String
-score:Float
-
+  resultId:String
+  quizId:String
+  quizName:String
+  score:Float
   }
 
 type Mutation {
@@ -243,5 +245,8 @@ type Mutation {
   createAQuiz(input:QuizDetails):Response!
   createAQuestion(input:QuestionDetails):Response!
   submitQuiz(input:QuizAnswerDetails): QuizResultResponse!
+  deleteQuiz(quizId:String!): Response!
+  deleteQuestion(questionId:String!,quizId:String!): Response!
+  unenrollStudent(input:EnrollDetails):Response!
 }
 `;

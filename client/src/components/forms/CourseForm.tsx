@@ -7,75 +7,103 @@ import {
   Select,
   TextField,
   Typography,
-} from "@mui/material";
-import { addCourseFormControl } from "../../store/slices/formSlice";
+} from '@mui/material';
+import { addCourseFormControl } from '../../store/slices/formSlice';
 
-import { useRef, useState } from "react";
-import { useAppSelector, useAppDispatch } from "../../store/hooks";
-import { uploadImage } from "../../supabase/uploadImage";
-import { toast } from "react-toastify";
-import useCoursesCRUD from "../../hooks/useCoursesCRUD";
+import { useRef, useState } from 'react';
+import { useAppSelector, useAppDispatch } from '../../store/hooks';
+import { uploadImage } from '../../supabase/uploadImage';
+import { toast } from 'react-toastify';
+import useCoursesCRUD from '../../hooks/useCoursesCRUD';
+import CircularProgress from '@mui/material/CircularProgress';
+import { courseSchema } from '../../validation/courseSchema';
 export default function CourseForm() {
   const selectedCourse = useAppSelector((state) => state.form.courses.selectedcourse);
-  console.log('selected course',selectedCourse)
   const mode = useAppSelector((state) => state.form.courses.mode);
   const publicUrl = useRef<string | null>(selectedCourse?.thumbnail_image_path ?? null);
-  const isEditing = mode === "edit";
-  const [courseName,setCourseName] = useState(selectedCourse?.courseName?? "");
+  const isEditing = mode === 'edit';
+  const [courseName, setCourseName] = useState(selectedCourse?.courseName ?? '');
   const [thumbnailImg, setThumbnailImg] = useState<File | null>(null);
-  const [description, setDescription] = useState(selectedCourse?.description ?? "");
-  const [isActive, setIsActive] = useState(
-    selectedCourse?.isActive ?? true,
-  );
+  const existingImageFileName = selectedCourse?.thumbnail_image_path
+    ? decodeURIComponent(selectedCourse.thumbnail_image_path.split('/').pop()?.split('?')[0] || '')
+    : '';
+  const [description, setDescription] = useState(selectedCourse?.description ?? '');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [isActive, setIsActive] = useState(selectedCourse?.isActive ?? true);
+  const [errors, setErrors] = useState<{ courseName?: string; description?: string }>({});
   const dispatch = useAppDispatch();
-  const {addNewCourse,updateCourse} = useCoursesCRUD()
+  const { addNewCourse, updateCourse } = useCoursesCRUD();
   async function handleSubmit() {
+    const result = courseSchema.safeParse({ courseName, description });
+    if (!result.success) {
+      const fieldErrors: {
+        courseName?: string;
+        description?: string;
+      } = {};
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as 'courseName' | 'description';
+        fieldErrors[field] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return;
+    }
+    setErrors({});
+    setLoading(true);
     if (thumbnailImg) {
       publicUrl.current = await uploadImage(thumbnailImg);
     }
     let input;
     if (!isEditing) {
       input = {
-        courseName:courseName,
-        description:description,
-        thumbnail_image_path:publicUrl.current
+        courseName: courseName,
+        description: description,
+        thumbnail_image_path: publicUrl.current,
       };
       try {
         const res = await addNewCourse({ input });
-        toast.success(res.message)
+        toast.success(res.message);
         dispatch(
           addCourseFormControl({
             isAddCourseFormOpen: false,
             selectedCourse: null,
-          }),
+          })
         );
       } catch (err) {
         toast.error(err as string);
+      } finally {
+        setLoading(false);
       }
     } else {
-      try{
+      try {
         input = {
-          courseId:selectedCourse?.courseId,
-          courseName:courseName,
-          description:description,
-          thumbnail_image_path:publicUrl.current,
-          isActive:isActive,
+          courseId: selectedCourse?.courseId,
+          courseName: courseName,
+          description: description,
+          thumbnail_image_path: publicUrl.current,
+          isActive: isActive,
         };
         const res = await updateCourse({ input });
-        if(res?.message) toast.success(res?.message)
+        if (res?.message) toast.success(res?.message);
         dispatch(
           addCourseFormControl({
             isAddCourseFormOpen: false,
             selectedCourse: null,
-          }),
+          })
         );
-      }catch(err){
+      } catch (err) {
         toast.error(err as string);
+      } finally {
+        setLoading(false);
       }
     }
   }
   function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
     if (!e.target.files || e.target.files.length === 0) {
+      return;
+    }
+    const file = e.target.files[0];
+    if (!['jpg', 'jpeg', 'webp', 'png'].includes(file.name.split('.')[1].toLowerCase())) {
+      toast.error('Only Image files allowed');
       return;
     }
     setThumbnailImg(e.target.files[0]);
@@ -84,17 +112,17 @@ export default function CourseForm() {
     <Box
       sx={{
         width: 600,
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
         gap: 2,
         p: 3,
       }}
     >
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
           mb: 1,
         }}
       >
@@ -104,7 +132,7 @@ export default function CourseForm() {
             fontWeight: 600,
           }}
         >
-          {isEditing ? "Edit Course" : "Add Course"}
+          {isEditing ? 'Edit Course' : 'Add Course'}
         </Typography>
 
         <Button
@@ -113,12 +141,12 @@ export default function CourseForm() {
               addCourseFormControl({
                 isAddCourseFormOpen: false,
                 selectedCourse: null,
-              }),
+              })
             )
           }
           variant="outlined"
           sx={{
-            textTransform: "none",
+            textTransform: 'none',
           }}
         >
           Close
@@ -126,15 +154,20 @@ export default function CourseForm() {
       </Box>
       <Box
         sx={{
-          display: "flex",
-          flexDirection: "column",
+          display: 'flex',
+          flexDirection: 'column',
           gap: 2,
         }}
       >
         <TextField
           label="Course Name"
           value={courseName}
-          onChange={(e) => setCourseName(e.target.value)}
+          error={!!errors.courseName}
+          helperText={errors.courseName || `${courseName.trim().length}/50`}
+          onChange={(e) => {
+            setCourseName(e.target.value);
+            setErrors((prev) => ({ ...prev, courseName: '' }));
+          }}
           required
           fullWidth
         />
@@ -142,60 +175,72 @@ export default function CourseForm() {
         <TextField
           label="Description"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          error={!!errors.description}
+          helperText={errors.description || `${description.trim().length}/1000`}
+          onChange={(e) => {
+            setErrors((prev) => ({ ...prev, description: '' }));
+            setDescription(e.target.value);
+          }}
           required
           fullWidth
         />
 
-        {isEditing &&
+        {isEditing && (
           <FormControl fullWidth>
             <InputLabel id="status-label">Status</InputLabel>
 
             <Select
               labelId="status-label"
-              value={isActive ? "active" : "archived"}
+              value={isActive ? 'active' : 'archived'}
               label="Status"
               onChange={(e) => setIsActive(e.target.value === 'active')}
             >
-              <MenuItem key={'active'} value={"active"}>
+              <MenuItem key={'active'} value={'active'}>
                 Active
               </MenuItem>
-              <MenuItem key={'archived'} value={"archived"}>
+              <MenuItem key={'archived'} value={'archived'}>
                 Archive
               </MenuItem>
             </Select>
           </FormControl>
-        }
+        )}
 
         <Button
           variant="outlined"
           component="label"
+          color={existingImageFileName ? 'error' : 'primary'}
           sx={{
-            textTransform: "none",
-            justifyContent: "flex-start",
+            textTransform: 'none',
+            justifyContent: 'flex-start',
           }}
         >
-          Upload Image
-          <input
-            hidden
-            type="file"
-            name="profile_image_path"
-            onChange={handleImageChange}
-          />
+          {thumbnailImg
+            ? thumbnailImg.name
+            : isEditing && existingImageFileName
+              ? existingImageFileName
+              : 'Upload Course Thumbnail'}
+          <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
         </Button>
       </Box>
       <Button
         type="submit"
         variant="contained"
         size="large"
+        disabled={loading}
         onClick={handleSubmit}
         sx={{
-          textTransform: "none",
+          textTransform: 'none',
           fontSize: 15,
           fontWeight: 600,
         }}
       >
-        {isEditing ? "Confirm Edit" : "Submit"}
+        {loading ? (
+          <CircularProgress size={22} color="inherit" />
+        ) : isEditing ? (
+          'Confirm Edit'
+        ) : (
+          'Submit'
+        )}
       </Button>
     </Box>
   );

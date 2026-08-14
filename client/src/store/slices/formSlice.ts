@@ -1,34 +1,34 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { type FormInitialState } from "../../types/types";
+import { createSlice } from '@reduxjs/toolkit';
+import { type FormInitialState } from '../../types/types';
 
 const initialState: FormInitialState = {
   users: {
-    mode: "add",
+    mode: 'add',
     isUserAddFormOpen: false,
     selectedUser: null,
     createdUser: {
       didValueReceive: false,
-      email: "",
-      temp_password: "",
+      email: '',
+      temp_password: '',
     },
   },
   courses: {
-    mode: "add",
+    mode: 'add',
     isAddCourseFormOpen: false,
     selectedcourse: null,
   },
   lessons: {
-    mode: "add",
+    mode: 'add',
     isLessonFormOpen: false,
     selectedLesson: null,
   },
   quizzes: {
-    mode: "add",
+    mode: 'add',
     isQuizFormOpen: false,
     selectedQuiz: null,
   },
   questions: {
-    mode: "add",
+    mode: 'add',
     isQuestionFormOpen: false,
     quizId: null,
   },
@@ -39,7 +39,7 @@ const initialState: FormInitialState = {
 };
 
 const formSlice = createSlice({
-  name: "form",
+  name: 'form',
   initialState,
   reducers: {
     userAddFormControl(state, action) {

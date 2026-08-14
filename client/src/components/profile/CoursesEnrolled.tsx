@@ -7,8 +7,8 @@ import {
   TableHead,
   TableContainer,
   Chip,
-} from "@mui/material";
-import useFetchProfile from "../../hooks/useFetchProfile";
+} from '@mui/material';
+import useFetchProfile from '../../hooks/useFetchProfile';
 export default function CoursesEnrolled() {
   const { data: profile } = useFetchProfile();
   const enrollments = profile?.enrollments;
@@ -22,23 +22,28 @@ export default function CoursesEnrolled() {
             <TableRow>
               <TableCell sx={{ fontWeight: 700 }}>Courses</TableCell>
               <TableCell sx={{ fontWeight: 700 }}>Enrolled on</TableCell>
-              <TableCell sx={{ fontWeight: 700 }}>Enrollment Id</TableCell>
+
               <TableCell sx={{ fontWeight: 700 }}>Status</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {enrollments?.map((course) => (
               <TableRow key={course?.enrollmentId}>
-                <TableCell sx={{ fontWeight: 600 }}>
-                  {course?.course?.courseName}
+                <TableCell sx={{ fontWeight: 600 }}>{course?.course?.courseName}</TableCell>
+                <TableCell>
+                  {' '}
+                  {new Date(Number(course?.enrolledAt)).toLocaleDateString('en-IN', {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric',
+                  })}
                 </TableCell>
-                <TableCell>{course?.enrolledAt}</TableCell>
-                <TableCell>{course?.enrollmentId}</TableCell>
+
                 <TableCell>
                   <Chip
                     size="small"
-                    color={course?.isActive ? "success" : "default"}
-                    label={course?.isActive ? "Active" : "Completed"}
+                    color={course?.isActive ? 'success' : 'error'}
+                    label={course?.isActive ? 'Active' : 'Inactive'}
                   />
                 </TableCell>
               </TableRow>
