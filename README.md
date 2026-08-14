@@ -2,7 +2,6 @@
 
 A Learning Management System for schools and corporate training. Monorepo (`client`, `server`), GraphQL-only API, TypeORM over Supabase Postgres, RBAC enforced on both UI and resolvers. React + TypeScript front, Express + Apollo Server back.
 
-Live: https://learnsphere-client-pi.vercel.app
 
 ## Key concepts
 
