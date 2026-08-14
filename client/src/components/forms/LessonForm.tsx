@@ -13,7 +13,6 @@ export default function LessonForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = useParams();
   const selectedLesson = useAppSelector((state) => state.form.lessons.selectedLesson);
-  console.log('selected course', selectedLesson);
   const mode = useAppSelector((state) => state.form.lessons.mode);
   const publicUrl = useRef<string | null>(selectedLesson?.videoLink ?? null);
   const isEditing = mode === 'edit';

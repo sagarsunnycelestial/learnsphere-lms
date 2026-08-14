@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  // console.log(auth);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const navigate = useNavigate();

@@ -80,7 +80,8 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
     );
     await optionRepo.save([...optionEntities, correctAnswer]);
 
-    (optionRepo.save(correctAnswer), (question.correctOption = correctAnswer));
+    await optionRepo.save(correctAnswer);
+    question.correctOption = correctAnswer;
     await questionRepo.save(question);
     return { message: 'Question and options created successfully' };
   } catch (err) {

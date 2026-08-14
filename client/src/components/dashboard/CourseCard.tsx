@@ -80,7 +80,6 @@ export default function CourseCard({ course }: CourseCardProps) {
     const res = await enrollStudent({ input: { courseId: course.courseId } });
     if (res?.message) toast.success(res?.message);
   };
-  // console.log(course)
   if (!hasPermission(user, 'view:archived courses') && !course.isActive && !course.canModify)
     return null;
   return (

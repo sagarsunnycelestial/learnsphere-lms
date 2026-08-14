@@ -21,7 +21,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { userSchema } from '../../validation/userSchema';
 export default function AddUserForm() {
   const selectedUser = useAppSelector((state) => state.form.users.selectedUser);
-  console.log('selected user:', selectedUser);
   const mode = useAppSelector((state) => state.form.users.mode);
   const publicUrl = useRef<string | null>(null);
   const isEditing = mode === 'edit';

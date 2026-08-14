@@ -260,7 +260,11 @@ export default function SingleCoursePage() {
               {course.courseName}
             </Typography>
 
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2, overflowWrap:'anywhere',wordBreak:'break-word' }}>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ mt: 2, overflowWrap: 'anywhere', wordBreak: 'break-word' }}
+            >
               {course.description}
             </Typography>
 
@@ -282,7 +286,11 @@ export default function SingleCoursePage() {
               </Box>
             </Stack>
 
-            <Stack direction={{ xs: 'column', sm: 'row' }}spacing={2} sx={{ mt: 3, flexWrap: 'wrap' }}>
+            <Stack
+              direction={{ xs: 'column', sm: 'row' }}
+              spacing={2}
+              sx={{ mt: 3, flexWrap: 'wrap' }}
+            >
               <Chip label={`${course.totalLessons} Lessons`} />
 
               <Chip label={`${course.quizzes?.length} Quizzes`} />
@@ -338,11 +346,11 @@ export default function SingleCoursePage() {
                       </Box>
                     </Stack>
                     <Stack
-                     direction={{ xs: 'column', sm: 'row' }}
+                      direction={{ xs: 'column', sm: 'row' }}
                       spacing={1}
                       sx={{
                         flexWrap: 'wrap',
-                         alignItems: { xs: 'center', sm: 'flex-start' },
+                        alignItems: { xs: 'center', sm: 'flex-start' },
                       }}
                       useFlexGap
                     >
@@ -508,8 +516,8 @@ export default function SingleCoursePage() {
                         }}
                       >
                         <Chip
-                          color={student?.isActive ? 'success' : 'default'}
-                          label={student?.isActive ? 'Active' : 'Completed'}
+                          color={student?.isActive ? 'success' : 'error'}
+                          label={student?.isActive ? 'Active' : 'Inactive'}
                           size="small"
                         />
 
@@ -683,30 +691,31 @@ export default function SingleCoursePage() {
                             </Typography>
                           )}
 
-                          {lesson?.videoLink && (  <Box
-                            sx={{
-                              width: '100%',
-                              maxWidth: 700,
-                              mx: 'auto',
-                              overflow: 'hidden',
-                              borderRadius: 2,
-                              bgcolor: 'common.black',
-                              aspectRatio: '16 / 9',
-                            }}
-                          >
-                           <CardMedia
-                              component="video"
-                              controls
-                              muted
-                              src={`${lesson?.videoLink}`}
+                          {lesson?.videoLink && (
+                            <Box
                               sx={{
                                 width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
+                                maxWidth: 700,
+                                mx: 'auto',
+                                overflow: 'hidden',
+                                borderRadius: 2,
+                                bgcolor: 'common.black',
+                                aspectRatio: '16 / 9',
                               }}
-                            />
-                           
-                          </Box>)}
+                            >
+                              <CardMedia
+                                component="video"
+                                controls
+                                muted
+                                src={`${lesson?.videoLink}`}
+                                sx={{
+                                  width: '100%',
+                                  height: '100%',
+                                  objectFit: 'cover',
+                                }}
+                              />
+                            </Box>
+                          )}
                         </Box>
                       </Paper>
                     ))}

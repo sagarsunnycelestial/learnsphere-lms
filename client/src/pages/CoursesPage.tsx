@@ -153,8 +153,8 @@ export default function CoursesPage() {
           flexWrap: 'wrap',
           overflow: 'auto',
           gap: 3,
-        alignItems: 'flex-start',
-    justifyContent: { xs: 'center', sm: 'flex-start' },
+          alignItems: 'flex-start',
+          justifyContent: { xs: 'center', sm: 'flex-start' },
           mt: 3,
         }}
       >

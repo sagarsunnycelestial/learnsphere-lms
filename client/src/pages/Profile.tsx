@@ -21,7 +21,6 @@ export default function Profile() {
       userAddFormControl({ mode: 'edit', isUserAddFormOpen: true, selectedUser: selectedUser })
     );
   }
-  console.log(profile);
   if (isLoading) {
     return (
       <Box
@@ -47,7 +46,7 @@ export default function Profile() {
           },
           gap: { xs: 3, sm: 3, md: 5 },
           alignItems: 'flex-start',
-         justifyItems: { xs: 'center', sm: 'stretch' },
+          justifyItems: { xs: 'center', sm: 'stretch' },
           p: { xs: 1, sm: 2 },
           width: '100%',
           boxSizing: 'border-box',

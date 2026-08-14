@@ -54,11 +54,7 @@ export const resolvers = {
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
       return await fetchRolesfromDB();
     },
-    refreshEndpoint: async (
-      _parents: unknown,
-      _args: unknown,
-      { req, res }: { req: Request; res: Response }
-    ) => {
+    refreshEndpoint: async (_parents: unknown, _args: unknown, { req }: { req: Request }) => {
       const cookies = req.cookies;
       if (!cookies?.refresh_token)
         throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID, {

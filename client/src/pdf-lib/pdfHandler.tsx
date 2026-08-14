@@ -42,7 +42,7 @@ async function embedLogo(pdfDoc: PDFDocument, logoUrl: string) {
 async function downloadResultPDF(result: QuizResultResponse) {
   const pdfDoc = await PDFDocument.create();
   const timesRomanFont = await pdfDoc.embedFont(StandardFonts.TimesRoman);
-  const page = pdfDoc.addPage([842, 595]); // A4 landscape
+  const page = pdfDoc.addPage([842, 595]);
   const { height, width } = page.getSize();
   const fontSize = 12;
   const logoImage = await embedLogo(pdfDoc, LMSLogo);
@@ -67,7 +67,7 @@ async function downloadResultPDF(result: QuizResultResponse) {
         height: imgDims.height,
       });
     } catch {
-      console.log('failed to download profile image');
+      throw new Error('Failed to create pdf');
     }
   }
 

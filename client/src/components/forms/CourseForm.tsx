@@ -19,13 +19,12 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { courseSchema } from '../../validation/courseSchema';
 export default function CourseForm() {
   const selectedCourse = useAppSelector((state) => state.form.courses.selectedcourse);
-  console.log('selected course', selectedCourse);
   const mode = useAppSelector((state) => state.form.courses.mode);
   const publicUrl = useRef<string | null>(selectedCourse?.thumbnail_image_path ?? null);
   const isEditing = mode === 'edit';
   const [courseName, setCourseName] = useState(selectedCourse?.courseName ?? '');
   const [thumbnailImg, setThumbnailImg] = useState<File | null>(null);
-    const existingImageFileName = selectedCourse?.thumbnail_image_path
+  const existingImageFileName = selectedCourse?.thumbnail_image_path
     ? decodeURIComponent(selectedCourse.thumbnail_image_path.split('/').pop()?.split('?')[0] || '')
     : '';
   const [description, setDescription] = useState(selectedCourse?.description ?? '');
@@ -36,7 +35,6 @@ export default function CourseForm() {
   const { addNewCourse, updateCourse } = useCoursesCRUD();
   async function handleSubmit() {
     const result = courseSchema.safeParse({ courseName, description });
-    console.log(result);
     if (!result.success) {
       const fieldErrors: {
         courseName?: string;
@@ -46,8 +44,6 @@ export default function CourseForm() {
         const field = issue.path[0] as 'courseName' | 'description';
         fieldErrors[field] = issue.message;
       });
-
-      console.log(fieldErrors);
       setErrors(fieldErrors);
       return;
     }
@@ -212,14 +208,17 @@ export default function CourseForm() {
         <Button
           variant="outlined"
           component="label"
-          color={existingImageFileName ? 'error': 'primary'}
+          color={existingImageFileName ? 'error' : 'primary'}
           sx={{
             textTransform: 'none',
             justifyContent: 'flex-start',
           }}
         >
-         
-          {thumbnailImg ? thumbnailImg.name : isEditing && existingImageFileName ? existingImageFileName :'Upload Course Thumbnail'}
+          {thumbnailImg
+            ? thumbnailImg.name
+            : isEditing && existingImageFileName
+              ? existingImageFileName
+              : 'Upload Course Thumbnail'}
           <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
         </Button>
       </Box>

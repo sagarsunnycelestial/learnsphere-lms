@@ -9,12 +9,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
-try {
-  await transporter.verify();
-  console.log('Zoho SMTP is ready');
-} catch (error) {
-  console.error('Zoho SMTP authentication failed:', error);
-}
 export async function sendWelcomeEmail(email: string, username: string, tempPassword: string) {
   await transporter.sendMail({
     from: process.env.SMTP_FROM,

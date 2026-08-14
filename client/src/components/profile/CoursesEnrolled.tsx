@@ -42,8 +42,8 @@ export default function CoursesEnrolled() {
                 <TableCell>
                   <Chip
                     size="small"
-                    color={course?.isActive ? 'success' : 'default'}
-                    label={course?.isActive ? 'Active' : 'Completed'}
+                    color={course?.isActive ? 'success' : 'error'}
+                    label={course?.isActive ? 'Active' : 'Inactive'}
                   />
                 </TableCell>
               </TableRow>

@@ -58,22 +58,7 @@ export default function QuizForm() {
       } finally {
         setIsSubmitting(false);
       }
-    } else {
-      // try {
-      //   const input = {
-      //     quizId: selectedQuiz?.quizId,
-      //     courseId: selectedQuiz?.courseId || "",
-      //     quizName,
-      //   };
-      //   const res = await updateQuiz({ input });
-      //   if (res?.message) toast.success(res.message);
-      //   dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }));
-      // } catch (err) {
-      //   toast.error(err as string);
-      // } finally {
-      //   setIsSubmitting(false);
-      // }
-    }
+    } else return;
   }
 
   return (

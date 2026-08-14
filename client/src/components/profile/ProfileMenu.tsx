@@ -68,7 +68,6 @@ export default function ProfileMenu({ profile_image }: ProfileMenuProps) {
     if (res?.logout?.message) {
       toast.success(res.logout.message);
     }
-    console.log('logout');
     dispatch(logout());
     queryClient.clear();
     navigate('/login');

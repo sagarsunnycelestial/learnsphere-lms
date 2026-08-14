@@ -5,7 +5,6 @@ async function fetchRolesfromDB() {
   try {
     const roles = await rolesRepo.find();
     if (!roles) throw new GraphQLError(ERROR_MESSAGES.ROLE_NOT_FOUND);
-    // console.log(roles)
     return roles;
   } catch (err) {
     throw new GraphQLError(err as string);
