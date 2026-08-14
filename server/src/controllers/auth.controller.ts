@@ -63,7 +63,10 @@ const loginUser = async (args: LoginArgs, res: Response) => {
       }
     }
   } catch (err) {
-    return err;
+    if (err instanceof GraphQLError) {
+          throw err;
+        }
+        throw new GraphQLError(ERROR_MESSAGES.LOGIN_FAILED);
   }
 };
 const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
@@ -122,7 +125,7 @@ const registerUserInDB = async (args: RegisterArgs, user: AuthPayload) => {
   } catch (error) {
     throw new GraphQLError(
       `${ERROR_MESSAGES.FAILED_TO_CREATE_USER} ${
-        error instanceof Error ? error.message : String(error)
+        error instanceof GraphQLError ? error.message : String(error)
       }`
     );
   }
