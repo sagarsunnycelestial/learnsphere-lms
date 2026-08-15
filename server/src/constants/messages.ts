@@ -30,4 +30,8 @@ export const ERROR_MESSAGES = {
   REFRESH_TOKEN_INVALID: 'Refresh token is invalid',
   FAILED_TO_UNENROLL_USER: 'Failed to unenroll the learner',
   LOGIN_FAILED:'Login failed, try again',
+  LOGOUT_FAILED: 'Logout failed, try again',
+  FAILED_TO_EDIT_LESSON: 'Failed to edit lesson, try again',
+   FAILED_TO_DELETE_LESSON: 'Failed to delete lesson, try again',
+   FAILED_TO_UPDATE_USER: 'Failed to update user details, try again',
 } as const;

@@ -3,13 +3,13 @@ import { GraphQLError } from 'graphql';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import { Context } from '../../types/types.js';
 import { lessonRepo, courseRepo } from '../entities/repos.js';
-async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
+import { withErrorHandling } from '../utils/withErrorHandling.js';
+async function addLessonToCourseRaw(args: LessonUpdateArgs, context: Context) {
   const { lessonName, description, videoLink, courseId } = args.input;
   if (!courseId || !lessonName) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
 
   let course;
 
-  try {
     if (context.user?.role === UserRoles.ADMIN) {
       course = await courseRepo.findOne({
         where: {
@@ -43,19 +43,11 @@ async function addLessonToCourse(args: LessonUpdateArgs, context: Context) {
     });
     await lessonRepo.save(newLesson);
     return { message: `Lesson for ${course.courseName}. created successfully` };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-
-    throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
-  }
 }
 
-async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
+async function editLessonInCourseRaw(args: LessonUpdateArgs, context: Context) {
   const { lessonName, lessonId, description, videoLink, courseId } = args.input;
   if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
-  try {
     if (!context.user) {
       throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
     }
@@ -84,18 +76,10 @@ async function editLessonInCourse(args: LessonUpdateArgs, context: Context) {
     return {
       message: `Lesson ${updatingLesson.lessonName}. updated successfully`,
     };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-
-    throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
-  }
 }
-async function deleteLessonInCourse(args: DeleteLessonArgs, context: Context) {
+async function deleteLessonInCourseRaw(args: DeleteLessonArgs, context: Context) {
   const { lessonId, courseId } = args.input;
   if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
-  try {
     if (!context.user) {
       throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
     }
@@ -117,13 +101,10 @@ async function deleteLessonInCourse(args: DeleteLessonArgs, context: Context) {
     return {
       message: `Lesson ${deletingLesson.lessonName}. deleted successfully`,
     };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-
-    throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
-  }
 }
 
-export { addLessonToCourse, editLessonInCourse, deleteLessonInCourse };
+export const addLessonToCourse = withErrorHandling(addLessonToCourseRaw,ERROR_MESSAGES.LESSON_NOT_CREATED)
+export const editLessonInCourse = withErrorHandling(editLessonInCourseRaw,ERROR_MESSAGES.FAILED_TO_EDIT_LESSON)
+
+export const deleteLessonInCourse = withErrorHandling(deleteLessonInCourseRaw,ERROR_MESSAGES.FAILED_TO_DELETE_LESSON)
+     

@@ -3,8 +3,8 @@ import { AuthPayload, UpdateArgs } from '../../types/types.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import bcrypt from 'bcrypt';
 import { userRepo } from '../entities/repos.js';
-async function updateUserDetails(args: UpdateArgs, user: AuthPayload) {
-  try {
+import { withErrorHandling } from '../utils/withErrorHandling.js';
+async function updateUserDetailsRaw(args: UpdateArgs, user: AuthPayload) {
     const { username, email, password, profile_image_path, collegeName } = args.input;
     const updateUser = await userRepo.findOne({
       where: {
@@ -44,12 +44,9 @@ async function updateUserDetails(args: UpdateArgs, user: AuthPayload) {
     await userRepo.save(updateUser);
 
     return { message: `${updateUser.username} details has been updated` };
-  } catch (err) {
-    return { message: err };
-  }
 }
 
-async function fetchUserProfile(userId: string) {
+async function fetchUserProfileRaw(userId: string) {
   const userProfile = userRepo.findOne({
     where: {
       userId: userId,
@@ -68,4 +65,5 @@ async function fetchUserProfile(userId: string) {
   return userProfile;
 }
 
-export { updateUserDetails, fetchUserProfile };
+export const updateUserDetails = withErrorHandling(updateUserDetailsRaw,ERROR_MESSAGES.FAILED_TO_UPDATE_USER)
+export const fetchUserProfile = withErrorHandling(fetchUserProfileRaw,ERROR_MESSAGES.USER_NOT_FOUND)

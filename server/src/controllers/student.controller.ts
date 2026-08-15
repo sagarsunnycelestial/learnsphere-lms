@@ -2,9 +2,9 @@ import { GraphQLError } from 'graphql';
 import { UserRoles } from '../../types/types.js';
 import { userRepo } from '../entities/repos.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
+import { withErrorHandling } from '../utils/withErrorHandling.js';
 
-async function fetchStudentDetails(args: { courseId?: string }) {
-  try {
+async function fetchStudentDetailsRaw(args: { courseId?: string }) {
     const students = await userRepo.find({
       where: {
         role: {
@@ -29,11 +29,5 @@ async function fetchStudentDetails(args: { courseId?: string }) {
       return { ...student, isEnrolled: isEnrolled };
     });
     return filteredStudents;
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.STUDENTS_NOT_FOUND);
-  }
 }
-export { fetchStudentDetails };
+export const fetchStudentDetails = withErrorHandling(fetchStudentDetailsRaw,ERROR_MESSAGES.STUDENTS_NOT_FOUND)

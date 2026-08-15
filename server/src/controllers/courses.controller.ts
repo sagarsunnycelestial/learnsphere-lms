@@ -8,38 +8,28 @@ import {
 } from '../../types/types.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import { userRepo, courseRepo, enrollmentRepo } from '../entities/repos.js';
+import { withErrorHandling } from '../utils/withErrorHandling.js';
 
-async function createACourse(args: CourseUpdateArgs, context: Context) {
+async function createACourseRaw(args: CourseUpdateArgs, context: Context) {
   const { courseName, description, thumbnail_image_path } = args.input;
-  if (context.user?.user_id) {
-    const creatingUser = await userRepo.findOne({
-      where: {
-        userId: context.user?.user_id,
-      },
-      relations: {
-        courses: true,
-      },
-    });
+  if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
-    if (!creatingUser) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
+  const creatingUser = await userRepo.findOne({
+    where: { userId: context.user.user_id },
+    relations: { courses: true },
+  });
+  if (!creatingUser) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
 
-    try {
-      const newCourse = courseRepo.create({
-        courseName: courseName,
-        description: description,
-        createdBy: creatingUser,
-        thumbnail_image_path: thumbnail_image_path,
-      });
-      if (!newCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_CREATE_COURSE);
-      await courseRepo.save(newCourse);
-      return { message: 'Course created successfully' };
-    } catch {
-      throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_CREATE_COURSE);
-    }
-  }
+  const newCourse = courseRepo.create({
+    courseName,
+    description,
+    createdBy: creatingUser,
+    thumbnail_image_path,
+  });
+  await courseRepo.save(newCourse);
+  return { message: 'Course created successfully' };
 }
-async function fetchAllCourses(filter: { status?: string }, userId: string, userRole: string) {
-  try {
+async function fetchAllCoursesRaw(filter: { status?: string }, userId: string, userRole: string) {
     const courses = await courseRepo.find({
       order: {
         isActive: 'DESC',
@@ -86,18 +76,11 @@ async function fetchAllCourses(filter: { status?: string }, userId: string, user
       });
 
     return filteredCourses;
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
 
-    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
-  }
 }
 
-async function editCourseDetails(args: CourseUpdateArgs,context:Context) {
+async function editCourseDetailsRaw(args: CourseUpdateArgs,context:Context) {
   const { courseName, courseId, description, thumbnail_image_path, isActive } = args.input;
-  try {
     if (!courseId || !context.user) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
 
     const updatedCourse = await courseRepo.findOne({
@@ -125,16 +108,9 @@ async function editCourseDetails(args: CourseUpdateArgs,context:Context) {
 
     await courseRepo.save(updatedCourse);
     return { message: 'Course edited successfully' };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
-  }
 }
 
-async function deleteCourseFromDB(courseId: string,context:Context) {
-  try {
+async function deleteCourseFromDBRaw(courseId: string,context:Context) {
     if (!courseId || !context.user) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
     const deletedCourse = await courseRepo.findOne({
       where: {
@@ -147,15 +123,8 @@ async function deleteCourseFromDB(courseId: string,context:Context) {
     if (!deletedCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_DELETE_COURSE);
     await courseRepo.remove(deletedCourse);
     return { message: 'Course deleted successfully' };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
-  }
 }
-async function fetchASingleCourse(courseId: string, user: AuthPayload) {
-  try {
+async function fetchASingleCourseRaw(courseId: string, user: AuthPayload) {
     const course = await courseRepo.findOne({
       where: {
         courseId: courseId,
@@ -206,18 +175,11 @@ async function fetchASingleCourse(courseId: string, user: AuthPayload) {
       canModify: false,
       isEnrolled: true,
     };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
-  }
 }
-async function enrollAStudent(args: EnrollCourseArgs, context: Context) {
+async function enrollAStudentRaw(args: EnrollCourseArgs, context: Context) {
   const userId = args.input.userId ?? context.user?.user_id;
   const courseId = args.input.courseId;
 
-  try {
     if (!userId || !courseId) {
       throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER);
     }
@@ -273,20 +235,12 @@ async function enrollAStudent(args: EnrollCourseArgs, context: Context) {
     return {
       message: `${enrollingUser.username} enrolled successfully`,
     };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-
-    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_ENROLL_USER);
-  }
 }
 
-async function unEnrollFromCourse(args: EnrollCourseArgs, context: Context) {
+async function unEnrollFromCourseRaw(args: EnrollCourseArgs, context: Context) {
   const userId = args.input.userId ?? context.user?.user_id;
   const courseId = args.input.courseId;
 
-  try {
     if (!userId || !courseId) {
       throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_UNENROLL_USER);
     }
@@ -317,21 +271,13 @@ async function unEnrollFromCourse(args: EnrollCourseArgs, context: Context) {
     return {
       message: `${existingEnrollment.user.username} unenrolled successfully`,
     };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-
-    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_UNENROLL_USER);
-  }
 }
 
-export {
-  createACourse,
-  fetchAllCourses,
-  editCourseDetails,
-  deleteCourseFromDB,
-  fetchASingleCourse,
-  enrollAStudent,
-  unEnrollFromCourse,
-};
+
+  export const createACourse = withErrorHandling(createACourseRaw,ERROR_MESSAGES.FAILED_TO_CREATE_COURSE)
+  export const fetchAllCourses = withErrorHandling(fetchAllCoursesRaw,ERROR_MESSAGES.FAILED_TO_FETCH_COURSES)
+  export const editCourseDetails = withErrorHandling(editCourseDetailsRaw,ERROR_MESSAGES.FAILED_TO_EDIT_COURSE)
+  export const deleteCourseFromDB = withErrorHandling(deleteCourseFromDBRaw,ERROR_MESSAGES.FAILED_TO_DELETE_COURSE)
+  export const fetchASingleCourse = withErrorHandling(fetchASingleCourseRaw,ERROR_MESSAGES.FAILED_TO_FETCH_COURSES)
+  export const enrollAStudent = withErrorHandling(enrollAStudentRaw, ERROR_MESSAGES.FAILED_TO_ENROLL_USER)
+  export const unEnrollFromCourse = withErrorHandling(unEnrollFromCourseRaw,ERROR_MESSAGES.FAILED_TO_UNENROLL_USER)

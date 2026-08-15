@@ -10,8 +10,9 @@ import {
   optionRepo,
 } from '../entities/repos.js';
 import { ERROR_MESSAGES } from '../constants/messages.js';
+import { withErrorHandling } from '../utils/withErrorHandling.js';
 
-async function createAQuizForCourse(
+async function createAQuizForCourseRaw(
   args: {
     input: {
       courseId: string;
@@ -22,7 +23,6 @@ async function createAQuizForCourse(
 ) {
   if (!context.user?.user_id || !args.input.courseId)
     throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
-  try {
     const course = await courseRepo.findOne({
       where: {
         courseId: args.input.courseId,
@@ -39,18 +39,11 @@ async function createAQuizForCourse(
     });
     await quizRepo.save(newQuiz);
     return { message: 'Quiz created successfully' };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_CREATED);
-  }
 }
-async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
+async function createAQuestionForQuizRaw(args: QuestionArgs, context: Context) {
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
   const { options, correctOption, questionText } = args.input;
-  try {
     if (!questionText || !correctOption)
       throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
 
@@ -84,19 +77,12 @@ async function createAQuestionForQuiz(args: QuestionArgs, context: Context) {
     question.correctOption = correctAnswer;
     await questionRepo.save(question);
     return { message: 'Question and options created successfully' };
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
-  }
 }
 
-async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
+async function submitQuizAnswersRaw(args: SubmitQuizArgs, context: Context) {
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
 
-  try {
     const user = await userRepo.findOne({
       where: {
         userId: context.user.user_id,
@@ -176,17 +162,10 @@ async function submitQuizAnswers(args: SubmitQuizArgs, context: Context) {
       };
     }
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_SUBMIT_FAILED);
-  } catch (err) {
-    if (err instanceof GraphQLError) {
-      throw err;
-    }
-    throw new GraphQLError(ERROR_MESSAGES.QUIZ_SUBMIT_FAILED);
-  }
 }
 
-async function deleteQuizWithID(quizId: string, context: Context) {
+async function deleteQuizWithIDRaw(quizId: string, context: Context) {
   let quizToDelete = null;
-  try {
     if (context.user) {
       quizToDelete = await quizRepo.findOne({
         where: {
@@ -205,14 +184,9 @@ async function deleteQuizWithID(quizId: string, context: Context) {
 
     await quizRepo.remove(quizToDelete);
     return { message: 'Quiz deleted successfully' };
-  } catch (err) {
-    if (err instanceof GraphQLError) throw err;
-    throw new GraphQLError(ERROR_MESSAGES.QUIZ_NOT_DELETE);
-  }
 }
 
-async function deleteQuestionWithID(input: { questionId: string; quizId: string; userId: string }) {
-  try {
+async function deleteQuestionWithIDRaw(input: { questionId: string; quizId: string; userId: string }) {
     const questionToDelete = await questionRepo.findOne({
       where: {
         questionId: input.questionId,
@@ -227,15 +201,11 @@ async function deleteQuestionWithID(input: { questionId: string; quizId: string;
     return {
       message: 'Question deleted successfully',
     };
-  } catch (err) {
-    if (err instanceof GraphQLError) throw err;
-    throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
-  }
 }
-export {
-  createAQuizForCourse,
-  createAQuestionForQuiz,
-  submitQuizAnswers,
-  deleteQuizWithID,
-  deleteQuestionWithID,
-};
+
+export const createAQuizForCourse = withErrorHandling(createAQuizForCourseRaw,ERROR_MESSAGES.QUIZ_NOT_CREATED)
+export const createAQuestionForQuiz = withErrorHandling(createAQuestionForQuizRaw,ERROR_MESSAGES.QUESTION_NOT_CREATED)
+export const submitQuizAnswers = withErrorHandling(submitQuizAnswersRaw,ERROR_MESSAGES.QUIZ_SUBMIT_FAILED)
+export const deleteQuizWithID = withErrorHandling(deleteQuizWithIDRaw,ERROR_MESSAGES.QUIZ_NOT_DELETE)
+export const deleteQuestionWithID = withErrorHandling(deleteQuestionWithIDRaw,ERROR_MESSAGES.QUESTION_NOT_DELETE)
+
