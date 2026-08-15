@@ -95,14 +95,17 @@ async function fetchAllCourses(filter: { status?: string }, userId: string, user
   }
 }
 
-async function editCourseDetails(args: CourseUpdateArgs) {
+async function editCourseDetails(args: CourseUpdateArgs,context:Context) {
   const { courseName, courseId, description, thumbnail_image_path, isActive } = args.input;
   try {
-    if (!courseId) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
+    if (!courseId || !context.user) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
 
     const updatedCourse = await courseRepo.findOne({
       where: {
         courseId: courseId,
+         ...(context.user.role !== UserRoles.ADMIN
+            ? { createdBy: { userId: context.user.user_id } }
+            : {}),
       },
     });
     if (!updatedCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_EDIT_COURSE);
@@ -130,11 +133,15 @@ async function editCourseDetails(args: CourseUpdateArgs) {
   }
 }
 
-async function deleteCourseFromDB(courseId: string) {
+async function deleteCourseFromDB(courseId: string,context:Context) {
   try {
+    if (!courseId || !context.user) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
     const deletedCourse = await courseRepo.findOne({
       where: {
         courseId: courseId,
+         ...(context.user.role !== UserRoles.ADMIN
+            ? { createdBy: { userId: context.user.user_id } }
+            : {}),
       },
     });
     if (!deletedCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_DELETE_COURSE);

@@ -130,7 +130,7 @@ export const resolvers = {
       )
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
-      return await editCourseDetails(args);
+      return await editCourseDetails(args,context);
     },
     deleteCourse: async (_parents: unknown, args: { courseId: string }, context: Context) => {
       if (
@@ -138,7 +138,7 @@ export const resolvers = {
         (context.user?.role !== UserRoles.INSTRUCTOR && context.user?.role !== UserRoles.ADMIN)
       )
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
-      return await deleteCourseFromDB(args.courseId);
+      return await deleteCourseFromDB(args.courseId,context);
     },
     enrollCourse: async (_parents: unknown, args: EnrollCourseArgs, context: Context) => {
       if (context.user?.role === UserRoles.INSTRUCTOR)

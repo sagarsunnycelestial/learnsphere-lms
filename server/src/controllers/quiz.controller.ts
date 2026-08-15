@@ -191,9 +191,12 @@ async function deleteQuizWithID(quizId: string, context: Context) {
       quizToDelete = await quizRepo.findOne({
         where: {
           quizId: quizId,
+          course:{
           ...(context.user.role !== UserRoles.ADMIN
             ? { createdBy: { userId: context.user.user_id } }
             : {}),
+          }
+         
         },
       });
     }
