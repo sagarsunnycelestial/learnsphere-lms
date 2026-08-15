@@ -6,10 +6,11 @@ export const corsOptions: CorsOptions = {
     if (allowedOrigins.includes(origin as string) || !origin) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowd by CORS'));
+      callback(new Error('Not allowed by CORS'));
     }
   },
-  allowedHeaders:['POST','GET','OPTIONS'],
+  methods:['POST','GET','OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials:true,
   optionsSuccessStatus:204,
   maxAge:86400,

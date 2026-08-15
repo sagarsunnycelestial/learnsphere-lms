@@ -152,6 +152,7 @@ async function fetchUserByRefreshTokenRaw(refreshToken: string) {
           role: user.role.roleName,
           profile_image_path: user.profile_image_path,
         };
+        
   }
 
 async function removeRefreshTokenRaw(userId: string) {
