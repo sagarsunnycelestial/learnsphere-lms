@@ -37,10 +37,8 @@ describe('Auth', () => {
     };
 
     (userRepo.findOne as any).mockResolvedValue(user);
-    (rolesRepo.findOne as any)
-      .mockResolvedValue('STUDENT');
-      (bcrypt.compare as any)
-      .mockResolvedValue(true);
+    (rolesRepo.findOne as any).mockResolvedValue('STUDENT');
+    (bcrypt.compare as any).mockResolvedValue(true);
     (jwt.sign as any).mockReturnValue('access-token');
 
     const res = {
@@ -60,55 +58,60 @@ describe('Auth', () => {
     expect(result.role).toBe('STUDENT');
   });
 
-
   it('should not login when user does not exist', async () => {
-  (userRepo.findOne as any).mockResolvedValue(null);
+    (userRepo.findOne as any).mockResolvedValue(null);
 
-  const res = {
-    cookie: jest.fn(),
-  } as any;
+    const res = {
+      cookie: jest.fn(),
+    } as any;
 
-  await expect(
-    loginUser(
-      {
-        input: {
-          email: '',
-          password: '',
-        } as any,
+    await expect(
+      loginUser(
+        {
+          input: {
+            email: '',
+            password: '',
+          } as any,
+        },
+        res
+      )
+    ).rejects.toThrow();
+
+    expect(jwt.sign).not.toHaveBeenCalled();
+    expect(res.cookie).not.toHaveBeenCalled();
+  });
+  it('should not login with wrong password', async () => {
+    const user = {
+      userId: '1',
+      email: 'test@gmail.com',
+      passwordHash: 'hashed-password',
+      isActive: true,
+      role: {
+        roleName: 'STUDENT',
       },
-      res
-    )
-  ).rejects.toThrow();
+      profile_image_path: '/image.jpg',
+    };
 
-  expect(jwt.sign).not.toHaveBeenCalled();
-  expect(res.cookie).not.toHaveBeenCalled();
-});
-it('should not login with wrong password',async()=>{
- const user = {
-    userId: '1',
-    email: 'test@gmail.com',
-    passwordHash: 'hashed-password',
-    isActive: true,
-    role: {
-      roleName: 'STUDENT',
-    },
-    profile_image_path: '/image.jpg',
-  };
+    (userRepo.findOne as any).mockResolvedValue(user);
+    (bcrypt.compare as any).mockResolvedValue(false);
 
-  (userRepo.findOne as any).mockResolvedValue(user);
- (bcrypt.compare as any).mockResolvedValue(false);
+    const res = {
+      cookie: jest.fn(),
+    } as any;
 
-  const res = {
-    cookie: jest.fn(),
-  } as any;
+    await expect(
+      loginUser(
+        {
+          input: {
+            email: 'test@gmail.com',
+            password: 'wrong-password',
+          },
+        },
+        res
+      )
+    ).rejects.toThrow(ERROR_MESSAGES.PASSWORD_NOT_MATCHING);
 
-   await expect(loginUser({input:{
-    email:'test@gmail.com',
-    password:'wrong-password'
-   }},res)).rejects.toThrow(ERROR_MESSAGES.PASSWORD_NOT_MATCHING);
-
-   expect(jwt.sign).not.toHaveBeenCalled()
-   expect(res.cookie).not.toHaveBeenCalled();
-
-})
+    expect(jwt.sign).not.toHaveBeenCalled();
+    expect(res.cookie).not.toHaveBeenCalled();
+  });
 });
