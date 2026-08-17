@@ -9,7 +9,11 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
-export async function sendWelcomeEmail(email: string, username: string, tempPassword: string) {
+export async function sendWelcomeEmail(
+  email: string,
+  username: string,
+  tempPassword: string
+) {
   await transporter.sendMail({
     from: process.env.SMTP_FROM,
     to: email,

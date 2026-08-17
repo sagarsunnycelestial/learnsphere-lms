@@ -1,9 +1,15 @@
 import { Context } from '../../types/types.js';
 import { logger } from './logger.js';
-import type { ApolloServerPlugin, GraphQLRequestListener } from '@apollo/server';
+import type {
+  ApolloServerPlugin,
+  GraphQLRequestListener,
+} from '@apollo/server';
 
 export const ApolloLogginPlugin: ApolloServerPlugin = {
-  async requestDidStart({ request, contextValue }): Promise<GraphQLRequestListener<Context>> {
+  async requestDidStart({
+    request,
+    contextValue,
+  }): Promise<GraphQLRequestListener<Context>> {
     const startTime = Date.now();
     const operationName = request.operationName ?? 'anonymous';
 

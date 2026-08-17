@@ -1,4 +1,10 @@
-import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { lessonFormControl } from '../../store/slices/formSlice';
 
 import { useRef, useState } from 'react';
@@ -12,18 +18,29 @@ import { lessonSchema } from '../../validation/lessonSchema';
 export default function LessonForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = useParams();
-  const selectedLesson = useAppSelector((state) => state.form.lessons.selectedLesson);
+  const selectedLesson = useAppSelector(
+    (state) => state.form.lessons.selectedLesson
+  );
   const mode = useAppSelector((state) => state.form.lessons.mode);
   const publicUrl = useRef<string | null>(selectedLesson?.videoLink ?? null);
   const isEditing = mode === 'edit';
   const courseId = selectedLesson?.courseId ?? id;
-  const [errors, setErrors] = useState<{ lessonName?: string; description?: string }>({});
-  const [lessonName, setLessonName] = useState(selectedLesson?.lessonName ?? '');
+  const [errors, setErrors] = useState<{
+    lessonName?: string;
+    description?: string;
+  }>({});
+  const [lessonName, setLessonName] = useState(
+    selectedLesson?.lessonName ?? ''
+  );
   const existingVideoFileName = selectedLesson?.videoLink
-    ? decodeURIComponent(selectedLesson.videoLink.split('/').pop()?.split('?')[0] || '')
+    ? decodeURIComponent(
+        selectedLesson.videoLink.split('/').pop()?.split('?')[0] || ''
+      )
     : '';
   const [videoFile, setVideoFile] = useState<File | null>(null);
-  const [description, setDescription] = useState(selectedLesson?.description ?? '');
+  const [description, setDescription] = useState(
+    selectedLesson?.description ?? ''
+  );
   const dispatch = useAppDispatch();
   const { addNewLesson, updateLesson } = useLessonsCRUD();
 
@@ -193,7 +210,12 @@ export default function LessonForm() {
             : isEditing && existingVideoFileName
               ? existingVideoFileName
               : 'Upload Lesson Video'}
-          <input hidden type="file" name="videoLink" onChange={handleVideoChange} />
+          <input
+            hidden
+            type="file"
+            name="videoLink"
+            onChange={handleVideoChange}
+          />
         </Button>
       </Box>
       <Button

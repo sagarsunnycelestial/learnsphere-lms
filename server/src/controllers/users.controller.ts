@@ -5,7 +5,8 @@ import bcrypt from 'bcrypt';
 import { userRepo } from '../entities/repos.js';
 import { withErrorHandling } from '../utils/withErrorHandling.js';
 async function updateUserDetailsRaw(args: UpdateArgs, user: AuthPayload) {
-  const { username, email, password, profile_image_path, collegeName } = args.input;
+  const { username, email, password, profile_image_path, collegeName } =
+    args.input;
   const updateUser = await userRepo.findOne({
     where: {
       userId: user.user_id,
@@ -17,7 +18,9 @@ async function updateUserDetailsRaw(args: UpdateArgs, user: AuthPayload) {
 
   if (password) {
     const isStrongPassword =
-      password.length >= 4 && password.trim() === password && password.trim().length > 0;
+      password.length >= 4 &&
+      password.trim() === password &&
+      password.trim().length > 0;
 
     if (!isStrongPassword) {
       throw new GraphQLError(ERROR_MESSAGES.PASSWORD_NOT_VALID);

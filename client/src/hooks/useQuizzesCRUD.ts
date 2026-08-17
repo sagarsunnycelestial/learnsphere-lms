@@ -111,5 +111,11 @@ export default function useQuizzesRUD() {
       toast.error('Deleting Question failed');
     },
   });
-  return { createAQuestion, addNewQuiz, submitQuizAnswers, deleteQuiz, deleteQuestion };
+  return {
+    createAQuestion,
+    addNewQuiz,
+    submitQuizAnswers,
+    deleteQuiz,
+    deleteQuestion,
+  };
 }

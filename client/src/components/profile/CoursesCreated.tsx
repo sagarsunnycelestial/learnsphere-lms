@@ -28,7 +28,9 @@ export default function CoursesCreated() {
           <TableBody>
             {courses?.map((course) => (
               <TableRow key={course?.courseId}>
-                <TableCell sx={{ fontWeight: 600 }}>{course?.courseName}</TableCell>
+                <TableCell sx={{ fontWeight: 600 }}>
+                  {course?.courseName}
+                </TableCell>
 
                 <TableCell>
                   <Chip

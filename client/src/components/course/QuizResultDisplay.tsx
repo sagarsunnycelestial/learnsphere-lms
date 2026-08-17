@@ -1,4 +1,12 @@
-import { Box, Typography, Divider, Chip, Avatar, Stack, Button } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Divider,
+  Chip,
+  Avatar,
+  Stack,
+  Button,
+} from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../../store/hooks';
 import { resultDisplay } from '../../store/slices/formSlice';
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
@@ -42,7 +50,9 @@ export default function QuizResultDisplay() {
             height: 40,
             width: 50,
           }}
-          onClick={() => dispatch(resultDisplay({ submitted: false, quizResult: null }))}
+          onClick={() =>
+            dispatch(resultDisplay({ submitted: false, quizResult: null }))
+          }
         >
           close
         </Button>
@@ -61,7 +71,11 @@ export default function QuizResultDisplay() {
         />
         {quizResult.courseDetail?.isActive != null && (
           <Chip
-            label={quizResult.courseDetail.isActive ? 'Course Active' : 'Course Archived'}
+            label={
+              quizResult.courseDetail.isActive
+                ? 'Course Active'
+                : 'Course Archived'
+            }
             color={quizResult.courseDetail.isActive ? 'success' : 'default'}
             size="small"
           />

@@ -32,7 +32,9 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import useFetchStudents from '../../hooks/useFetchStudents';
 import useUserCRUD from '../../hooks/useUserCRUD';
 import { toast } from 'react-toastify';
-type Course = NonNullable<NonNullable<FetchCoursesQuery['fetchCourses']>[number]>;
+type Course = NonNullable<
+  NonNullable<FetchCoursesQuery['fetchCourses']>[number]
+>;
 type CourseCardProps = {
   course: Course;
 };
@@ -65,13 +67,19 @@ export default function CourseCard({ course }: CourseCardProps) {
   };
   const handleEdit = () => {
     dispatch(
-      addCourseFormControl({ mode: 'edit', isAddCourseFormOpen: true, selectedcourse: course })
+      addCourseFormControl({
+        mode: 'edit',
+        isAddCourseFormOpen: true,
+        selectedcourse: course,
+      })
     );
     setAnchorEl(null);
   };
   const handleManualEnroll = async (enrollUserId: string) => {
     if (!course.courseId) return;
-    const res = await enrollStudent({ input: { userId: enrollUserId, courseId: course.courseId } });
+    const res = await enrollStudent({
+      input: { userId: enrollUserId, courseId: course.courseId },
+    });
     if (res?.message) toast.success(res?.message);
     setEnrollBox(false);
   };
@@ -80,7 +88,11 @@ export default function CourseCard({ course }: CourseCardProps) {
     const res = await enrollStudent({ input: { courseId: course.courseId } });
     if (res?.message) toast.success(res?.message);
   };
-  if (!hasPermission(user, 'view:archived courses') && !course.isActive && !course.canModify)
+  if (
+    !hasPermission(user, 'view:archived courses') &&
+    !course.isActive &&
+    !course.canModify
+  )
     return null;
   return (
     <Paper
@@ -95,7 +107,10 @@ export default function CourseCard({ course }: CourseCardProps) {
       }}
     >
       {hasPermission(user, 'action:course') && (
-        <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', p: 1 }}>
+        <Stack
+          direction="row"
+          sx={{ justifyContent: 'space-between', alignItems: 'center', p: 1 }}
+        >
           <Chip
             label={course.isActive == true ? 'Active' : 'Archived'}
             sx={{
@@ -173,7 +188,13 @@ export default function CourseCard({ course }: CourseCardProps) {
             className="overlay"
           >
             <Button
-              sx={{ fontWeight: 600, fontSize: 14, color: 'white', width: '100%', height: '100%' }}
+              sx={{
+                fontWeight: 600,
+                fontSize: 14,
+                color: 'white',
+                width: '100%',
+                height: '100%',
+              }}
               onClick={() => navigate(`/dashboard/course/${course.courseId}`)}
             >
               Visit this course
@@ -184,7 +205,13 @@ export default function CourseCard({ course }: CourseCardProps) {
 
       <Stack
         spacing={1}
-        sx={{ px: 2, py: 1.5, minHeight: 0, display: 'flex', flexDirection: 'column' }}
+        sx={{
+          px: 2,
+          py: 1.5,
+          minHeight: 0,
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
         <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
           {course.courseName}
@@ -231,7 +258,11 @@ export default function CourseCard({ course }: CourseCardProps) {
           />
           <Stack
             direction="row"
-            sx={{ justifyContent: 'space-between', alignItems: 'center', flexGrow: 1 }}
+            sx={{
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexGrow: 1,
+            }}
           >
             <Stack>
               <Typography variant="caption" color="text.secondary">
@@ -360,9 +391,18 @@ export default function CourseCard({ course }: CourseCardProps) {
                     }}
                   />
 
-                  <ListItemText primary={student?.username} secondary={student?.collegeName} />
+                  <ListItemText
+                    primary={student?.username}
+                    secondary={student?.collegeName}
+                  />
 
-                  {isEnrolled && <Chip size="small" color="success" label="Already Enrolled" />}
+                  {isEnrolled && (
+                    <Chip
+                      size="small"
+                      color="success"
+                      label="Already Enrolled"
+                    />
+                  )}
                 </ListItemButton>
               );
             })}

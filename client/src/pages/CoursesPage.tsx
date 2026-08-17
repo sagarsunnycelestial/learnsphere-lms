@@ -26,7 +26,9 @@ export default function CoursesPage() {
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  const isOpen = useAppSelector((state) => state.form.courses.isAddCourseFormOpen);
+  const isOpen = useAppSelector(
+    (state) => state.form.courses.isAddCourseFormOpen
+  );
 
   const { data: courses, isLoading } = useFetchCourses({
     filter: {
@@ -36,14 +38,18 @@ export default function CoursesPage() {
 
   const filteredCourses = courses?.filter(
     (course) =>
-      course != null && course.courseName?.toLowerCase().includes(debouncedSearch.toLowerCase())
+      course != null &&
+      course.courseName?.toLowerCase().includes(debouncedSearch.toLowerCase())
   );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
 
-  const handleStatusChange = (_: React.MouseEvent<HTMLElement>, newStatus: CourseStatus | null) => {
+  const handleStatusChange = (
+    _: React.MouseEvent<HTMLElement>,
+    newStatus: CourseStatus | null
+  ) => {
     if (newStatus !== null) {
       setStatus(newStatus);
     }

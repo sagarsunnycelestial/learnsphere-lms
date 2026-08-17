@@ -39,5 +39,6 @@ const profileSlice = createSlice({
   },
 });
 
-export const { changeView, searchQ, changeTab, changePage, countEmps } = profileSlice.actions;
+export const { changeView, searchQ, changeTab, changePage, countEmps } =
+  profileSlice.actions;
 export default profileSlice.reducer;

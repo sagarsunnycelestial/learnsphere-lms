@@ -91,7 +91,9 @@ const registerUserInDBRaw = async (args: RegisterArgs, user: AuthPayload) => {
   }
 
   const temp_password =
-    username.slice(0, 4) + email.slice(0, 4) + Math.floor(1000 + Math.random() * 9000);
+    username.slice(0, 4) +
+    email.slice(0, 4) +
+    Math.floor(1000 + Math.random() * 9000);
 
   const password_hash = await bcrypt.hash(temp_password, 10);
 
@@ -132,7 +134,8 @@ async function fetchUserByRefreshTokenRaw(refreshToken: string) {
   if (!user) {
     throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
   }
-  if (!user.rtokenGeneratedAt) throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
+  if (!user.rtokenGeneratedAt)
+    throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
 
   const now = new Date();
   const lasLoginAt = new Date(user.rtokenGeneratedAt);
@@ -166,7 +169,10 @@ async function removeRefreshTokenRaw(userId: string) {
   await userRepo.save(user);
   return { message: 'User logged out successfully' };
 }
-export const loginUser = withErrorHandling(loginUserRaw, ERROR_MESSAGES.LOGIN_FAILED);
+export const loginUser = withErrorHandling(
+  loginUserRaw,
+  ERROR_MESSAGES.LOGIN_FAILED
+);
 export const registerUserInDB = withErrorHandling(
   registerUserInDBRaw,
   ERROR_MESSAGES.FAILED_TO_CREATE_USER

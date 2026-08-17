@@ -1,4 +1,10 @@
-import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { questionFormControl } from '../../store/slices/formSlice';
 
 import { useState } from 'react';
@@ -40,7 +46,11 @@ export default function QuestionForm() {
       result.error.issues.forEach((issue) => {
         const field = issue.path[0];
 
-        if (field === 'questionText' || field === 'correctOption' || field === 'quizId') {
+        if (
+          field === 'questionText' ||
+          field === 'correctOption' ||
+          field === 'quizId'
+        ) {
           fieldErrors[field] = issue.message;
         }
 
@@ -74,7 +84,9 @@ export default function QuestionForm() {
       };
       const res = await createAQuestion({ input });
       if (res?.message) toast.success(res.message);
-      dispatch(questionFormControl({ isQuestionFormOpen: false, quizId: null }));
+      dispatch(
+        questionFormControl({ isQuestionFormOpen: false, quizId: null })
+      );
     } catch (err) {
       toast.error(err as string);
     } finally {
@@ -89,7 +101,15 @@ export default function QuestionForm() {
     setOptions((prev) => [...prev, '']);
   }
   return (
-    <Box sx={{ width: 600, display: 'flex', flexDirection: 'column', gap: 2, p: 3 }}>
+    <Box
+      sx={{
+        width: 600,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        p: 3,
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -98,10 +118,16 @@ export default function QuestionForm() {
           mb: 1,
         }}
       >
-        <Typography sx={{ fontSize: 22, fontWeight: 600 }}>Add A Question</Typography>
+        <Typography sx={{ fontSize: 22, fontWeight: 600 }}>
+          Add A Question
+        </Typography>
 
         <Button
-          onClick={() => dispatch(questionFormControl({ isQuestionFormOpen: false, quizId: null }))}
+          onClick={() =>
+            dispatch(
+              questionFormControl({ isQuestionFormOpen: false, quizId: null })
+            )
+          }
           variant="outlined"
           sx={{ textTransform: 'none' }}
         >
@@ -184,7 +210,11 @@ export default function QuestionForm() {
         onClick={handleSubmit}
         sx={{ textTransform: 'none', fontSize: 15, fontWeight: 600 }}
       >
-        {isSubmitting ? <CircularProgress size={22} color="inherit" /> : 'Submit'}
+        {isSubmitting ? (
+          <CircularProgress size={22} color="inherit" />
+        ) : (
+          'Submit'
+        )}
       </Button>
     </Box>
   );

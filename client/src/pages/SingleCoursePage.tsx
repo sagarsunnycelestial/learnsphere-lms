@@ -72,11 +72,17 @@ export default function SingleCoursePage() {
   const dispatch = useAppDispatch();
   const { unEnrollStudent } = useUserCRUD();
   const { submitQuizAnswers, deleteQuestion, deleteQuiz } = useQuizzesRUD();
-  const isOpen = useAppSelector((state) => state.form.courses.isAddCourseFormOpen);
-  const lessonForm = useAppSelector((state) => state.form.lessons.isLessonFormOpen);
+  const isOpen = useAppSelector(
+    (state) => state.form.courses.isAddCourseFormOpen
+  );
+  const lessonForm = useAppSelector(
+    (state) => state.form.lessons.isLessonFormOpen
+  );
   const submitted = useAppSelector((state) => state.form.results.submitted);
   const quizForm = useAppSelector((state) => state.form.quizzes.isQuizFormOpen);
-  const questionForm = useAppSelector((state) => state.form.questions.isQuestionFormOpen);
+  const questionForm = useAppSelector(
+    (state) => state.form.questions.isQuestionFormOpen
+  );
   const theme = useTheme();
   const { deleteCourse } = useCoursesCRUD();
   const [confirm, setConfirm] = useState<boolean>(false);
@@ -86,7 +92,10 @@ export default function SingleCoursePage() {
   const [lessonDialog, setLessonDialog] = useState(false);
   const [enrolled, setEnrolled] = useState(false);
 
-  const handleClick = (event: React.MouseEvent<HTMLElement>, lesson: Lesson) => {
+  const handleClick = (
+    event: React.MouseEvent<HTMLElement>,
+    lesson: Lesson
+  ) => {
     setAnchorEl(event.currentTarget);
     setSelectedLesson(lesson);
   };
@@ -158,7 +167,9 @@ export default function SingleCoursePage() {
   const handleUnEnroll = async (userId: string) => {
     if (!course?.courseId) throw new Error('Course not found');
     try {
-      const res = await unEnrollStudent({ input: { userId: userId, courseId: course?.courseId } });
+      const res = await unEnrollStudent({
+        input: { userId: userId, courseId: course?.courseId },
+      });
       toast.success(res?.message);
     } catch {
       toast.error('Failed to unenroll student');
@@ -182,14 +193,20 @@ export default function SingleCoursePage() {
     }
   }
   const canModify = course?.canModify;
-  async function handleQuizSubmit(e: React.SubmitEvent<HTMLFormElement>, quizId?: string) {
+  async function handleQuizSubmit(
+    e: React.SubmitEvent<HTMLFormElement>,
+    quizId?: string
+  ) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const answerList = Array.from(formData.entries(), ([questionId, selectionOption]) => ({
-      questionId,
-      selectionOption: selectionOption as string,
-    }));
+    const answerList = Array.from(
+      formData.entries(),
+      ([questionId, selectionOption]) => ({
+        questionId,
+        selectionOption: selectionOption as string,
+      })
+    );
 
     try {
       const res = await submitQuizAnswers({ input: { quizId, answerList } });
@@ -249,13 +266,21 @@ export default function SingleCoursePage() {
             borderRadius: 4,
           }}
         >
-          <CardMedia component="img" height="260" src={`${course.thumbnail_image_path}`} />
+          <CardMedia
+            component="img"
+            height="260"
+            src={`${course.thumbnail_image_path}`}
+          />
           <Divider />
 
           <CardContent>
             <Typography
               variant="h4"
-              sx={{ fontWeight: 600, overflowWrap: 'anywhere', wordBreak: 'break-word' }}
+              sx={{
+                fontWeight: 600,
+                overflowWrap: 'anywhere',
+                wordBreak: 'break-word',
+              }}
             >
               {course.courseName}
             </Typography>
@@ -280,7 +305,9 @@ export default function SingleCoursePage() {
               <Avatar src={`${course?.createdBy?.profile_image_path}`} />
 
               <Box>
-                <Typography sx={{ fontWeight: 'bold' }}>{course.createdBy?.username}</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>
+                  {course.createdBy?.username}
+                </Typography>
 
                 <Typography variant="body2">Instructor</Typography>
               </Box>
@@ -306,7 +333,11 @@ export default function SingleCoursePage() {
             {hasPermission(user, 'action:course') && (
               <>
                 <Divider sx={{ mt: 3 }} />
-                <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', mt: 3 }}>
+                <Stack
+                  direction="row"
+                  spacing={2}
+                  sx={{ flexWrap: 'wrap', mt: 3 }}
+                >
                   <Paper
                     elevation={0}
                     sx={{
@@ -326,7 +357,11 @@ export default function SingleCoursePage() {
                       flexGrow: 1,
                     }}
                   >
-                    <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+                    <Stack
+                      direction="row"
+                      spacing={2}
+                      sx={{ alignItems: 'center' }}
+                    >
                       <Avatar
                         sx={{
                           bgcolor: theme.palette.primary.main,
@@ -340,7 +375,10 @@ export default function SingleCoursePage() {
                         <Typography variant="h5" sx={{ fontWeight: 700 }}>
                           Course Controls
                         </Typography>
-                        <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: 'text.secondary' }}
+                        >
                           Manager lessons and quizzes
                         </Typography>
                       </Box>
@@ -354,7 +392,8 @@ export default function SingleCoursePage() {
                       }}
                       useFlexGap
                     >
-                      {(course.canModify || hasPermission(user, 'edit all:courses')) && (
+                      {(course.canModify ||
+                        hasPermission(user, 'edit all:courses')) && (
                         <Button
                           startIcon={<EditIcon />}
                           onClick={handleEdit}
@@ -398,7 +437,11 @@ export default function SingleCoursePage() {
 
                         variant="contained"
                         size="small"
-                        sx={{ borderRadius: 2, width: 220, textTransform: 'none' }}
+                        sx={{
+                          borderRadius: 2,
+                          width: 220,
+                          textTransform: 'none',
+                        }}
                       >
                         Add a Lesson
                       </Button>
@@ -416,7 +459,11 @@ export default function SingleCoursePage() {
                         color="primary"
                         variant="contained"
                         size="small"
-                        sx={{ borderRadius: 2, width: 220, textTransform: 'none' }}
+                        sx={{
+                          borderRadius: 2,
+                          width: 220,
+                          textTransform: 'none',
+                        }}
                       >
                         Add a Quiz
                       </Button>
@@ -442,11 +489,22 @@ export default function SingleCoursePage() {
               </>
             )}
           </CardContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5, px: 3, py: 1 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1.5,
+              px: 3,
+              py: 1,
+            }}
+          >
             {course.enrollments && course.enrollments.length > 0 && (
               <>
                 {enrolled && (
-                  <Typography variant="subtitle1" sx={{ px: 1, fontWeight: 600 }}>
+                  <Typography
+                    variant="subtitle1"
+                    sx={{ px: 1, fontWeight: 600 }}
+                  >
                     <Divider sx={{ mb: 2 }} />
                     Enrolled Students ({course.enrollments?.length})
                   </Typography>
@@ -499,7 +557,9 @@ export default function SingleCoursePage() {
 
                           <Typography variant="caption" color="text.secondary">
                             Enrolled on{' '}
-                            {new Date(Number(student?.enrolledAt)).toLocaleDateString('en-IN', {
+                            {new Date(
+                              Number(student?.enrolledAt)
+                            ).toLocaleDateString('en-IN', {
                               day: '2-digit',
                               month: 'short',
                               year: 'numeric',
@@ -526,7 +586,9 @@ export default function SingleCoursePage() {
                             size="small"
                             variant="contained"
                             color="error"
-                            onClick={() => handleUnEnroll(student?.user?.userId as string)}
+                            onClick={() =>
+                              handleUnEnroll(student?.user?.userId as string)
+                            }
                           >
                             Unenroll
                           </Button>
@@ -622,11 +684,14 @@ export default function SingleCoursePage() {
                             {index + 1}. {lesson?.lessonName}
                           </Typography>
 
-                          {(hasPermission(user, 'modify:lessons') || canModify) && (
+                          {(hasPermission(user, 'modify:lessons') ||
+                            canModify) && (
                             <>
                               <IconButton
                                 size="small"
-                                onClick={(e) => handleClick(e, lesson as Lesson)}
+                                onClick={(e) =>
+                                  handleClick(e, lesson as Lesson)
+                                }
                                 sx={{
                                   flexShrink: 0,
                                   bgcolor: 'action.hover',
@@ -641,7 +706,8 @@ export default function SingleCoursePage() {
                               <Menu
                                 anchorEl={anchorEl}
                                 open={
-                                  Boolean(anchorEl) && selectedLesson?.lessonId === lesson?.lessonId
+                                  Boolean(anchorEl) &&
+                                  selectedLesson?.lessonId === lesson?.lessonId
                                 }
                                 onClose={handleClose}
                                 slotProps={{
@@ -654,7 +720,11 @@ export default function SingleCoursePage() {
                                   },
                                 }}
                               >
-                                <MenuItem onClick={() => handleLessonDialog(lesson as Lesson)}>
+                                <MenuItem
+                                  onClick={() =>
+                                    handleLessonDialog(lesson as Lesson)
+                                  }
+                                >
                                   <DeleteForeverIcon
                                     sx={{
                                       mr: 1,
@@ -766,7 +836,9 @@ export default function SingleCoursePage() {
                     <Box
                       key={quiz?.quizId}
                       component="form"
-                      onSubmit={(e) => handleQuizSubmit(e, quiz?.quizId as string)}
+                      onSubmit={(e) =>
+                        handleQuizSubmit(e, quiz?.quizId as string)
+                      }
                       sx={{
                         bgcolor: 'primary.light',
                         color: 'text.main',
@@ -775,7 +847,11 @@ export default function SingleCoursePage() {
                         mb: 2,
                       }}
                     >
-                      <input type="hidden" name="quizId" value={quiz?.quizId ?? ''} />
+                      <input
+                        type="hidden"
+                        name="quizId"
+                        value={quiz?.quizId ?? ''}
+                      />
 
                       <Stack
                         direction="row"
@@ -792,7 +868,8 @@ export default function SingleCoursePage() {
                           {quiz?.quizName}
                         </Typography>
 
-                        {(hasPermission(user, 'modify:quizzes') || canModify) && (
+                        {(hasPermission(user, 'modify:quizzes') ||
+                          canModify) && (
                           <Stack direction="row" spacing={1}>
                             <Button
                               type="button"
@@ -818,7 +895,9 @@ export default function SingleCoursePage() {
                               variant="contained"
                               color="error"
                               size="small"
-                              onClick={() => handleQuizDelete(quiz?.quizId as string)}
+                              onClick={() =>
+                                handleQuizDelete(quiz?.quizId as string)
+                              }
                             >
                               Delete Quiz
                             </Button>
@@ -881,7 +960,8 @@ export default function SingleCoursePage() {
                                   </RadioGroup>
                                 </FormControl>
 
-                                {(hasPermission(user, 'modify:quizzes') || canModify) && (
+                                {(hasPermission(user, 'modify:quizzes') ||
+                                  canModify) && (
                                   <Button
                                     type="button"
                                     startIcon={<DeleteForeverIcon />}
@@ -905,7 +985,11 @@ export default function SingleCoursePage() {
                       )}
 
                       {(quiz?.questions?.length ?? -1) > 0 && (
-                        <Button variant="contained" type="submit" disabled={!isEnrolled}>
+                        <Button
+                          variant="contained"
+                          type="submit"
+                          disabled={!isEnrolled}
+                        >
                           Submit Answers
                         </Button>
                       )}

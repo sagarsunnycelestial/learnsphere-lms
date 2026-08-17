@@ -1,5 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { FetchCoursesDocument, FetchCoursesQueryVariables } from '../generated/graphql';
+import {
+  FetchCoursesDocument,
+  FetchCoursesQueryVariables,
+} from '../generated/graphql';
 import { apolloClient } from '../graphql/apolloClient';
 
 export default function useFetchCourses(filter: FetchCoursesQueryVariables) {

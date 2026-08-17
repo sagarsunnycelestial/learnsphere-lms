@@ -24,7 +24,9 @@ async function fetchStudentDetailsRaw(args: { courseId?: string }) {
 
   const filteredStudents = students.map((student) => {
     const isEnrolled = student.enrollments.some(
-      (enrollment) => enrollment.course.courseId === args.courseId && enrollment.isActive === true
+      (enrollment) =>
+        enrollment.course.courseId === args.courseId &&
+        enrollment.isActive === true
     );
     return { ...student, isEnrolled: isEnrolled };
   });

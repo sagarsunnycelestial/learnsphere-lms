@@ -15,7 +15,17 @@ import {
 export const AppDataSource = new DataSource({
   type: envSchema.DB_TYPE,
   url: envSchema.SUPABASE_DB_URL,
-  entities: [Users, Roles, Courses, Lessons, Quizzes, Questions, Options, Results, Enrollments],
+  entities: [
+    Users,
+    Roles,
+    Courses,
+    Lessons,
+    Quizzes,
+    Questions,
+    Options,
+    Results,
+    Enrollments,
+  ],
   synchronize: false,
   migrations: ['src/migrations/*.ts'],
   ssl: envSchema.DB_SSL ? { rejectUnauthorized: false } : false,

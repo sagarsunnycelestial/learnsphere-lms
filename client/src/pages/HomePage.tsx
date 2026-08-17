@@ -28,7 +28,8 @@ const HomePage = () => {
           return;
         }
 
-        const { accessToken, role, profile_image_path } = response.data.refreshEndpoint;
+        const { accessToken, role, profile_image_path } =
+          response.data.refreshEndpoint;
 
         dispatch(
           refreshUser({

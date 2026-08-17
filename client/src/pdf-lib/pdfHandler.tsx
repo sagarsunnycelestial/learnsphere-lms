@@ -55,7 +55,9 @@ async function downloadResultPDF(result: QuizResultResponse) {
   });
   if (result.profile_image_path) {
     try {
-      const imageBytes = await fetch(result.profile_image_path).then((res) => res.arrayBuffer());
+      const imageBytes = await fetch(result.profile_image_path).then((res) =>
+        res.arrayBuffer()
+      );
       const image = result.profile_image_path.toLowerCase().endsWith('.png')
         ? await pdfDoc.embedPng(imageBytes)
         : await pdfDoc.embedJpg(imageBytes);

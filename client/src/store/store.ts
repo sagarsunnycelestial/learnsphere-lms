@@ -5,7 +5,12 @@ import formReducer from './slices/formSlice';
 import profileReducer from './slices/profileSlice';
 
 const store = configureStore({
-  reducer: { theme: themeReducer, auth: authReducer, form: formReducer, profile: profileReducer },
+  reducer: {
+    theme: themeReducer,
+    auth: authReducer,
+    form: formReducer,
+    profile: profileReducer,
+  },
 });
 
 export type AppDispatch = typeof store.dispatch;

@@ -37,7 +37,11 @@ const authSlice = createSlice({
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         const { role } = action.payload;
-        state.user = { ...action.payload, isAuthenticated: true, role: role as UserRoles };
+        state.user = {
+          ...action.payload,
+          isAuthenticated: true,
+          role: role as UserRoles,
+        };
 
         state.status = 'succeeded';
       })

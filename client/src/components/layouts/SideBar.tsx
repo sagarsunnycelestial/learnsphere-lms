@@ -1,8 +1,15 @@
 import * as React from 'react';
-import { styled, useTheme, type Theme, type CSSObject } from '@mui/material/styles';
+import {
+  styled,
+  useTheme,
+  type Theme,
+  type CSSObject,
+} from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar, { type AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import MuiAppBar, {
+  type AppBarProps as MuiAppBarProps,
+} from '@mui/material/AppBar';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import SchoolIcon from '@mui/icons-material/School';
 import Toolbar from '@mui/material/Toolbar';
@@ -138,7 +145,9 @@ const AppBar = styled(MuiAppBar, {
   ],
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(({ theme }) => ({
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme }) => ({
   width: drawerWidth,
   flexShrink: 0,
   whiteSpace: 'nowrap',
@@ -180,13 +189,21 @@ export default function SideBar({ children }: DrawerProps) {
   function handleThemeChange() {
     dispatch(toggleTheme());
   }
-  const profile_image = useAppSelector((state) => state.auth.user.profile_image_path);
+  const profile_image = useAppSelector(
+    (state) => state.auth.user.profile_image_path
+  );
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
 
       <AppBar position="fixed" open={open}>
-        <Toolbar sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Toolbar
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+          }}
+        >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <IconButton
               color="inherit"
@@ -232,7 +249,10 @@ export default function SideBar({ children }: DrawerProps) {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <MaterialUISwitch sx={{ m: 1 }} onChange={handleThemeChange} />
-            <Divider orientation="vertical" sx={{ color: theme.palette.divider }} />
+            <Divider
+              orientation="vertical"
+              sx={{ color: theme.palette.divider }}
+            />
             <ProfileMenu profile_image={`${profile_image}`} />
           </Box>
         </Toolbar>
@@ -240,14 +260,24 @@ export default function SideBar({ children }: DrawerProps) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === 'rtl' ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider />
         {open && (
           <Typography
             variant="overline"
-            sx={{ px: 2.5, pt: 2, pb: 0.5, color: theme.palette.text.secondary, fontWeight: 600 }}
+            sx={{
+              px: 2.5,
+              pt: 2,
+              pb: 0.5,
+              color: theme.palette.text.secondary,
+              fontWeight: 600,
+            }}
           >
             Menu
           </Typography>
@@ -260,7 +290,12 @@ export default function SideBar({ children }: DrawerProps) {
           <ListItem
             key={'attendance'}
             disablePadding
-            sx={{ display: 'block', bgcolor: theme.palette.primary.main, borderRadius: 4, mb: 1 }}
+            sx={{
+              display: 'block',
+              bgcolor: theme.palette.primary.main,
+              borderRadius: 4,
+              mb: 1,
+            }}
           >
             <ListItemButton
               onClick={() => navigate('/dashboard')}
@@ -314,7 +349,11 @@ export default function SideBar({ children }: DrawerProps) {
           <ListItem
             key={'Profile'}
             disablePadding
-            sx={{ display: 'block', bgcolor: theme.palette.primary.main, borderRadius: 4 }}
+            sx={{
+              display: 'block',
+              bgcolor: theme.palette.primary.main,
+              borderRadius: 4,
+            }}
           >
             <ListItemButton
               onClick={() => navigate('/dashboard/profile')}

@@ -38,7 +38,9 @@ export default function ProfileBar() {
             >
               <Tab
                 value="1"
-                label={role === 'Student' ? 'Courses Enrolled' : 'Courses Created By'}
+                label={
+                  role === 'Student' ? 'Courses Enrolled' : 'Courses Created By'
+                }
                 sx={{ textTransform: 'none', fontWeight: 600 }}
               />
               {role === 'Student' && (

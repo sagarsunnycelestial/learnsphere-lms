@@ -7,7 +7,8 @@
     "format": "prettier --write \"client/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.{js,ts,json,md}\"",
     "format:check": "prettier --check \"client/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.{js,ts,json,md}\"",
     "lint": "eslint client server",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test": ""
   },
   "repository": {
     "type": "git",

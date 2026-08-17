@@ -44,7 +44,8 @@ async function createAQuestionForQuizRaw(args: QuestionArgs, context: Context) {
   if (!context.user?.user_id || !args.input.quizId)
     throw new GraphQLError(ERROR_MESSAGES.QUIZ_ID_INVALID);
   const { options, correctOption, questionText } = args.input;
-  if (!questionText || !correctOption) throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
+  if (!questionText || !correctOption)
+    throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_CREATED);
 
   const quiz = await quizRepo.findOne({
     where: {
@@ -90,7 +91,8 @@ async function submitQuizAnswersRaw(args: SubmitQuizArgs, context: Context) {
       results: true,
     },
   });
-  if (!args.input.answerList?.length) throw new GraphQLError(ERROR_MESSAGES.QUIZ_SUBMIT_FAILED);
+  if (!args.input.answerList?.length)
+    throw new GraphQLError(ERROR_MESSAGES.QUIZ_SUBMIT_FAILED);
   const questionIds = args.input.answerList.map((a) => a.questionId);
   const hasDuplicates = new Set(questionIds).size !== questionIds.length;
   if (hasDuplicates) throw new GraphQLError(ERROR_MESSAGES.QUIZ_HAS_DUPLICATES);
@@ -197,7 +199,8 @@ async function deleteQuestionWithIDRaw(input: {
       },
     },
   });
-  if (!questionToDelete) throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
+  if (!questionToDelete)
+    throw new GraphQLError(ERROR_MESSAGES.QUESTION_NOT_DELETE);
 
   await questionRepo.remove(questionToDelete);
   return {

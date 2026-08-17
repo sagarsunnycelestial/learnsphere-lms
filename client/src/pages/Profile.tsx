@@ -1,4 +1,14 @@
-import { Card, Chip, Typography, Button, Dialog, Avatar, Stack, Box, Divider } from '@mui/material';
+import {
+  Card,
+  Chip,
+  Typography,
+  Button,
+  Dialog,
+  Avatar,
+  Stack,
+  Box,
+  Divider,
+} from '@mui/material';
 import useFetchProfile from '../hooks/useFetchProfile';
 import AddIcon from '@mui/icons-material/Add';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
@@ -18,7 +28,11 @@ export default function Profile() {
       collegeName: profile?.collegeName,
     };
     dispatch(
-      userAddFormControl({ mode: 'edit', isUserAddFormOpen: true, selectedUser: selectedUser })
+      userAddFormControl({
+        mode: 'edit',
+        isUserAddFormOpen: true,
+        selectedUser: selectedUser,
+      })
     );
   }
   if (isLoading) {
@@ -101,7 +115,12 @@ export default function Profile() {
               {profile?.username}
             </Typography>
 
-            <Chip label={profile?.role?.roleName} size="small" color="primary" variant="outlined" />
+            <Chip
+              label={profile?.role?.roleName}
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
           </Stack>
 
           <Divider sx={{ my: 3 }} />
@@ -120,7 +139,9 @@ export default function Profile() {
                   alignItems: 'center',
                 }}
               >
-                <Typography sx={{ color: 'text.secondary' }}>{label}</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>
+                  {label}
+                </Typography>
 
                 <Typography sx={{ fontSize: 18 }}>{value}</Typography>
               </Box>

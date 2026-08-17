@@ -18,19 +18,33 @@ import useCoursesCRUD from '../../hooks/useCoursesCRUD';
 import CircularProgress from '@mui/material/CircularProgress';
 import { courseSchema } from '../../validation/courseSchema';
 export default function CourseForm() {
-  const selectedCourse = useAppSelector((state) => state.form.courses.selectedcourse);
+  const selectedCourse = useAppSelector(
+    (state) => state.form.courses.selectedcourse
+  );
   const mode = useAppSelector((state) => state.form.courses.mode);
-  const publicUrl = useRef<string | null>(selectedCourse?.thumbnail_image_path ?? null);
+  const publicUrl = useRef<string | null>(
+    selectedCourse?.thumbnail_image_path ?? null
+  );
   const isEditing = mode === 'edit';
-  const [courseName, setCourseName] = useState(selectedCourse?.courseName ?? '');
+  const [courseName, setCourseName] = useState(
+    selectedCourse?.courseName ?? ''
+  );
   const [thumbnailImg, setThumbnailImg] = useState<File | null>(null);
   const existingImageFileName = selectedCourse?.thumbnail_image_path
-    ? decodeURIComponent(selectedCourse.thumbnail_image_path.split('/').pop()?.split('?')[0] || '')
+    ? decodeURIComponent(
+        selectedCourse.thumbnail_image_path.split('/').pop()?.split('?')[0] ||
+          ''
+      )
     : '';
-  const [description, setDescription] = useState(selectedCourse?.description ?? '');
+  const [description, setDescription] = useState(
+    selectedCourse?.description ?? ''
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [isActive, setIsActive] = useState(selectedCourse?.isActive ?? true);
-  const [errors, setErrors] = useState<{ courseName?: string; description?: string }>({});
+  const [errors, setErrors] = useState<{
+    courseName?: string;
+    description?: string;
+  }>({});
   const dispatch = useAppDispatch();
   const { addNewCourse, updateCourse } = useCoursesCRUD();
   async function handleSubmit() {
@@ -102,7 +116,11 @@ export default function CourseForm() {
       return;
     }
     const file = e.target.files[0];
-    if (!['jpg', 'jpeg', 'webp', 'png'].includes(file.name.split('.')[1].toLowerCase())) {
+    if (
+      !['jpg', 'jpeg', 'webp', 'png'].includes(
+        file.name.split('.')[1].toLowerCase()
+      )
+    ) {
       toast.error('Only Image files allowed');
       return;
     }
@@ -219,7 +237,12 @@ export default function CourseForm() {
             : isEditing && existingImageFileName
               ? existingImageFileName
               : 'Upload Course Thumbnail'}
-          <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
+          <input
+            hidden
+            type="file"
+            name="profile_image_path"
+            onChange={handleImageChange}
+          />
         </Button>
       </Box>
       <Button

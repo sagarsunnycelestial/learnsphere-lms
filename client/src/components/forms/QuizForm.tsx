@@ -1,4 +1,10 @@
-import { Box, Button, TextField, Typography, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+} from '@mui/material';
 import { quizFormControl } from '../../store/slices/formSlice';
 
 import { useState } from 'react';
@@ -12,7 +18,9 @@ import { quizSchema } from '../../validation/quizSchema';
 export default function QuizForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { id } = useParams();
-  const selectedQuiz = useAppSelector((state) => state.form.quizzes.selectedQuiz);
+  const selectedQuiz = useAppSelector(
+    (state) => state.form.quizzes.selectedQuiz
+  );
   const mode = useAppSelector((state) => state.form.quizzes.mode);
   const isEditing = mode === 'edit';
   const courseId = selectedQuiz?.courseId ?? id;
@@ -52,7 +60,9 @@ export default function QuizForm() {
         };
         const res = await addNewQuiz({ input });
         if (res?.message) toast.success(res.message);
-        dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }));
+        dispatch(
+          quizFormControl({ isQuizFormOpen: false, selectedQuiz: null })
+        );
       } catch (err) {
         toast.error(err as string);
       } finally {
@@ -62,7 +72,15 @@ export default function QuizForm() {
   }
 
   return (
-    <Box sx={{ width: 600, display: 'flex', flexDirection: 'column', gap: 2, p: 3 }}>
+    <Box
+      sx={{
+        width: 600,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        p: 3,
+      }}
+    >
       <Box
         sx={{
           display: 'flex',
@@ -76,7 +94,11 @@ export default function QuizForm() {
         </Typography>
 
         <Button
-          onClick={() => dispatch(quizFormControl({ isQuizFormOpen: false, selectedQuiz: null }))}
+          onClick={() =>
+            dispatch(
+              quizFormControl({ isQuizFormOpen: false, selectedQuiz: null })
+            )
+          }
           variant="outlined"
           sx={{ textTransform: 'none' }}
         >

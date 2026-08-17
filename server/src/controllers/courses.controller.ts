@@ -12,7 +12,8 @@ import { withErrorHandling } from '../utils/withErrorHandling.js';
 
 async function createACourseRaw(args: CourseUpdateArgs, context: Context) {
   const { courseName, description, thumbnail_image_path } = args.input;
-  if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
+  if (!context.user?.user_id)
+    throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
   const creatingUser = await userRepo.findOne({
     where: { userId: context.user.user_id },
@@ -29,7 +30,11 @@ async function createACourseRaw(args: CourseUpdateArgs, context: Context) {
   await courseRepo.save(newCourse);
   return { message: 'Course created successfully' };
 }
-async function fetchAllCoursesRaw(filter: { status?: string }, userId: string, userRole: string) {
+async function fetchAllCoursesRaw(
+  filter: { status?: string },
+  userId: string,
+  userRole: string
+) {
   const courses = await courseRepo.find({
     order: {
       isActive: 'DESC',
@@ -62,9 +67,12 @@ async function fetchAllCoursesRaw(filter: { status?: string }, userId: string, u
       return true;
     })
     .map((course) => {
-      const isEnrolled = course.enrollments.some((enrollment) => enrollment.user.userId === userId);
+      const isEnrolled = course.enrollments.some(
+        (enrollment) => enrollment.user.userId === userId
+      );
 
-      const canModify = course.createdBy.userId === userId || userRole === UserRoles.ADMIN;
+      const canModify =
+        course.createdBy.userId === userId || userRole === UserRoles.ADMIN;
 
       return {
         ...course,
@@ -77,8 +85,10 @@ async function fetchAllCoursesRaw(filter: { status?: string }, userId: string, u
 }
 
 async function editCourseDetailsRaw(args: CourseUpdateArgs, context: Context) {
-  const { courseName, courseId, description, thumbnail_image_path, isActive } = args.input;
-  if (!courseId || !context.user) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
+  const { courseName, courseId, description, thumbnail_image_path, isActive } =
+    args.input;
+  if (!courseId || !context.user)
+    throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
 
   const updatedCourse = await courseRepo.findOne({
     where: {
@@ -88,7 +98,8 @@ async function editCourseDetailsRaw(args: CourseUpdateArgs, context: Context) {
         : {}),
     },
   });
-  if (!updatedCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_EDIT_COURSE);
+  if (!updatedCourse)
+    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_EDIT_COURSE);
   if (description) {
     updatedCourse.description = description;
   }
@@ -108,7 +119,8 @@ async function editCourseDetailsRaw(args: CourseUpdateArgs, context: Context) {
 }
 
 async function deleteCourseFromDBRaw(courseId: string, context: Context) {
-  if (!courseId || !context.user) throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
+  if (!courseId || !context.user)
+    throw new GraphQLError(ERROR_MESSAGES.COURSES_ID_INVALID);
   const deletedCourse = await courseRepo.findOne({
     where: {
       courseId: courseId,
@@ -117,7 +129,8 @@ async function deleteCourseFromDBRaw(courseId: string, context: Context) {
         : {}),
     },
   });
-  if (!deletedCourse) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_DELETE_COURSE);
+  if (!deletedCourse)
+    throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_DELETE_COURSE);
   await courseRepo.remove(deletedCourse);
   return { message: 'Course deleted successfully' };
 }
@@ -142,9 +155,11 @@ async function fetchASingleCourseRaw(courseId: string, user: AuthPayload) {
   if (!course) throw new GraphQLError(ERROR_MESSAGES.FAILED_TO_FETCH_COURSES);
 
   const isEnrolled = course.enrollments.some(
-    (enrollment) => enrollment.user.userId === user.user_id && enrollment.isActive === true
+    (enrollment) =>
+      enrollment.user.userId === user.user_id && enrollment.isActive === true
   );
-  const canModify = course.createdBy.userId === user.user_id || user.role === UserRoles.ADMIN;
+  const canModify =
+    course.createdBy.userId === user.user_id || user.role === UserRoles.ADMIN;
   if (!isEnrolled && !canModify) {
     const filteredcourse = {
       ...course,

@@ -1,6 +1,17 @@
-import { Button, Typography, Box, Dialog, Paper, Stack, Avatar } from '@mui/material';
+import {
+  Button,
+  Typography,
+  Box,
+  Dialog,
+  Paper,
+  Stack,
+  Avatar,
+} from '@mui/material';
 import { useAppDispatch } from '../../store/hooks';
-import { addCourseFormControl, userAddFormControl } from '../../store/slices/formSlice';
+import {
+  addCourseFormControl,
+  userAddFormControl,
+} from '../../store/slices/formSlice';
 import { useTheme } from '@mui/material';
 import { hasPermission } from '../../permissions/auth';
 import { useAppSelector } from '../../store/hooks';

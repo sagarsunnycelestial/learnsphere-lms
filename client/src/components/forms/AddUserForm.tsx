@@ -35,7 +35,9 @@ export default function AddUserForm() {
   const [password, setPassword] = useState('');
   const [profileImg, setProfileImg] = useState<File | null>(null);
   const [username, setUsername] = useState(selectedUser?.userName ?? '');
-  const [collegeName, setCollegeName] = useState(selectedUser?.collegeName ?? '');
+  const [collegeName, setCollegeName] = useState(
+    selectedUser?.collegeName ?? ''
+  );
   const [role, setRole] = useState(selectedUser?.role ?? '');
   const dispatch = useAppDispatch();
   const { addNewUser, updateProfile } = useUserCRUD();
@@ -64,7 +66,8 @@ export default function AddUserForm() {
         password?: string;
       } = {};
       result.error.issues.forEach((issue) => {
-        const field = issue.path[0] as 'username' | 'email' | 'password' | 'collegeName';
+        const field = issue.path[0] as
+          'username' | 'email' | 'password' | 'collegeName';
         fieldErrors[field] = issue.message;
       });
       setErrors(fieldErrors);
@@ -104,7 +107,9 @@ export default function AddUserForm() {
               : 'Failed to create user';
 
         if (message.toLowerCase().includes('duplicate')) {
-          toast.error('User with similar credentials exists. Please use a different value.');
+          toast.error(
+            'User with similar credentials exists. Please use a different value.'
+          );
         } else {
           toast.error(message);
         }
@@ -114,10 +119,13 @@ export default function AddUserForm() {
     } else {
       try {
         if (password) {
-          const isValidPassword = password.length >= 4 && !password.includes(' ');
+          const isValidPassword =
+            password.length >= 4 && !password.includes(' ');
 
           if (!isValidPassword) {
-            toast.error('Password must be at least 4 characters and cannot contain spaces');
+            toast.error(
+              'Password must be at least 4 characters and cannot contain spaces'
+            );
             return;
           }
         }
@@ -152,7 +160,11 @@ export default function AddUserForm() {
       return;
     }
     const file = e.target.files[0];
-    if (!['jpg', 'jpeg', 'webp', 'png'].includes(file.name.split('.')[1].toLowerCase())) {
+    if (
+      !['jpg', 'jpeg', 'webp', 'png'].includes(
+        file.name.split('.')[1].toLowerCase()
+      )
+    ) {
       toast.error('Only Image files allowed');
       return;
     }
@@ -291,7 +303,12 @@ export default function AddUserForm() {
             }}
           >
             {profileImg ? profileImg.name : 'Upload Profile Image'}
-            <input hidden type="file" name="profile_image_path" onChange={handleImageChange} />
+            <input
+              hidden
+              type="file"
+              name="profile_image_path"
+              onChange={handleImageChange}
+            />
           </Button>
         )}
       </Box>

@@ -1,4 +1,8 @@
-import { DeleteLessonArgs, LessonUpdateArgs, UserRoles } from '../../types/types.js';
+import {
+  DeleteLessonArgs,
+  LessonUpdateArgs,
+  UserRoles,
+} from '../../types/types.js';
 import { GraphQLError } from 'graphql';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import { Context } from '../../types/types.js';
@@ -6,7 +10,8 @@ import { lessonRepo, courseRepo } from '../entities/repos.js';
 import { withErrorHandling } from '../utils/withErrorHandling.js';
 async function addLessonToCourseRaw(args: LessonUpdateArgs, context: Context) {
   const { lessonName, description, videoLink, courseId } = args.input;
-  if (!courseId || !lessonName) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
+  if (!courseId || !lessonName)
+    throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_CREATED);
 
   let course;
 
@@ -47,7 +52,8 @@ async function addLessonToCourseRaw(args: LessonUpdateArgs, context: Context) {
 
 async function editLessonInCourseRaw(args: LessonUpdateArgs, context: Context) {
   const { lessonName, lessonId, description, videoLink, courseId } = args.input;
-  if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
+  if (!courseId || !lessonId)
+    throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
   if (!context.user) {
     throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
   }
@@ -77,9 +83,13 @@ async function editLessonInCourseRaw(args: LessonUpdateArgs, context: Context) {
     message: `Lesson ${updatingLesson.lessonName}. updated successfully`,
   };
 }
-async function deleteLessonInCourseRaw(args: DeleteLessonArgs, context: Context) {
+async function deleteLessonInCourseRaw(
+  args: DeleteLessonArgs,
+  context: Context
+) {
   const { lessonId, courseId } = args.input;
-  if (!courseId || !lessonId) throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
+  if (!courseId || !lessonId)
+    throw new GraphQLError(ERROR_MESSAGES.LESSON_NOT_FOUND);
   if (!context.user) {
     throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
   }

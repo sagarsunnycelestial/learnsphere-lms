@@ -151,7 +151,11 @@ export class InitialSchema1786434552565 implements MigrationInterface {
     await queryRunner.query(
       `ALTER TABLE "lessons" DROP CONSTRAINT "PK_738fd696873afdde0c2ee567a01"`
     );
-    await queryRunner.query(`ALTER TABLE "roles" DROP CONSTRAINT "UQ_ac35f51a0f17e3e1fe121126039"`);
-    await queryRunner.query(`ALTER TABLE "roles" DROP CONSTRAINT "PK_09f4c8130b54f35925588a37b6a"`);
+    await queryRunner.query(
+      `ALTER TABLE "roles" DROP CONSTRAINT "UQ_ac35f51a0f17e3e1fe121126039"`
+    );
+    await queryRunner.query(
+      `ALTER TABLE "roles" DROP CONSTRAINT "PK_09f4c8130b54f35925588a37b6a"`
+    );
   }
 }

@@ -15,8 +15,16 @@ import {
   fetchUserByRefreshToken,
   removeRefreshToken,
 } from '../controllers/auth.controller.js';
-import { updateUserDetails, fetchUserProfile } from '../controllers/users.controller.js';
-import { RegisterArgs, UpdateArgs, AuthPayload, CourseUpdateArgs } from '../../types/types.js';
+import {
+  updateUserDetails,
+  fetchUserProfile,
+} from '../controllers/users.controller.js';
+import {
+  RegisterArgs,
+  UpdateArgs,
+  AuthPayload,
+  CourseUpdateArgs,
+} from '../../types/types.js';
 import { Response, Request } from 'express';
 import { ERROR_MESSAGES } from '../constants/messages.js';
 import { fetchRolesfromDB } from '../controllers/roles.controller.js';
@@ -44,8 +52,13 @@ import {
 } from '../controllers/lessons.controller.js';
 export const resolvers = {
   Query: {
-    fetchProfile: async (_parents: unknown, _args: unknown, context: Context) => {
-      if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
+    fetchProfile: async (
+      _parents: unknown,
+      _args: unknown,
+      context: Context
+    ) => {
+      if (!context.user?.user_id)
+        throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
 
       return await fetchUserProfile(context.user?.user_id as string);
     },
@@ -54,7 +67,11 @@ export const resolvers = {
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
       return await fetchRolesfromDB();
     },
-    refreshEndpoint: async (_parents: unknown, _args: unknown, { req }: { req: Request }) => {
+    refreshEndpoint: async (
+      _parents: unknown,
+      _args: unknown,
+      { req }: { req: Request }
+    ) => {
       const cookies = req.cookies;
       if (!cookies?.refresh_token)
         throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID, {
@@ -70,15 +87,29 @@ export const resolvers = {
       args: { filter: { status: string } },
       context: Context
     ) => {
-      if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
-      return await fetchAllCourses(args.filter, context.user.user_id, context.user.role);
+      if (!context.user?.user_id)
+        throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
+      return await fetchAllCourses(
+        args.filter,
+        context.user.user_id,
+        context.user.role
+      );
     },
-    fetchCourseById: async (_parents: unknown, args: { courseId: string }, context: Context) => {
-      if (!context.user?.user_id) throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
+    fetchCourseById: async (
+      _parents: unknown,
+      args: { courseId: string },
+      context: Context
+    ) => {
+      if (!context.user?.user_id)
+        throw new GraphQLError(ERROR_MESSAGES.COURSES_NOT_FOUND);
 
       return await fetchASingleCourse(args.courseId, context.user);
     },
-    fetchStudents: async (_parents: unknown, args: { courseId?: string }, context: Context) => {
+    fetchStudents: async (
+      _parents: unknown,
+      args: { courseId?: string },
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.STUDENT || !context.user)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
@@ -86,16 +117,28 @@ export const resolvers = {
     },
   },
   Mutation: {
-    login: async (_parents: unknown, args: LoginArgs, { res }: { res: Response }) => {
+    login: async (
+      _parents: unknown,
+      args: LoginArgs,
+      { res }: { res: Response }
+    ) => {
       return await loginUser(args, res);
     },
-    registerUser: async (_parents: unknown, args: RegisterArgs, context: Context) => {
+    registerUser: async (
+      _parents: unknown,
+      args: RegisterArgs,
+      context: Context
+    ) => {
       if (context.user?.role != UserRoles.ADMIN || !context.user)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
       const registerResponse = await registerUserInDB(args, context.user);
       return registerResponse;
     },
-    updateProfile: async (_parents: unknown, args: UpdateArgs, context: Context) => {
+    updateProfile: async (
+      _parents: unknown,
+      args: UpdateArgs,
+      context: Context
+    ) => {
       if (!context.user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
 
       return await updateUserDetails(args, context.user);
@@ -114,51 +157,82 @@ export const resolvers = {
       });
       return response;
     },
-    createCourse: async (_parents: unknown, args: CourseUpdateArgs, context: Context) => {
+    createCourse: async (
+      _parents: unknown,
+      args: CourseUpdateArgs,
+      context: Context
+    ) => {
       if (
         !context.user?.user_id ||
-        (context.user?.role !== UserRoles.INSTRUCTOR && context.user?.role !== UserRoles.ADMIN)
+        (context.user?.role !== UserRoles.INSTRUCTOR &&
+          context.user?.role !== UserRoles.ADMIN)
       )
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await createACourse(args, context);
     },
-    editCourse: async (_parents: unknown, args: CourseUpdateArgs, context: Context) => {
+    editCourse: async (
+      _parents: unknown,
+      args: CourseUpdateArgs,
+      context: Context
+    ) => {
       if (
         !context.user?.user_id ||
-        (context.user?.role !== UserRoles.INSTRUCTOR && context.user?.role !== UserRoles.ADMIN)
+        (context.user?.role !== UserRoles.INSTRUCTOR &&
+          context.user?.role !== UserRoles.ADMIN)
       )
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await editCourseDetails(args, context);
     },
-    deleteCourse: async (_parents: unknown, args: { courseId: string }, context: Context) => {
+    deleteCourse: async (
+      _parents: unknown,
+      args: { courseId: string },
+      context: Context
+    ) => {
       if (
         !context.user?.user_id ||
-        (context.user?.role !== UserRoles.INSTRUCTOR && context.user?.role !== UserRoles.ADMIN)
+        (context.user?.role !== UserRoles.INSTRUCTOR &&
+          context.user?.role !== UserRoles.ADMIN)
       )
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
       return await deleteCourseFromDB(args.courseId, context);
     },
-    enrollCourse: async (_parents: unknown, args: EnrollCourseArgs, context: Context) => {
+    enrollCourse: async (
+      _parents: unknown,
+      args: EnrollCourseArgs,
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.INSTRUCTOR)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await enrollAStudent(args, context);
     },
-    addALesson: async (_parents: unknown, args: LessonUpdateArgs, context: Context) => {
+    addALesson: async (
+      _parents: unknown,
+      args: LessonUpdateArgs,
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await addLessonToCourse(args, context);
     },
-    editALesson: async (_parents: unknown, args: LessonUpdateArgs, context: Context) => {
+    editALesson: async (
+      _parents: unknown,
+      args: LessonUpdateArgs,
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await editLessonInCourse(args, context);
     },
-    deleteALesson: async (_parents: unknown, args: DeleteLessonArgs, context: Context) => {
+    deleteALesson: async (
+      _parents: unknown,
+      args: DeleteLessonArgs,
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
@@ -179,19 +253,31 @@ export const resolvers = {
 
       return await createAQuizForCourse(args, context);
     },
-    createAQuestion: async (_parents: unknown, args: QuestionArgs, context: Context) => {
+    createAQuestion: async (
+      _parents: unknown,
+      args: QuestionArgs,
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await createAQuestionForQuiz(args, context);
     },
-    submitQuiz: async (_parents: unknown, args: SubmitQuizArgs, context: Context) => {
+    submitQuiz: async (
+      _parents: unknown,
+      args: SubmitQuizArgs,
+      context: Context
+    ) => {
       if (context.user?.role !== UserRoles.STUDENT)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await submitQuizAnswers(args, context);
     },
-    deleteQuiz: async (_parents: unknown, args: { quizId: string }, context: Context) => {
+    deleteQuiz: async (
+      _parents: unknown,
+      args: { quizId: string },
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.STUDENT || !context.user)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
@@ -211,7 +297,11 @@ export const resolvers = {
         userId: context.user.user_id,
       });
     },
-    unenrollStudent: async (_parents: unknown, args: EnrollCourseArgs, context: Context) => {
+    unenrollStudent: async (
+      _parents: unknown,
+      args: EnrollCourseArgs,
+      context: Context
+    ) => {
       if (context.user?.role === UserRoles.INSTRUCTOR)
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
