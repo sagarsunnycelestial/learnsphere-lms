@@ -210,7 +210,7 @@ async function enrollAStudentRaw(args: EnrollCourseArgs, context: Context) {
 
   if (existingEnrollment) {
     if (existingEnrollment.isActive) {
-      throw new GraphQLError('User is already enrolled in this course');
+      throw new GraphQLError(ERROR_MESSAGES.USER_ALREADY_ENROLLED);
     }
 
     existingEnrollment.isActive = true;
