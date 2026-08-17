@@ -62,57 +62,57 @@ const loginUserRaw = async (args: LoginArgs, res: Response) => {
   };
 };
 const registerUserInDBRaw = async (args: RegisterArgs, user: AuthPayload) => {
-    const { username, email, role, collegeName } = args.input;
+  const { username, email, role, collegeName } = args.input;
 
-    const admin = await userRepo.findOne({
-      where: {
-        userId: user.user_id,
-        role: {
-          roleName: UserRoles.ADMIN,
-        },
+  const admin = await userRepo.findOne({
+    where: {
+      userId: user.user_id,
+      role: {
+        roleName: UserRoles.ADMIN,
       },
-      relations: {
-        role: true,
-      },
-    });
+    },
+    relations: {
+      role: true,
+    },
+  });
 
-    if (!admin) {
-      throw new GraphQLError(ERROR_MESSAGES.ADMIN_NOT_FOUND);
-    }
+  if (!admin) {
+    throw new GraphQLError(ERROR_MESSAGES.ADMIN_NOT_FOUND);
+  }
 
-    const userRole = await rolesRepo.findOne({
-      where: {
-        roleId: role,
-      },
-    });
+  const userRole = await rolesRepo.findOne({
+    where: {
+      roleId: role,
+    },
+  });
 
-    if (!userRole) {
-      throw new GraphQLError(ERROR_MESSAGES.ROLE_NOT_FOUND);
-    }
+  if (!userRole) {
+    throw new GraphQLError(ERROR_MESSAGES.ROLE_NOT_FOUND);
+  }
 
-    const temp_password =
-      username.slice(0, 4) + email.slice(0, 4) + Math.floor(1000 + Math.random() * 9000);
+  const temp_password =
+    username.slice(0, 4) + email.slice(0, 4) + Math.floor(1000 + Math.random() * 9000);
 
-    const password_hash = await bcrypt.hash(temp_password, 10);
+  const password_hash = await bcrypt.hash(temp_password, 10);
 
-    const newUser = userRepo.create({
-      username,
-      email,
-      role: userRole,
-      collegeName,
-      passwordHash: password_hash,
-      isActive: true,
-    });
+  const newUser = userRepo.create({
+    username,
+    email,
+    role: userRole,
+    collegeName,
+    passwordHash: password_hash,
+    isActive: true,
+  });
 
-    await userRepo.save(newUser);
+  await userRepo.save(newUser);
 
-    await sendWelcomeEmail(newUser.email, newUser.username, temp_password);
+  await sendWelcomeEmail(newUser.email, newUser.username, temp_password);
 
-    return {
-      message: `${newUser.role.roleName} created successfully`,
-      email: newUser.email,
-      temp_password,
-    };
+  return {
+    message: `${newUser.role.roleName} created successfully`,
+    email: newUser.email,
+    temp_password,
+  };
 };
 
 async function fetchUserByRefreshTokenRaw(refreshToken: string) {
@@ -131,43 +131,51 @@ async function fetchUserByRefreshTokenRaw(refreshToken: string) {
   });
   if (!user) {
     throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
-  } 
-     if (!user.rtokenGeneratedAt) throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
-
-      const now = new Date();
-      const lasLoginAt = new Date(user.rtokenGeneratedAt);
-      const sevenDaysInMs = envSchema.REFRESH_TOKEN_EXPIRY_TIME;
-      if (now.getTime() - lasLoginAt.getTime() > sevenDaysInMs) {
-        throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
-      }
-        const payload = {
-          user_id: user.userId,
-          role: user.role.roleName,
-        };
-        const accessToken = jwt.sign(payload, envSchema.ACCESS_TOKEN_SECRET, {
-          expiresIn: '15min',
-        });
-        return {
-          accessToken: accessToken,
-          role: user.role.roleName,
-          profile_image_path: user.profile_image_path,
-        };
-        
   }
+  if (!user.rtokenGeneratedAt) throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
+
+  const now = new Date();
+  const lasLoginAt = new Date(user.rtokenGeneratedAt);
+  const sevenDaysInMs = envSchema.REFRESH_TOKEN_EXPIRY_TIME;
+  if (now.getTime() - lasLoginAt.getTime() > sevenDaysInMs) {
+    throw new GraphQLError(ERROR_MESSAGES.REFRESH_TOKEN_INVALID);
+  }
+  const payload = {
+    user_id: user.userId,
+    role: user.role.roleName,
+  };
+  const accessToken = jwt.sign(payload, envSchema.ACCESS_TOKEN_SECRET, {
+    expiresIn: '15min',
+  });
+  return {
+    accessToken: accessToken,
+    role: user.role.roleName,
+    profile_image_path: user.profile_image_path,
+  };
+}
 
 async function removeRefreshTokenRaw(userId: string) {
-    const user = await userRepo.findOne({
-      where: {
-        userId: userId,
-      },
-    });
-    if (!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
+  const user = await userRepo.findOne({
+    where: {
+      userId: userId,
+    },
+  });
+  if (!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
 
-    user.refreshToken = '';
-    await userRepo.save(user);
-    return { message: 'User logged out successfully' };
+  user.refreshToken = '';
+  await userRepo.save(user);
+  return { message: 'User logged out successfully' };
 }
-export const loginUser = withErrorHandling(loginUserRaw,ERROR_MESSAGES.LOGIN_FAILED)
-export const registerUserInDB = withErrorHandling(registerUserInDBRaw,ERROR_MESSAGES.FAILED_TO_CREATE_USER)
-export const  fetchUserByRefreshToken = withErrorHandling(fetchUserByRefreshTokenRaw,ERROR_MESSAGES.REFRESH_TOKEN_INVALID)
-export const removeRefreshToken = withErrorHandling(removeRefreshTokenRaw,ERROR_MESSAGES.LOGOUT_FAILED)
+export const loginUser = withErrorHandling(loginUserRaw, ERROR_MESSAGES.LOGIN_FAILED);
+export const registerUserInDB = withErrorHandling(
+  registerUserInDBRaw,
+  ERROR_MESSAGES.FAILED_TO_CREATE_USER
+);
+export const fetchUserByRefreshToken = withErrorHandling(
+  fetchUserByRefreshTokenRaw,
+  ERROR_MESSAGES.REFRESH_TOKEN_INVALID
+);
+export const removeRefreshToken = withErrorHandling(
+  removeRefreshTokenRaw,
+  ERROR_MESSAGES.LOGOUT_FAILED
+);

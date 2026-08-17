@@ -6,7 +6,7 @@ import { ApolloLogginPlugin } from '../config/apolloLoggingPlugin.js';
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  plugins:[ApolloLogginPlugin]
+  plugins: [ApolloLogginPlugin],
 });
 await server.start();
 export default server;
