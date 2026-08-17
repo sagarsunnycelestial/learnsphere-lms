@@ -8,7 +8,7 @@
     "format:check": "prettier --check \"client/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.{js,ts,json,md}\"",
     "lint": "eslint client server",
     "prepare": "husky",
-    "test": ""
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/sagarsunnycelestial/learnsphere-lms/issues"
   },
@@ -25,6 +25,7 @@
   "devDependencies": {
     "@jest/globals": "^30.4.1",
     "@types/jest": "^30.0.0",
+    "dotenv": "^17.4.2",
     "eslint": "^10.8.1",
     "husky": "^9.1.7",
     "jest": "^30.4.2",
