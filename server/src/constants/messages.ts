@@ -35,4 +35,6 @@ export const ERROR_MESSAGES = {
   FAILED_TO_DELETE_LESSON: 'Failed to delete lesson, try again',
   FAILED_TO_UPDATE_USER: 'Failed to update user details, try again',
   USER_ALREADY_ENROLLED: 'User already enrolled in the course',
+  GOOGLE_NO_EMAIL: 'Google account has no email',
+  GOOGLE_LOGIN_FAILED: 'Logging in with google failed, Try another way',
 } as const;

@@ -106,7 +106,7 @@ export default function CourseCard({ course }: CourseCardProps) {
         overflow: 'hidden',
       }}
     >
-      {hasPermission(user, 'action:course') && (
+      {(course.canModify || hasPermission(user, 'edit all:courses')) && (
         <Stack
           direction="row"
           sx={{ justifyContent: 'space-between', alignItems: 'center', p: 1 }}
@@ -132,7 +132,6 @@ export default function CourseCard({ course }: CourseCardProps) {
               open={open}
               onClose={handleClose}
             >
-              {course.canModify || hasPermission(user, 'edit all:courses')}
               <MenuItem onClick={handleEdit} disableRipple>
                 <EditIcon sx={{ mr: 1 }} />
                 Edit

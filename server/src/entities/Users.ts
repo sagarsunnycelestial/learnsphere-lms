@@ -87,6 +87,15 @@ export class Users {
   })
   updatedAt!: Date;
 
+  @Column({
+    name: 'firebase_uid',
+    type: 'varchar',
+    length: 128,
+    unique: true,
+    nullable: true,
+  })
+  firebaseUid!: string | null;
+
   @OneToMany(() => Courses, (course) => course.createdBy)
   courses!: Courses[];
 

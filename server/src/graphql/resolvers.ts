@@ -14,6 +14,7 @@ import {
   registerUserInDB,
   fetchUserByRefreshToken,
   removeRefreshToken,
+  googleLoginWithFB,
 } from '../controllers/auth.controller.js';
 import {
   updateUserDetails,
@@ -306,6 +307,13 @@ export const resolvers = {
         throw new GraphQLError(ERROR_MESSAGES.UNAUTHORIZED);
 
       return await unEnrollFromCourse(args, context);
+    },
+    googleLogin: async (
+      _parents: unknown,
+      args: { input: { idToken: string } },
+      context: Context
+    ) => {
+      return await googleLoginWithFB(args.input.idToken, context.res);
     },
   },
 };

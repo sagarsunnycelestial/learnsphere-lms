@@ -7,6 +7,8 @@ import { logout } from '../../store/slices/authSlice';
 import { Badge } from '@mui/material';
 import { apolloClient } from '../../graphql/apolloClient';
 import { LogoutDocument } from '../../generated/graphql';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../firebase/firebase';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../store/hooks';
@@ -62,6 +64,7 @@ export default function ProfileMenu({ profile_image }: ProfileMenuProps) {
   };
   const handleLogout = async () => {
     handleClose();
+    await signOut(auth);
     const { data: res } = await apolloClient.mutate({
       mutation: LogoutDocument,
     });

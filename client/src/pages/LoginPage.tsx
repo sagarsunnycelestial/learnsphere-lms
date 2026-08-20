@@ -1,5 +1,12 @@
-import { Card, Box, Typography, TextField, Button } from '@mui/material';
-import auth from '../assets/auth.webp';
+import {
+  Card,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Divider,
+} from '@mui/material';
+import authL from '../assets/auth.webp';
 import LMSLogo from '../assets/LMSlogo.png';
 import { z } from 'zod';
 import { useState } from 'react';
@@ -7,6 +14,10 @@ import { useAppDispatch } from '../store/hooks';
 import { loginThunk } from '../store/thunks/loginThunk';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { auth, provider } from '../firebase/firebase';
+import { signInWithPopup } from 'firebase/auth';
+import GoogleIcon from '@mui/icons-material/Google';
+import { googleLoginThunk } from '../store/thunks/googleLoginThunk';
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState<string>('');
@@ -29,7 +40,7 @@ export default function LoginPage() {
     }
     try {
       setLoading(true);
-      await dispatch(loginThunk({ email, password }));
+      await dispatch(loginThunk({ email, password })).unwrap();
       navigate('/dashboard');
     } catch (err) {
       toast.error(err as string);
@@ -37,10 +48,33 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+  const handleGoogleLogin = async () => {
+    try {
+      setLoading(true);
+
+      const res = await signInWithPopup(auth, provider);
+
+      const idToken = await res.user.getIdToken();
+
+      await dispatch(
+        googleLoginThunk({
+          input: {
+            idToken,
+          },
+        })
+      ).unwrap();
+
+      navigate('/dashboard');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Google login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <Box
       sx={{
-        backgroundImage: `url(${auth})`,
+        backgroundImage: `url(${authL})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -128,6 +162,21 @@ export default function LoginPage() {
             }}
           >
             {loading ? 'Signing In...' : 'Login'}
+          </Button>
+          <Divider>or</Divider>
+          <Button
+            fullWidth
+            variant="outlined"
+
+            onClick={handleGoogleLogin}
+            sx={{
+              mt: 1,
+              py: 1.2,
+              gap: 1,
+              borderRadius: 2,
+            }}
+          >
+            <GoogleIcon /> Sign in with Google
           </Button>
         </Box>
         <Typography

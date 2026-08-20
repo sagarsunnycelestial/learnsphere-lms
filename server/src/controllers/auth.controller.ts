@@ -15,6 +15,63 @@ import { ERROR_MESSAGES } from '../constants/messages.js';
 import { userRepo, rolesRepo } from '../entities/repos.js';
 import { sendWelcomeEmail } from '../services/mail.service.js';
 import { withErrorHandling } from '../utils/withErrorHandling.js';
+import { firebaseAdminAuth } from '../config/firebaseAdmin.js';
+
+const googleLoginRaw = async (idToken: string, res: Response) => {
+  const decodedToken = await firebaseAdminAuth.verifyIdToken(idToken);
+
+  const firebaseUid = decodedToken.uid;
+  const email = decodedToken.email;
+  if (!email) throw new GraphQLError(ERROR_MESSAGES.GOOGLE_NO_EMAIL);
+
+  let user = await userRepo.findOne({
+    where: {
+      firebaseUid,
+    },
+    relations: {
+      role: true,
+    },
+  });
+  if (!user) {
+    user = await userRepo.findOne({
+      where: { email: email },
+      relations: {
+        role: true,
+      },
+    });
+    if (!user) throw new GraphQLError(ERROR_MESSAGES.USER_NOT_FOUND);
+    user.firebaseUid = firebaseUid;
+    await userRepo.save(user);
+  }
+  const payload = {
+    user_id: user.userId,
+    role: user.role.roleName,
+  };
+  const accessToken = jwt.sign(payload, envSchema.ACCESS_TOKEN_SECRET, {
+    expiresIn: '15min',
+  });
+  const refreshToken = crypto.randomBytes(64).toString('hex');
+  const refreshToken_hash = crypto
+    .createHmac('sha256', envSchema.REFRESH_TOKEN_SECRET)
+    .update(refreshToken, 'utf8')
+    .digest('hex');
+  user.refreshToken = refreshToken_hash;
+  user.isActive = true;
+  user.rtokenGeneratedAt = new Date();
+  await userRepo.save(user);
+  res.cookie('refresh_token', refreshToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: true,
+    maxAge: 604800000,
+  });
+
+  return {
+    accessToken: accessToken,
+    role: user.role.roleName,
+    profile_image_path: user.profile_image_path,
+  };
+};
 const loginUserRaw = async (args: LoginArgs, res: Response) => {
   const { email, password }: LoginUserBody = args.input;
   const user = await userRepo.findOne({
@@ -184,4 +241,9 @@ export const fetchUserByRefreshToken = withErrorHandling(
 export const removeRefreshToken = withErrorHandling(
   removeRefreshTokenRaw,
   ERROR_MESSAGES.LOGOUT_FAILED
+);
+
+export const googleLoginWithFB = withErrorHandling(
+  googleLoginRaw,
+  ERROR_MESSAGES.GOOGLE_LOGIN_FAILED
 );

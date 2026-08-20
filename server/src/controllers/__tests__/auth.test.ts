@@ -7,6 +7,11 @@ import jwt from 'jsonwebtoken';
 import { describe, expect, it, beforeEach, jest } from '@jest/globals';
 import { ERROR_MESSAGES } from '../../constants/messages.js';
 
+jest.mock('../../config/firebaseAdmin.js', () => ({
+  firebaseAdminAuth: {
+    verifyIdToken: jest.fn(),
+  },
+}));
 jest.mock('../../entities/repos.js', () => ({
   userRepo: {
     findOne: jest.fn(),

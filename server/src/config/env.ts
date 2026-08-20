@@ -17,5 +17,9 @@ export const envSchema = z
     ALLOWED_ORIGIN1: z.string(),
     ALLOWED_ORIGIN2: z.string(),
     REFRESH_TOKEN_EXPIRY_TIME: z.coerce.number(),
+    FB_PROJECT_ID: z.string(),
+    FB_PRIVATE_KEY_ID: z.string(),
+    FB_PRIVATE_KEY: z.string(),
+    FB_CLIENT_EMAIL: z.string(),
   })
   .parse(process.env);

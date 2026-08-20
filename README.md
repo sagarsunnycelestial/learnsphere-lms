@@ -85,3 +85,14 @@ npm run dev
 ```
 
 Seed the first Admin directly in the database — `registerUser` needs an existing Admin to call it.
+
+
+## Screenshots
+<img width="1548" height="1000" alt="loginpage" src="https://github.com/user-attachments/assets/5a6b1d23-ce4a-4042-90e5-9b1a9836b798" />
+<img width="1716" height="690" alt="student_home" src="https://github.com/user-attachments/assets/23723db5-a043-4af3-a36f-fc27aeb8eecd" />
+<img width="1614" height="890" alt="quiz_card" src="https://github.com/user-attachments/assets/60338488-f207-48bd-a128-c526462ec4b4" />
+<img width="1723" height="818" alt="instructor_page" src="https://github.com/user-attachments/assets/7d572ecf-af43-45b0-9d7d-cc89e37e7872" />
+<img width="1057" height="788" alt="add_user_form" src="https://github.com/user-attachments/assets/75517022-eaf9-4170-8b2d-f7ee674c287e" />
+<img width="976" height="620" alt="add_course_form" src="https://github.com/user-attachments/assets/92c75683-296c-48cc-bd9b-1d881f15b814" />
+<img width="1724" height="727" alt="darkmode" src="https://github.com/user-attachments/assets/d5a36904-c3f7-48d5-842d-e6b24b3ddd19" />
+<img width="1728" height="935" alt="admin_home_page" src="https://github.com/user-attachments/assets/911cf1ae-d79d-459e-969d-23021b24d803" />

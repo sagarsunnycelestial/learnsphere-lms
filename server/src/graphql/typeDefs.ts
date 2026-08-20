@@ -229,6 +229,9 @@ input QuizDetails {
   quizName:String
   score:Float
   }
+  input GoogleLoginInput {
+  idToken:String!
+  }
 
 type Mutation {
   login(input:LoginCredentials!): LoginResponse!
@@ -248,5 +251,6 @@ type Mutation {
   deleteQuiz(quizId:String!): Response!
   deleteQuestion(questionId:String!,quizId:String!): Response!
   unenrollStudent(input:EnrollDetails):Response!
+  googleLogin(input:GoogleLoginInput!):LoginResponse!
 }
 `;

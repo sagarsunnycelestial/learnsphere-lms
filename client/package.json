@@ -20,6 +20,7 @@
     "@supabase/supabase-js": "^2.112.0",
     "@tanstack/react-query": "^5.101.4",
     "downloadjs": "^1.4.7",
+    "firebase": "^12.17.1",
     "graphql": "^16.14.2",
     "pdf-lib": "^1.17.1",
     "react": "^19.2.8",

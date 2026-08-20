@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { UserRoles, type AuthInitialState } from '../../types/types';
 import { loginThunk } from '../thunks/loginThunk';
 import { toast } from 'react-toastify';
-
+import { googleLoginThunk } from '../thunks/googleLoginThunk';
 const initialState: AuthInitialState = {
   status: 'idle',
   user: {
@@ -46,6 +46,24 @@ const authSlice = createSlice({
         state.status = 'succeeded';
       })
       .addCase(loginThunk.rejected, (state, action) => {
+        state.error = (action.payload as { message: string }) ?? null;
+        toast.error(state.error.message);
+      })
+      .addCase(googleLoginThunk.pending, (state) => {
+        state.status = 'loading';
+        state.error = null;
+      })
+      .addCase(googleLoginThunk.fulfilled, (state, action) => {
+        const { role } = action.payload;
+        state.user = {
+          ...action.payload,
+          isAuthenticated: true,
+          role: role as UserRoles,
+        };
+
+        state.status = 'succeeded';
+      })
+      .addCase(googleLoginThunk.rejected, (state, action) => {
         state.error = (action.payload as { message: string }) ?? null;
         toast.error(state.error.message);
       });
