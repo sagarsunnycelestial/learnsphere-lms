@@ -8,7 +8,9 @@
     "format:check": "prettier --check \"client/**/*.{js,jsx,ts,tsx,json,css,md}\" \"server/**/*.{js,ts,json,md}\"",
     "lint": "eslint client server",
     "prepare": "husky",
-    "test": "jest"
+    "test": "npm run test:server && npm run test:client",
+    "test:server": "jest",
+    "test:client": "npm --prefix client run test"
   },
   "repository": {
     "type": "git",
